@@ -1,0 +1,106 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: issue-to-pr
+time: Ten minutes to connect GitHub, about 4 minutes to set up the automation
+for: You have a clearly written GitHub issue and want it fixed, tested, and opened as a PR
+step: 6
+tldr: Do one issue in a conversation first. Once that works, turn on the automation and just add a label.
+description: Connect GitHub, have OpenHands turn one issue into a draft PR in a conversation, then use the GitHub issue to PR automation so labeling an issue is enough to start the work.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+
+## Do one in a conversation first
+
+After connecting GitHub (next section), start a new <Term k="对话" /> and send:
+
+<Copy id="ip-once" title="Work on one issue" code={`Work on issue #<number> in <owner/repo> on GitHub.
+What I want: first read the issue and its discussion, and tell me in a few sentences how you plan to change things. Wait until I reply "go ahead" before you start.
+Once you start: create a branch openhands/issue-<number> from the default branch, change the code, and run the project's own tests.
+What done looks like: tests pass, and a draft PR titled [#<number>] <issue title> describes the change and ends with Closes #<number>.
+What to show me when done: the PR link, which tests you ran, and the results. Also comment on the issue with the PR link.`} />
+
+- **"Wait until I reply"**: check that it understood the issue. Correcting it now costs the least.
+- **Draft PR**: <mark>someone should review it before it's merged.</mark> The automation below opens drafts by default too.
+- **"Closes #number"**: when the PR is merged, GitHub closes the issue for you.
+
+The clearer the issue, the better: which file, what happens now, what should happen, and what counts as done. See [Write instructions it won't drift from](/en/howto/good-instructions/).
+
+## Give it access to your GitHub
+
+To read issues, push branches, and open a <Term k="PR" />, it needs permission.
+
+1. In GitHub Developer Settings, create a fine-grained token. Choose **Only select repositories** and set an expiration date.
+2. Grant `Metadata` read, plus write access to `Contents`, `Issues`, and `Pull requests`. If an issue might touch `.github/workflows/`, it also needs the `workflow` permission.
+3. Copy the token. GitHub shows it only once.
+4. In <Term k="Agent Canvas" />, check the backend switcher in the bottom-left corner. Make sure it shows the <Term k="后端" /> you want.
+5. Open **Customize** → **MCP Servers**, pick **GitHub** from the library, and paste the token. Leave secret creation on, then save.
+6. Wait for the server card to report a healthy connection, then start a new conversation.
+
+<Callout type="warn" title="Two easy mistakes">
+Paste the token only into the MCP settings. <u>Never paste it into the conversation.</u> <a href="/en/wiki/mcp/">MCP</a> settings load when a conversation starts, so a conversation opened before you added the server can't use it.
+</Callout>
+
+## Have it do this every time
+
+Once that works, hand it to the "GitHub issue to PR" <Term k="自动化" />. You add a label to an issue. It checks on a schedule and starts work when it sees one.
+
+Each run, it does this:
+
+1. **Checks on a schedule.** Every 15 minutes by default, it looks for labeled issues. It skips ones it already handled.
+2. **Starts one conversation per issue.** It clones the repo, creates a branch such as `openhands/issue-42`, changes the code, and runs tests.
+3. **Pushes and opens a PR.** The title is `[#42] issue title` and the body includes `Closes #42`.
+4. **Comments on the issue.** It says when work starts, when it finishes, and when it couldn't finish.
+
+When a review finds problems in its PR, a later scan picks the PR up and revises it.
+
+### Set it up
+
+1. Open **Automate** in the left navigation and find the **GitHub issue to PR** template.
+2. Fill in the form. The defaults are fine for most fields:
+   - **Repositories**: the repos to watch. You can pick several.
+   - **Trigger label**: the label that starts work. Default `openhands`.
+   - **Branch prefix**: default `openhands/issue`.
+   - **Pull request mode**: default Draft.
+   - **Check frequency**: default `*/15 * * * *`, which means every 15 minutes.
+   - **GitHub token secret**: the name of the secret holding your token. Default `GITHUB_PERSONAL_ACCESS_TOKEN`.
+3. Pick an <Term k="Agent Profile" /> that's allowed to use that secret.
+4. Review the configuration and create it.
+
+### Test it once
+
+Add the label to a test issue and wait for the next run. Then check the activity in Automate.
+
+<Checkpoint id="ip-test" items={["The automation shows up in Automate and is enabled", "A new conversation started after I added the label", "The repo has a new <code>openhands/issue-number</code> branch", "A draft PR was opened", "The issue has a comment with the PR link"]} />
+
+To have it try again, remove the label and add it back. It treats that as a new request, with a fresh branch and conversation.
+
+More details are on [Ready-made automations: GitHub issue to PR](/en/automations/github-issue-to-pr/). For GitLab, Jira, or Linear, Automate has matching templates. See [Ready-made automations](/en/automations/).
+
+## Anyone can write an issue
+
+Anyone with access to your issue tracker can write issue text and comments. The agent treats that text as a task to do, not as trusted instructions. So:
+
+- **Give the token the fewest permissions it needs.** Select only the repos it uses.
+- **Open PRs as drafts.** Review before merging.
+- **Check the automation's activity often.** If a run looks odd, turn the automation off.
+
+Conversations started by this automation get only that one GitHub token. They can't reach your other MCP servers.
+
+## Stuck?
+
+<Q q="I added the label and nothing happened.">
+Check in Automate that the automation is enabled. The label must match exactly, including case. If the issue was handled before, remove the label and add it back. The next run may also not have happened yet, since the default is every 15 minutes.
+</Q>
+<Q q="It says it doesn't have permission to push.">
+Check four things. Is the token saved as a secret? Does it have write access to Contents and Pull requests? Does the agent profile allow that secret? If it touches <code>.github/workflows/</code>, does it have the workflow permission?
+</Q>
+<Q q="The issue got a written answer, but no PR.">
+When it changed no files, it posts its answer on the issue instead of opening a PR. Usually the issue wasn't clear enough. Clarify it, then remove and re-add the label.
+</Q>
+<Q q="In a conversation, it says it has no GitHub tools.">
+Start a new conversation after adding an MCP server. Then check that the server card is healthy, and that the token hasn't expired and covers this repo.
+</Q>

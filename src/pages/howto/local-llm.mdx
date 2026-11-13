@@ -1,0 +1,108 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: local-llm
+time: 读 6 分钟，下载模型另算
+for: 想用自己电脑上的模型，不走云端
+step: 2
+tldr: 用 LM Studio 跑本地模型，在 Advanced 设置里填它的地址。
+description: 用 LM Studio 在本机跑 Qwen3.6-35B-A3B，再在 Agent Canvas 里填模型名、地址和占位 key；电脑配置要求；它不肯动手时怎么办；Ollama 的写法。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Tabs from "../../components/Tabs.astro";
+import Copy from "../../components/Copy.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+
+## 先看电脑跑不跑得动
+
+官方推荐先试 **Qwen3.6-35B-A3B**，一个专门为写代码、用工具调过的开放模型。跑它要：
+
+- 一块 24 GB 显存以上的新显卡（跑压缩过的版本），或者
+- 一台 Apple 芯片的 Mac，统一内存 64 GB 以上（同样是压缩过的版本）。
+
+<Callout type="warn" title="本地模型能做的事有限">
+本地模型常常不如云端的大模型会用工具。配置达不到，或者想先把流程跑通，先用云端<Term k="模型" />，见[完整教程第 2 步](/guide/2-model/)。
+</Callout>
+
+## 1. 装 LM Studio，下载模型
+
+1. 从 [lmstudio.ai](https://lmstudio.ai/) 下载并安装 LM Studio。
+2. 窗口最下面，把界面复杂度切到 "Power User"。
+3. 点左边的放大镜 "Discover"，打开模型下载页。
+4. 搜 **Qwen3.6-35B-A3B**，确认发布者是官方的 Qwen，下载。
+5. 等它下完。
+
+## 2. 加载模型，打开服务
+
+1. 点左边的 "Developer"（控制台图标）。
+2. 点窗口顶上的 "Select a model to load"。
+3. 打开 "Manually choose model load parameters"，选 Qwen3.6-35B-A3B。
+4. 打开 "Show advanced settings"。<mark>"Context Length" 至少填 22000，推荐 32768</mark>，再打开 Flash Attention。
+5. 点 "Load Model"。
+6. 打开左上角 "Status" 旁边的开关，服务就起来了。
+7. 记下右边栏显示的 Model API Identifier，下一步要用。
+
+上下文太短，AI 连自己的说明都装不下，就会乱来。
+
+## 3. 在 Agent Canvas 里接上
+
+1. 打开 `Settings > LLM`，切到 `Advanced` 标签。
+2. 照下面填。地址要看 Agent Canvas 跑在哪：
+
+<Tabs id="ll-where" label="Agent Canvas 跑在哪" items={[["host", "直接在电脑上（桌面版、npm）"], ["docker", "Docker 里"]]}>
+<div slot="host">
+
+- **Model**：`openai/` 加上第 2 步记下的名字，比如 `openai/qwen/qwen3.6-35b-a3b`
+- **Base URL**：`http://127.0.0.1:1234/v1`
+- **API Key**：`local-llm`
+
+</div>
+<div slot="docker">
+
+- **Model**：`openai/` 加上第 2 步记下的名字，比如 `openai/qwen/qwen3.6-35b-a3b`
+- **Base URL**：`http://host.docker.internal:1234/v1`
+- **API Key**：`local-llm`
+
+容器里的 `127.0.0.1` 指的是容器自己，不是你的电脑，所以要换成 `host.docker.internal`。Linux 上还要在 LM Studio 的服务设置里打开 **"Serve on Local Network"**，容器才连得到。
+
+</div>
+</Tabs>
+
+3. 保存。保存时它会先去试一下这个模型，连不上就不让存，并显示报错。
+4. 开一个新<Term k="对话" />，发一句简单的话。
+
+<Callout type="ok">
+它正常回了话。
+</Callout>
+
+LM Studio 不要密钥，`API Key` 填个占位的就行。这一套设置会存成一个 <Term k="LLM Profile" />。
+
+## 它像个聊天机器人，不肯动手
+
+它只聊天、不肯读文件，或者工具调用老是失败？多半是模型本身的问题，不是你配错了。依次试：
+
+1. 确认 "Context Length" 够大。
+2. 换社区里反映好用的模型：`qwen2.5-coder-14b-instruct`，或者 `qwopus3.5-27b-v3 Q8_0`。
+3. 这件事先换回云端的强模型做。
+
+## 卡住了？
+
+<Q q="保存时报 LLM Provider NOT provided。">
+模型名里缺了服务商。本地服务用的是 OpenAI 的接口格式，名字要写成 `openai/<模型名>`。后半截要和服务报出来的名字完全一样。
+</Q>
+<Q q="我用 Ollama，不用 LM Studio。">
+
+装好 [Ollama](https://ollama.com/download) 后，照官方的例子启动。上下文至少要 22000，默认的 4096 太小：
+
+<Copy id="ll-ollama" lang="bash" title="用 Ollama 跑模型" code={`OLLAMA_CONTEXT_LENGTH=32768 OLLAMA_HOST=0.0.0.0:11434 OLLAMA_KEEP_ALIVE=-1 nohup ollama serve &
+ollama pull qwen3.6:35b-a3b`} />
+
+Agent Canvas 里填 `openai/qwen3.6:35b-a3b`，地址端口换成 `11434`，API Key 随便填一个，比如 `local-llm`。`OLLAMA_HOST=0.0.0.0` 会让同一网络里的设备也能连到 Ollama。
+
+</Q>
+<Q q="想本地模型和云端模型换着用。">
+每种存一个 LLM Profile。对话里打 `/model` 看有哪些，打 `/model 名字` 切过去。切换只影响之后的请求，前面聊的都还在。
+</Q>
+
+<Checkpoint id="h-local-llm" items={["LM Studio 里模型已加载，Status 开着", "Agent Canvas 里存好了 openai/ 开头的本地模型", "新对话里它回了话"]} />

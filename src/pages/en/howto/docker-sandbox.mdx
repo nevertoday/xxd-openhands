@@ -1,0 +1,163 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: docker-sandbox
+time: 5 minutes to read, 15 to set up
+for: You don't want the agent touching the rest of your computer
+step: 5
+tldr: Start it in Docker, and the agent only sees the one project folder you mount.
+description: Run Agent Canvas from the official Docker image with a single project folder mounted; where your data lives; automatic restarts; and how to give every conversation its own container.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+
+## What the agent can reach
+
+The desktop app and the npm install run directly on your computer. The agent can read and write anything your user account can.
+
+Inside <Term k="Docker" />, the agent works in a container. <mark>It only sees the folder you mount</mark>, which shows up as `/projects`. That container is its <Term k="沙盒" />.
+
+## Get Docker running
+
+Install Docker Desktop on macOS or Windows, or Docker Engine or Docker Desktop on Linux. Open it, then run this in a <Term k="终端" />:
+
+<Copy id="ds-check" lang="bash" title="Check that Docker is running" code={`docker --version
+docker ps`} />
+
+If both work, carry on. If `docker ps` can't connect, open Docker Desktop and try again.
+
+## Start it
+
+<Tabs id="ds-os" label="Your system" items={[["unix", "macOS / Linux"], ["win", "Windows"]]}>
+<div slot="unix">
+
+1. Make a folder just for projects. The agent can see only what's inside:
+
+<Copy id="ds-ws" lang="bash" title="Prepare the folder" code={`export PROJECTS_PATH="$HOME/projects"  # directory containing your project folders
+mkdir -p "$PROJECTS_PATH"`} />
+
+2. Linux with Docker Engine only. The container user has uid 10001 and must be able to read and write the folder. These two commands give every local user access, so use them only on this dedicated folder:
+
+<Copy id="ds-chmod" lang="bash" title="Linux Docker Engine only" code={`find "$PROJECTS_PATH" -type d -exec chmod a+rwX {} +
+find "$PROJECTS_PATH" -type f -exec chmod a+rw {} +`} />
+
+3. Start Agent Canvas:
+
+<Copy id="ds-run" lang="bash" title="Start" code={`docker run -it --rm \\
+  -p 127.0.0.1:8000:8000 \\
+  -e AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true \\
+  -v openhands-state:/home/openhands/.openhands \\
+  -v "\${PROJECTS_PATH}:/projects" \\
+  ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+</div>
+<div slot="win">
+
+Run these in PowerShell, in order. Docker Desktop handles folder permissions for you.
+
+<Copy id="ds-w-pull" lang="powershell" title="1. Pull the image" code="docker pull ghcr.io/openhands/agent-canvas:1.40.0" />
+
+<Copy id="ds-w-ws" lang="powershell" title="2. Prepare the folders" code={`$env:PROJECTS_PATH = Join-Path $HOME "projects"  # directory containing your project folders
+New-Item -ItemType Directory -Force -Path $env:PROJECTS_PATH, (Join-Path $env:USERPROFILE ".openhands") | Out-Null`} />
+
+<Copy id="ds-w-run" lang="powershell" title="3. Start" code={`docker run -it --rm \`
+  -p 127.0.0.1:8000:8000 \`
+  -e AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true \`
+  -v "$($env:USERPROFILE)\\.openhands:/home/openhands/.openhands" \`
+  -v "$($env:PROJECTS_PATH):/projects" \`
+  ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+PowerShell continues lines with backticks. Keep them.
+
+</div>
+</Tabs>
+
+<Callout type="ok">
+Open `http://localhost:8000/canvas`. Agent Canvas loads and connects without asking for a key.
+</Callout>
+
+<Callout type="no" title="Keep these two together">
+`-p 127.0.0.1:8000:8000` means only this computer can open it. `AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true` puts the login key into the page. The second is only safe with the first. To reach it from another device, read [Run it on a server](/en/howto/server/) first.
+</Callout>
+
+## Point it at a project
+
+1. Put the project in the `projects` folder you just made.
+2. In Agent Canvas, click `Open Workspace` and pick the project under `/projects`.
+3. Start a new <Term k="对话" /> and ask what it can see:
+
+<Copy id="ds-try" title="Send this" code="Run ls /projects and tell me which folders you see." />
+
+It should list exactly the folders you put in `projects`.
+
+## Your data survives restarts
+
+Settings, secrets and conversations live in the Docker volume `openhands-state`. On Windows they live in the `.openhands` folder in your user directory. `--rm` removes the container, not your data. Next time, run the same command.
+
+To see where the volume is: <Cmd c="docker volume inspect openhands-state" />
+
+## Restart it automatically
+
+If its background server stops answering for about 30 seconds, the container exits with a failure. To have Docker bring it back, replace `--rm` with `--restart unless-stopped`.
+
+## One container per conversation
+
+The setup above puts all of Agent Canvas in one container. The other option keeps Agent Canvas on your computer and <u>starts a separate container for every new conversation</u>. That's safer when several agents run at once. See [Run several conversations at once](/en/howto/parallel/).
+
+You need Node.js 24 or later, `uv`, and Docker running.
+
+<Tabs id="ds-multi" label="Your system" items={[["unix", "macOS / Linux"], ["win", "Windows"]]}>
+<div slot="unix">
+
+1. Generate a key and save it somewhere safe: <Cmd c="openssl rand -base64 32" />
+2. Set it, then start:
+
+<Copy id="ds-multi-run" lang="bash" title="One container per conversation" code={`export LOCAL_BACKEND_API_KEY="<the string from step 1>"
+npm install -g @openhands/agent-canvas
+OH_CONVERSATION_RUNTIME=docker agent-canvas`} />
+
+3. Open `http://localhost:8000`. The page asks for an API key. Paste the same string.
+
+</div>
+<div slot="win">
+
+Native Windows doesn't support this mode. Use WSL 2:
+
+1. Install a Linux distribution under WSL 2 and turn on Docker Desktop's WSL integration for it.
+2. Inside that Linux, install Node.js 24 or later and `uv`, and check that `docker info` works.
+3. Follow the macOS / Linux tab in the WSL shell, using Linux paths for your projects.
+
+</div>
+</Tabs>
+
+<Callout type="warn" title="It now listens on your whole network">
+This mode listens on every network interface so the containers can reach your computer. That's why the page stops filling in the key for you. Other devices on the same network can open the login page, so use a long key and keep it private.
+</Callout>
+
+To check, start a new conversation and ask it to run `id` and `printf 'PWD=%s\nHOME=%s\n' "$PWD" "$HOME"`. If `PWD` is `/workspace` and `HOME` is `/var/openhands/.openhands`, it's inside a container.
+
+Existing conversations aren't moved into containers. Conversations that share a folder share its files, so give each one its own folder to avoid clashing edits.
+
+## Stuck?
+
+<Q q="The page asks me for an API key.">
+It wants the backend key, not your model key. In another terminal, find the container name with `docker ps`, then run `docker exec CONTAINER cat /home/openhands/.openhands/agent-canvas/api-key.txt` with `CONTAINER` replaced. Paste what it prints.
+</Q>
+<Q q="Linux says Permission denied.">
+Check the path in the error and make sure uid 10001 can read and write it. On SELinux hosts, check whether the mount needs `:z` or `:Z`. Don't make the folder that holds keys writable by everyone.
+</Q>
+<Q q="The agent tries to run Docker inside the container and gets operation not permitted.">
+That's blocked by default. Adding `--privileged` to `docker run` allows it. But it gives the container most of the host kernel's power, so the isolation is mostly gone. Do it only on a machine you're willing to expose, and only when the agent really needs containers. See the official [Use Docker with Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/backend-setup/docker).
+</Q>
+<Q q="The official docs use latest and openhands-data instead.">
+The docs site uses the `ghcr.io/openhands/agent-canvas:latest` image and a volume named `openhands-data`. This page follows the OpenHands README, which pins 1.40.0 and names the volume `openhands-state`. Both work. Pick one and stick with it, because a different volume name means your old settings aren't there.
+</Q>
+<Q q="Port 8000 is already in use.">
+Change `-p 127.0.0.1:8000:8000` to `-p 127.0.0.1:3000:8000`, then open `http://localhost:3000/canvas`.
+</Q>
+
+<Checkpoint id="h-docker" items={["docker ps works", "localhost:8000/canvas opened without asking for a key", "I asked it to ls /projects and saw exactly my folders"]} />

@@ -1,0 +1,147 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: code-review
+time: 装技能一分钟，审一个 PR 几分钟
+for: 有 PR 要审，想先让 AI 过一遍，自己再拍板
+step: 6
+tldr: 打 /codereview 审一个 PR。想每个 PR 都审，就开自动化。
+description: 用 code-review 技能在对话里审一个 PR，用 github-pr-review 把行内评论发到 GitHub；再用 GitHub code review 自动化或 GitHub Actions，让每个 PR 都自动审。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+import Tabs from "../../components/Tabs.astro";
+import Reply from "../../components/Reply.astro";
+
+## 先装技能，审一个
+
+1. 在对话里发这句，装上 code-review <Term k="技能" />：<Cmd c="/add-skill https://github.com/OpenHands/extensions/tree/main/skills/code-review" />
+2. 出现「Start new conversation with this skill」横幅，点它。技能在对话开始时加载，要新对话才生效。
+3. 在新对话里发：
+
+<Copy id="cr-once" title="审一个 PR" code={`/codereview 审一下 <owner/repo> 的 PR #<编号>。
+我想要：重点看 <这次最要紧的改动，比如新的登录中间件>。
+背景：<这段代码是做什么的、谁在用、出错会怎样>。
+做好的样子：只报真问题。每条写清文件和行号、会坏在哪、依据是什么，按严重程度排。
+做完给我看：审查结论和风险评估。先别在 GitHub 上发评论。`} />
+
+- **「背景」**：写清这段代码管什么、出错有多严重，比如「这里处理付款」。官方的好例子都写了这一条。
+- **「先别发评论」**：结论先给你看，你同意了再发。
+
+要读 GitHub 上的 PR，先接好 GitHub，步骤看[把一个 GitHub issue 交给它做成 PR](/howto/issue-to-pr/)。只打 `/codereview` 不带别的话，它会问你要审哪个 PR。
+
+## 它交回来什么
+
+<Reply code={`总体：acceptable
+
+问题（按严重程度）
+1. src/auth/middleware.ts 第 42 行
+   token 过期时没有返回 401，请求会继续往下走。
+   依据：……  最小改法：……
+
+[RISK ASSESSMENT] Medium
+结论：修好第 1 条再合并。`} />
+
+- **只报真问题。** 每条都要说清三样：哪里会坏、影响到谁、证据是什么。命名、风格这类个人偏好不算问题。
+- **没问题就通过。** 它不会为了显得认真，硬挑毛病。
+- **风险评估。** 每次都分 Low、Medium、High 三档。High 的改动它不会建议直接合并，会写明需要谁来看。
+- **不改代码。** 它只看，只写意见。
+
+## 让它把评论发到 PR 上
+
+再装一个技能：<Cmd c="/add-skill https://github.com/OpenHands/extensions/tree/main/skills/github-pr-review" />。开新对话后发：
+
+<Copy id="cr-post" title="审完发到 GitHub" code={`/codereview 审 <owner/repo> 的 PR #<编号>，然后用 /github-pr-review 把结果发到 PR 上。
+做好的样子：所有行内评论合在一次 review 里发出去，每条开头写明级别。
+做完给我看：这次 review 的链接。`} />
+
+每条评论开头有一个级别：
+
+| 级别 | 意思 |
+| --- | --- |
+| Critical | 必须改：安全漏洞、bug、可能丢数据 |
+| Important | 应该改：逻辑错误、性能、漏了错误处理 |
+| Suggestion | 最好改：命名、代码组织 |
+| Nit | 可改可不改：格式、小的风格偏好 |
+
+发评论要 token 对 Pull requests 有写权限。
+
+## 每个 PR 都自动审
+
+<Tabs id="cr-auto" items={[["canvas", "Agent Canvas 自动化"], ["actions", "GitHub Actions"]]}>
+<div slot="canvas">
+
+用现成的<Term k="自动化" />「GitHub code review」。它定时扫一遍仓库，挑出要审的 PR，审完把 review 发到 GitHub。
+
+1. **建 token。** 权限：`Contents`、`Issues`、`Pull requests` 可写，`Metadata` 只读。要它看 CI 结果，再加 `Actions`、`Checks` 只读。
+2. **接 GitHub。** Customize → MCP Servers → GitHub，粘贴 token，保持「创建 secret」开着。
+3. **选模板。** 打开 Automate，选 GitHub code review。能直接填表就填表。不能的话，它会开一个设置对话，问你几件事：审哪个仓库、哪些 PR、发总评还是行内评论、要不要先看 CI。
+4. **填表。** 几项要留意的：
+   - **Check frequency**：默认每 5 分钟扫一次。
+   - **Trigger label**：带这个标签的 PR 会被审，默认 `openhands-review`。
+   - **Requested reviewer**：请这个 GitHub 账号审，就开审。默认 `all-hands-bot`；在 OpenHands Cloud 上，填你接的那个账号。
+   - **New reviews per scan**：每轮最多新开几个审查，默认 2。
+   - **Review tone**：Concise（简短）、Thorough（细致）、Friendly（客气）。
+   - **Agent Profile**：选一个允许用 GitHub token 那个 secret 的。
+5. **验证。** Automate 里能看到它，而且开着。等一个 PR 来，看 GitHub 上出现 review。
+
+没人点名的 PR 也会审：不是草稿、当前提交的检查全绿、还没审过的，就会排进来。详情看[现成自动化：GitHub code review](/automations/github-pr-reviewer/)。
+
+</div>
+<div slot="actions">
+
+不用 Agent Canvas，也能放进仓库的 GitHub Actions 里跑，一个仓库配一次。
+
+1. 照[官方页面](https://docs.openhands.dev/openhands/usage/use-cases/code-review)建 `.github/workflows/pr-review-by-openhands.yml`。
+2. 在仓库的 Settings → Secrets and variables → Actions 里加 `LLM_API_KEY`，填你的模型 <Term k="API key" />。
+3. 在 Issues → Labels 里建一个 `review-this` 标签。
+4. 开一个 PR，打上 `review-this`，或者请 `openhands-agent` 审。
+
+这几种情况会自动开审：新开的非草稿 PR、草稿改成可审、打了 `review-this`、请了 `openhands-agent`。一般两三分钟出结果。
+
+</div>
+</Tabs>
+
+## 教它你们项目的规矩
+
+在项目里建 `.agents/skills/custom-codereview-guide.md`，开头写好触发词：
+
+```markdown
+---
+name: custom-codereview-guide
+description: 本项目的代码审查规矩
+triggers:
+- /codereview
+---
+
+# 本项目的审查规矩
+
+- 只改文档的 PR，直接通过。
+- 测试放在 tests/ 下。
+```
+
+它审的时候会同时用上自带的审查方法和你的规矩。
+
+<Callout type="warn" title="文件名别叫 code-review">
+PR 审查插件自带一个叫 <code>code-review</code> 的技能，同名时插件的会盖掉你的。换个名字，触发词写 <code>/codereview</code>，两个就会一起生效。
+</Callout>
+
+## 卡住了？
+
+<Q q="装了技能，打 /codereview 没反应。">
+技能要在新对话里才生效。点「Start new conversation with this skill」横幅，或者自己开一个新对话。
+</Q>
+<Q q="它说读不到这个 PR。">
+看 GitHub 的 MCP 卡片是不是连接正常，token 有没有包含这个仓库、有没有过期。加完 MCP 要开新对话。
+</Q>
+<Q q="开了自动化，PR 一直没人审。">
+没人点名的 PR，要等当前提交的检查全绿才会排进来。每轮新开的审查有上限，默认 2 个。打标签或请指定账号审，会优先处理。
+</Q>
+<Q q="它不肯通过，说要人来看。">
+风险评估是 High 时，它会故意留给人来决定。这是设计好的，不是出错。
+</Q>
+<Q q="它挑的问题不对。">
+把你们的规矩写进 <code>custom-codereview-guide.md</code>，再请它审一次。它会从 PR 的最新提交里读这份规矩。
+</Q>

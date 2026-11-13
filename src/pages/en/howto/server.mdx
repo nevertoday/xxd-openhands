@@ -1,0 +1,147 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: server
+time: 8 minutes to read, 30 to set up
+for: You want it running even when your laptop is closed
+step: 8
+tldr: Lock the firewall and set a key first, run in public mode, connect over an SSH tunnel.
+description: Run Agent Canvas on a cloud VM or an always-on machine. Lock it down before the first start, use --public with a strong key, keep it running with tmux or systemd, reach it through an SSH tunnel, then go through the security checklist.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+
+## Decide who can reach it
+
+On a server, it keeps working after you close your laptop, and <Term k="自动化" text="automations" /> fire on time.
+
+<Callout type="warn" title="Whoever can reach it can command it">
+The agent can read and write files on the machine, run commands, and use the network. Anyone who can talk to the <Term k="Agent Server" /> can do the same. Treat the machine like one that holds production credentials.
+</Callout>
+
+## 1. Get a machine
+
+Any always-on Linux or macOS host with a stable connection works:
+
+- **A cloud VM.** Ubuntu 24.04 LTS is a good default. For one person, 2 vCPUs and 4 GB of RAM is plenty.
+- **Your own hardware.** A Mac mini, a small PC, a spare laptop. Anything that can reach it on your home network counts as a risk.
+
+## 2. Lock it down before you start it
+
+<mark>Do this before the first start.</mark> In your cloud provider's firewall (an AWS Security Group, for example):
+
+- **Port 22 (SSH)**: allow only your own IP.
+- **Everything else**: drop it. Ports 8000, 18000, 18001 and 3001 must not be reachable from outside.
+
+After this, the machine is reachable only over SSH. That's enough. You'll open the UI through an SSH tunnel.
+
+## 3. Install Agent Canvas
+
+SSH into the server. On Ubuntu 22.04 or 24.04, run:
+
+<Copy id="sv-install" lang="bash" title="Install Node.js 24, uv and Agent Canvas" code={`sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg git
+
+# Node.js 24.x from NodeSource.
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# uv for the agent server runtime.
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source "$HOME/.local/bin/env"
+
+# Agent Canvas CLI.
+sudo npm install -g @openhands/agent-canvas
+
+node --version
+uv --version
+agent-canvas --version`} />
+
+If the last three lines each print a version, you're set. On a Mac, install Node and `uv` with `brew`.
+
+## 4. Choose a key
+
+1. Generate a random key: <Cmd c="openssl rand -base64 32" />
+2. Save it in a file only you can read, replacing `<choose-a-strong-secret>` with that string:
+
+<Copy id="sv-env" lang="bash" title="Save the key" code={`cat > ~/.agent-canvas.env <<'EOF_ENV'
+export LOCAL_BACKEND_API_KEY="<choose-a-strong-secret>"
+EOF_ENV
+chmod 600 ~/.agent-canvas.env
+source ~/.agent-canvas.env`} />
+
+Put a copy in your password manager too. You'll paste it when you open the UI.
+
+## 5. Start it and keep it running
+
+`--public` turns on public mode: the page no longer carries the key, so everyone has to enter it. Always use it on a server.
+
+Start it in tmux so it keeps running after you disconnect:
+
+<Copy id="sv-tmux" lang="bash" title="Start in tmux" code={`tmux new-session -d -s canvas
+tmux send-keys -t canvas 'source ~/.agent-canvas.env && agent-canvas --public' Enter
+tmux attach-session -t canvas`} />
+
+Once it has started, press `Ctrl-b`, then `d`, to leave tmux. It keeps running. Come back later with `tmux attach-session -t canvas`.
+
+## 6. Connect from your computer
+
+On your own computer, run this, with `user@your-vm` replaced by your user and server address:
+
+<Copy id="sv-ssh" lang="bash" title="SSH tunnel" code="ssh -L 8000:127.0.0.1:8000 user@your-vm" />
+
+Leave that window open, then go to `http://localhost:8000`.
+
+<Callout type="ok">
+You get an API key screen first. Paste the key from step 4 and you're in Agent Canvas. The agent now works with files on the server, not on your computer.
+</Callout>
+
+If Agent Canvas is also running on your computer on port 8000, <u>stop it first</u> or the tunnel can't connect.
+
+## Check before you open it up
+
+Before you let more people or devices in, confirm each of these:
+
+1. It runs with `--public` and a long `LOCAL_BACKEND_API_KEY`.
+2. Network access is restricted by at least one of: a firewall, a VPN, an ngrok login, or an identity-aware proxy.
+3. Any address reachable from the internet uses HTTPS.
+4. Few people can SSH in, and the OS gets patched.
+5. The machine's files are protected. Settings, secrets, conversations and code copies all live there.
+6. If a URL, key or login was shared too widely, rotate the key.
+
+## Stuck?
+
+<Q q="I want to open it in a browser without an SSH tunnel every time.">
+Point a domain at the server and put nginx and a Let's Encrypt certificate in front. Then open ports 80 and 443, with 443 limited to your IP if you can. Follow section 4 of the OpenHands [SELF_HOSTING.md](https://github.com/OpenHands/OpenHands/blob/main/docs/SELF_HOSTING.md) step by step. For a phone, also see [Watch it work from your phone](/en/howto/phone/).
+</Q>
+<Q q="I want it to start at boot and restart after a crash.">
+
+Use systemd. Create `/etc/systemd/system/agent-canvas.service`, with `<your-key>` replaced:
+
+<Copy id="sv-unit" lang="ini" title="agent-canvas.service" code={`[Unit]
+Description=Agent Canvas
+After=network.target
+
+[Service]
+Environment=LOCAL_BACKEND_API_KEY=<your-key>
+ExecStart=npx @openhands/agent-canvas --public
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target`} />
+
+Then run `sudo systemctl daemon-reload` and `sudo systemctl enable --now agent-canvas`.
+
+</Q>
+<Q q="I want the UI on my laptop and only the work on the server.">
+On the server, start with `agent-canvas --backend-only --public` instead. On your laptop, run `agent-canvas --frontend-only`, open `Manage Backends` from the backend switcher, choose `Add Backend`, and enter the server's address and key. With an SSH tunnel, the address is `http://localhost:8000`. You can then switch between local and server from the <Term k="后端" /> switcher.
+</Q>
+<Q q="The URL shows 502 Bad Gateway.">
+The program on the server's `127.0.0.1:8000` isn't running. Run `tmux attach-session -t canvas` to see whether it stopped.
+</Q>
+
+<Checkpoint id="h-server" items={["The firewall only allows SSH from my IP", "It runs in tmux with --public and my own key", "I opened localhost:8000 over the SSH tunnel and got in with the key"]} />

@@ -1,0 +1,72 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: phone
+time: 5 minutes to read, 10 to set up
+for: You want to check on it from the couch
+step: 8
+tldr: Put your phone and computer on one private Tailscale network and open the computer's address.
+description: Open Agent Canvas on your computer from a phone or tablet. Tailscale first, with nothing exposed to the internet; ngrok only when you need a temporary public URL, and only after turning on public mode with a strong key.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+
+## Pick a route
+
+- **Tailscale (recommended).** A private network between your own devices. No router changes, no domain.
+- **ngrok.** A temporary public URL for your computer. Anyone with the URL can reach the login page, so public mode and a strong key are required.
+
+Either way, your computer has to be on with Agent Canvas running.
+
+## With Tailscale
+
+1. Install [Tailscale](https://tailscale.com/download) on your computer and your phone, and sign in with the same account on both.
+2. In Tailscale on the computer, find its IP. It usually looks like `100.x.y.z`.
+3. Generate a key and save it somewhere safe: <Cmd c="openssl rand -base64 32" />
+4. In a <Term k="终端" /> on the computer, set the key and start:
+
+<Copy id="ph-ts" lang="bash" title="Let the phone connect" code={`export LOCAL_BACKEND_API_KEY="<the string from step 3>"
+agent-canvas --host 0.0.0.0`} />
+
+5. On the phone, open `http://<tailscale-ip>:8000/`, using the IP from step 2.
+
+<Callout type="ok">
+The phone shows an API key screen first. Paste the key from step 3 and you'll see the conversations on your computer.
+</Callout>
+
+Why `--host 0.0.0.0`: <mark>by default Agent Canvas only accepts connections from the computer itself.</mark> With it, other devices can connect, and the page asks for the key first.
+
+<Callout type="warn" title="Devices on your Wi-Fi can see the login page too">
+`0.0.0.0` means every network interface, not just Tailscale. Use a long key and don't do this on public Wi-Fi. When you're done, press `Ctrl+C`, and next time start with plain `agent-canvas`.
+</Callout>
+
+## With ngrok (a temporary public URL)
+
+Anyone can open the URL, so <u>turn on public mode with a strong key before starting ngrok</u>:
+
+<Copy id="ph-public" lang="bash" title="Terminal 1: public mode" code={`export LOCAL_BACKEND_API_KEY="<choose-a-strong-secret>"
+agent-canvas --public`} />
+
+Then, in a second terminal:
+
+<Copy id="ph-ngrok" lang="bash" title="Terminal 2: ngrok" code="ngrok http 8000" />
+
+Open the forwarding URL ngrok prints on your phone, and enter the key.
+
+<Callout type="no" title="Never run ngrok without a key">
+Without one, anyone with the URL can use your Agent Canvas and spend the model credit configured in it. ngrok can add a login or an IP allowlist too. For anything long-term, follow the security checklist in [Run it on a server](/en/howto/server/).
+</Callout>
+
+## Stuck?
+
+<Q q="The page opens on my phone, but the backend never connects.">
+The phone's page may still point at `127.0.0.1` or `localhost`. On the phone, open `Manage Backends` and change the local <Term k="后端" />'s `Host / Base URL` to `http://<tailscale-ip>:8000`. If it keeps changing back, clear site data for that URL in the phone browser's settings and reload.
+</Q>
+<Q q="I use the desktop app.">
+The commands above are for the npm `agent-canvas` command. The official docs don't cover phone access for the desktop app yet. We'll update this page when they do.
+</Q>
+<Q q="I don't want to leave my computer on.">
+Move it to an always-on machine, as in [Run it on a server](/en/howto/server/). Or run your conversations on <Term k="OpenHands Cloud" />, as in [Use OpenHands Cloud](/en/howto/cloud/).
+</Q>

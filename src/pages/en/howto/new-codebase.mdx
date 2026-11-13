@@ -1,0 +1,101 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: new-codebase
+time: Half an hour on day one, then ask as you go
+for: You're taking over someone else's project, or coming back to old code, and want to understand it before changing anything
+step: 3
+tldr: Have it read without changing anything and explain the project. Then save what it learned in AGENTS.md.
+description: "Taking over an unfamiliar project: have OpenHands read the code and answer questions without editing, then generate an AGENTS.md so every new conversation starts from it."
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+
+## Copy this first
+
+Start a new <Term k="对话" /> in the project's <Term k="工作区" /> and send:
+
+<Copy id="nc-first" title="Your first prompt" code={`Walk me through this project.
+What I want: what it does, how to run it locally, and which folders hold the main code.
+What done looks like: every point names the file you learned it from.
+What to show me when done: a short write-up, plus the list of files you read.
+Read only: don't edit any files, don't commit, don't push.`} />
+
+- **"Read only"**: <mark>don't let it change anything until it understands the code.</mark> It can still read files and run commands to figure things out.
+- **"Name the file you learned it from"**: you can tell at a glance what it read and what it guessed.
+
+The official docs list answering questions about a codebase as one of its strengths. It explores the code first, then answers.
+
+<Callout type="warn" title="When it runs directly on your computer">
+The agent can read and write files and run commands with your account's permissions. For a project you don't fully trust, run it in a container. See <a href="/en/howto/docker-sandbox/">Run it inside Docker</a>.
+</Callout>
+
+## Where to look after you send it
+
+- **The end of the chat**: each stage of work adds a group, such as "Read a file" or "Ran a command". Open one to see which files it read.
+- **The overview panel**: select the info control in the conversation header. It shows the workspace, branch, commits, and uncommitted changes. If you said read only, there should be no new changes here.
+- **Files**: open any file it mentions, right there.
+
+## Then ask about details
+
+Once you have the big picture, ask one specific thing at a time:
+
+<Copy id="nc-trace" title="Follow one action through the code" code={`When a user clicks "Place order", which files and functions does the request pass through?
+What done looks like: the steps in order, each with a file path and function name.
+What to show me when done: that path, plus the one spot you think is most likely to break, and why.
+Still read only.`} />
+
+<Copy id="nc-log" title="Make sense of an error" code={`Here is an error log from production: <paste the log>
+What I want: which code throws it, and under what conditions it happens.
+What done looks like: a specific file and line, and the condition that triggers it.
+What to show me when done: your conclusion and the evidence. Don't fix it yet.`} />
+
+Name a folder, a file, or a feature when you ask. It can't hold a large project in view all at once, so a narrower question gets a sharper answer.
+
+## Save what it learned in AGENTS.md
+
+New conversations don't remember old ones. Put the project notes in <Term k="AGENTS.md" /> at the project root. Every conversation reads it when it starts.
+
+The docs include a ready-made prompt for this:
+
+<Copy id="nc-agents" title="Generate AGENTS.md" code={`Please browse the repository, look at the documentation and relevant code, and understand the purpose of this repository.
+What I want: an AGENTS.md file at the repository root that briefly covers:
+1. The purpose of this repository
+2. The general setup of this repo
+3. A brief description of its structure
+If there is a .github/ folder, read all the GitHub workflows in it and include the CI checks (linter, pre-commit, and so on).
+What done looks like: a newcomer can read just this file and know how to install and test.
+What to show me when done: the full AGENTS.md. Create only this file and change nothing else.`} />
+
+Markdown files it creates show up as a preview in the chat. Select "View" for the whole file. Read it yourself and fix anything wrong. When you notice it asking the same question every time, add the answer.
+
+## Ask a side question without cluttering the conversation
+
+Select "Branch from here" on any message. It starts a new conversation from that point and leaves the original alone. The branch remembers everything up to that message.
+
+<Callout type="tip" title="Don't see the button?">
+Branching needs a local <Term k="Agent Server" /> <Term k="后端" /> that supports conversation forks. Without it, start a fresh conversation and put the background in your first message.
+</Callout>
+
+## Before you let it change code
+
+- **Commit or stash your own changes first.** Then you can see exactly what it changed.
+- **Make sure the project builds and the tests pass.** If you start from green, you know which change broke something.
+
+For how to hand over the actual task, see [Write instructions it won't drift from](/en/howto/good-instructions/).
+
+## Stuck?
+
+<Q q="I said read only, and it changed files anyway.">
+Select "Stop" next to the message box to interrupt it. Open Commits in the overview panel to see what changed. Then reply: "Undo all the changes you just made, and from now on only read."
+</Q>
+<Q q="The answers are vague, like it never read the code.">
+Narrow the question to one folder, one file, or one action. You can also ask, "Which files did you read?"
+</Q>
+<Q q="The next day, in a new conversation, it forgot everything.">
+That's expected. Conversations don't share memory. Put what it should remember in AGENTS.md. Or open with where you left off: "Last time you figured out the checkout flow. Now look at refunds."
+</Q>
+<Q q="It says it can't find the project's files.">
+Open Files and check the workspace path at the top. The workspace is the folder it can read and write, so the wrong one hides your project. See <a href="/en/guide/3-first-conversation/">full guide step 3</a> for how to pick it.
+</Q>

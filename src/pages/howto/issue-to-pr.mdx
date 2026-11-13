@@ -1,0 +1,106 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: issue-to-pr
+time: 接 GitHub 十分钟，自动化设置约 4 分钟
+for: 手上有一个写清楚了的 GitHub issue，想让它改好、测好、开成 PR
+step: 6
+tldr: 先在对话里让它做一个 issue。顺手了再开自动化，打个标签它就开工。
+description: 先接好 GitHub，在对话里让 OpenHands 把一个 issue 做成草稿 PR；再用 GitHub issue to PR 自动化，给 issue 打标签就自动开工。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+
+## 先在对话里做一个
+
+接好 GitHub 以后（下一节），开一个新<Term k="对话" />，发这句：
+
+<Copy id="ip-once" title="做一个 issue" code={`做 GitHub 上 <owner/repo> 的 issue #<编号>。
+我想要：先读 issue 正文和下面的讨论，用几句话说你打算怎么改。等我回复「可以」再动手。
+动手以后：从默认分支拉一个新分支 openhands/issue-<编号>，改代码，跑项目自己的测试。
+做好的样子：测试通过；开一个草稿 PR，标题是 [#<编号>] <issue 标题>，正文写改了什么，最后一行写 Closes #<编号>。
+做完给我看：PR 链接，跑了哪些测试、结果是什么。再在 issue 下面留一条评论，贴上 PR 链接。`} />
+
+- **「等我回复再动手」**：先看它理解得对不对。这时候纠正，代价最小。
+- **草稿 PR**：<mark>合并之前一定要有人审过。</mark>下面的自动化默认也开草稿。
+- **「Closes #编号」**：PR 合并时，GitHub 会顺手关掉这个 issue。
+
+issue 本身越清楚越好：在哪个文件、现在怎样、应该怎样、怎么算做完。写法看[怎么交代，它才不跑偏](/howto/good-instructions/)。
+
+## 先让它能进你的 GitHub
+
+它要读 issue、推分支、开 <Term k="PR" />，得先有权限。
+
+1. 在 GitHub 的 Developer Settings 里建一个 Fine-grained token。仓库选 **Only select repositories**，设一个过期时间。
+2. 权限给这几项：`Metadata` 只读，`Contents`、`Issues`、`Pull requests` 可写。issue 可能改到 `.github/workflows/` 的话，还要 `workflow` 权限。
+3. 复制 token。GitHub 只显示这一次。
+4. 在 <Term k="Agent Canvas" /> 里，先看左下角的后端切换器，确认是要用的那个<Term k="后端" />。
+5. 打开 **Customize** → **MCP Servers**，从列表里选 **GitHub**，粘贴 token。保持「创建 secret」开着，保存。
+6. 等服务卡片显示连接正常，再开一个新对话。
+
+<Callout type="warn" title="两件容易错的事">
+token 只粘贴在 MCP 设置里，<u>不要贴进对话</u>。<a href="/wiki/mcp/">MCP</a> 设置在对话开始时才加载，加完以后要开新对话，旧对话里用不上。
+</Callout>
+
+## 让它每次都自己做
+
+做顺了，交给<Term k="自动化" />「GitHub issue to PR」：你给 issue 打一个标签，它定时来看，看到就开工。
+
+它每一轮做这些：
+
+1. **按时查一遍。** 默认每 15 分钟，找带标签的 issue。处理过的不会重复做。
+2. **一个 issue 开一个对话。** 拉代码，建分支（比如 `openhands/issue-42`），改代码，跑测试。
+3. **推分支，开 PR。** 标题是 `[#42] issue 标题`，正文带 `Closes #42`。
+4. **在 issue 下留言。** 开工、做完、没做成，都会说一声。
+
+PR 审出问题时，它也会在之后的扫描里回来接着改。
+
+### 怎么开起来
+
+1. 左侧打开 **Automate**，找到 **GitHub issue to PR** 模板。
+2. 填表。大多数项用默认值就行：
+   - **Repositories**：要盯的仓库，可以选好几个。
+   - **Trigger label**：开工的标签，默认 `openhands`。
+   - **Branch prefix**：分支名前缀，默认 `openhands/issue`。
+   - **Pull request mode**：默认 Draft（草稿）。
+   - **Check frequency**：默认 `*/15 * * * *`，也就是每 15 分钟。
+   - **GitHub token secret**：存 token 的那个 secret 的名字，默认 `GITHUB_PERSONAL_ACCESS_TOKEN`。
+3. 选一个 <Term k="Agent Profile" />，里面要允许用这个 secret。
+4. 检查一遍配置，创建。
+
+### 试一次
+
+找一个测试用的 issue，打上标签，等下一轮运行。然后在 Automate 里看运行记录。
+
+<Checkpoint id="ip-test" items={["Automate 里能看到这个自动化，而且开着", "打了标签以后，出现了一个新对话", "仓库里多了一个 <code>openhands/issue-编号</code> 分支", "开了一个草稿 PR", "issue 下面有一条带 PR 链接的评论"]} />
+
+想让它再做一遍：把标签摘掉，再打上。它会当成新请求，开新分支、新对话。
+
+更多说明在[现成自动化：GitHub issue to PR](/automations/github-issue-to-pr/)。用 GitLab、Jira、Linear 的，Automate 里有对应的模板，看[现成自动化](/automations/)。
+
+## issue 是谁都能写的
+
+issue 正文和评论，任何有权限的人都能写。它把这些当成要做的任务，不当成可信的指令。所以：
+
+- **token 只给最少的权限。** 只选要用的仓库。
+- **PR 先开成草稿。** 审过再合。
+- **常看运行记录。** 有奇怪的对话，马上关掉自动化。
+
+自动化开的对话只拿得到那一个 GitHub token，拿不到你接的其他 MCP 服务。
+
+## 卡住了？
+
+<Q q="打了标签，它没动静。">
+在 Automate 里确认这个自动化开着。标签名大小写要完全一样。这个 issue 之前处理过，就要摘掉标签再打上。也可能下一轮还没到，默认 15 分钟一轮。
+</Q>
+<Q q="它说没权限推分支。">
+看四样。token 存进 secret 了吗？它对 Contents 和 Pull requests 有写权限吗？Agent Profile 允许用这个 secret 吗？要改 <code>.github/workflows/</code> 的话，有 workflow 权限吗？
+</Q>
+<Q q="issue 下面只有一段回答，没有 PR。">
+它一个文件都没改时，会把回答贴到 issue 下面，不开 PR。多半是 issue 没写清楚。补清楚以后，摘掉标签再打上。
+</Q>
+<Q q="在对话里，它说找不到 GitHub 的工具。">
+加完 MCP 要开新对话。再看 MCP 卡片是不是连接正常，token 有没有过期、有没有包含这个仓库。
+</Q>

@@ -1,0 +1,147 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: code-review
+time: A minute to install the skill, a few minutes per PR
+for: You have PRs to review and want the AI to go over them first, then make the call yourself
+step: 6
+tldr: Install the code-review skill and type /codereview on a PR. To review every PR, turn on the automation.
+description: Review one PR in a conversation with the code-review skill, post inline comments to GitHub with github-pr-review, then review every PR automatically with the GitHub code review automation or GitHub Actions.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Reply from "../../../components/Reply.astro";
+
+## Install the skill and review one PR
+
+1. Send this in a conversation to install the code-review <Term k="技能" />: <Cmd c="/add-skill https://github.com/OpenHands/extensions/tree/main/skills/code-review" />
+2. A banner appears with **Start new conversation with this skill**. Select it. Skills load when a conversation starts, so you need a new one.
+3. In the new conversation, send:
+
+<Copy id="cr-once" title="Review one PR" code={`/codereview Review PR #<number> in <owner/repo>.
+What I want: focus on <the change that matters most, such as the new auth middleware>.
+Context: <what this code does, who uses it, what happens if it breaks>.
+What done looks like: only real problems. Each one names the file and line, what breaks, and the evidence, ordered by severity.
+What to show me when done: your verdict and the risk assessment. Don't post anything on GitHub yet.`} />
+
+- **"Context"**: say what the code handles and how bad a failure would be, such as "this handles payments". Every good review prompt in the official docs includes this.
+- **"Don't post anything yet"**: you see the verdict first and post only if you agree.
+
+To read a PR on GitHub, connect GitHub first. The steps are in [Hand a GitHub issue to it and get a PR](/en/howto/issue-to-pr/). If you type just `/codereview`, it asks which PR to review.
+
+## What you get back
+
+<Reply code={`Overall: acceptable
+
+Findings (by severity)
+1. src/auth/middleware.ts line 42
+   An expired token doesn't return 401. The request carries on.
+   Evidence: ...  Smallest fix: ...
+
+[RISK ASSESSMENT] Medium
+Verdict: fix finding 1 before merging.`} />
+
+- **Only real problems.** Each finding says what breaks, who it affects, and the evidence. Naming and style preferences don't count.
+- **Clean PRs get approved.** It won't invent problems to look thorough.
+- **A risk assessment, every time.** Low, Medium, or High. For High, it won't recommend merging on its own and names who should look.
+- **No code changes.** It only reads and comments.
+
+## Have it post the comments on the PR
+
+Install one more skill: <Cmd c="/add-skill https://github.com/OpenHands/extensions/tree/main/skills/github-pr-review" />. In a new conversation, send:
+
+<Copy id="cr-post" title="Review and post to GitHub" code={`/codereview Review PR #<number> in <owner/repo>, then use /github-pr-review to post the result on the PR.
+What done looks like: all inline comments go out in a single review, each starting with its priority.
+What to show me when done: the link to the review.`} />
+
+Each comment starts with a priority:
+
+| Priority | Meaning |
+| --- | --- |
+| Critical | Must fix: security holes, bugs, data loss |
+| Important | Should fix: logic errors, performance, missing error handling |
+| Suggestion | Nice to have: naming, code organization |
+| Nit | Optional: formatting, minor style |
+
+Posting needs a token with write access to Pull requests.
+
+## Review every PR automatically
+
+<Tabs id="cr-auto" items={[["canvas", "Agent Canvas automation"], ["actions", "GitHub Actions"]]}>
+<div slot="canvas">
+
+Use the ready-made "GitHub code review" <Term k="自动化" />. It scans your repos on a schedule, picks the PRs that need a review, and posts the review on GitHub.
+
+1. **Create a token.** Write access to `Contents`, `Issues`, and `Pull requests`, plus `Metadata` read. To let it read CI results, add `Actions` and `Checks` read.
+2. **Connect GitHub.** Customize → MCP Servers → GitHub. Paste the token and leave secret creation on.
+3. **Pick the template.** Open Automate and choose GitHub code review. Fill in the form if it offers one. If not, it opens a setup conversation. It asks which repo and PRs, summary or inline comments, and whether to check CI first.
+4. **Fill in the form.** The fields to watch:
+   - **Check frequency**: every 5 minutes by default.
+   - **Trigger label**: PRs with this label get reviewed. Default `openhands-review`.
+   - **Requested reviewer**: requesting this GitHub login starts a review. Default `all-hands-bot`. On OpenHands Cloud, use the login of the account you connected.
+   - **New reviews per scan**: the most new reviews one scan starts. Default 2.
+   - **Review tone**: Concise, Thorough, or Friendly.
+   - **Agent Profile**: one that's allowed to use the GitHub token secret.
+5. **Check it.** It appears in Automate and is enabled. When a PR comes in, a review shows up on GitHub.
+
+It also reviews PRs nobody asked about: open, not a draft, checks green on the current head, and not yet reviewed. Details are on [Ready-made automations: GitHub code review](/en/automations/github-pr-reviewer/).
+
+</div>
+<div slot="actions">
+
+You can also run it in a repo's GitHub Actions, without Agent Canvas. You set it up once per repo.
+
+1. Create `.github/workflows/pr-review-by-openhands.yml` from the [official page](https://docs.openhands.dev/openhands/usage/use-cases/code-review).
+2. In the repo's Settings → Secrets and variables → Actions, add `LLM_API_KEY` with your model <Term k="API key" />.
+3. Under Issues → Labels, create a `review-this` label.
+4. Open a PR, then add `review-this` or request `openhands-agent` as a reviewer.
+
+A review starts when a non-draft PR is opened, a draft is marked ready, `review-this` is added, or `openhands-agent` is requested. Results usually arrive in 2 to 3 minutes.
+
+</div>
+</Tabs>
+
+## Teach it your project's rules
+
+Create `.agents/skills/custom-codereview-guide.md` in your project, with the trigger at the top:
+
+```markdown
+---
+name: custom-codereview-guide
+description: Code review rules for this repository
+triggers:
+- /codereview
+---
+
+# Review rules for this repository
+
+- Approve documentation-only PRs.
+- Tests live in tests/.
+```
+
+It then reviews with both its built-in method and your rules.
+
+<Callout type="warn" title="Don't name the file code-review">
+The PR review plugin ships its own <code>code-review</code> skill, and the plugin's version wins when names match. Pick another name and keep the <code>/codereview</code> trigger, so both stay active.
+</Callout>
+
+## Stuck?
+
+<Q q="I installed the skill, but /codereview does nothing.">
+Skills work only in a new conversation. Select the "Start new conversation with this skill" banner, or start one yourself.
+</Q>
+<Q q="It says it can't read the PR.">
+Check that the GitHub MCP card is healthy and the token covers this repo and hasn't expired. Start a new conversation after adding MCP.
+</Q>
+<Q q="The automation is on, but PRs never get reviewed.">
+A PR nobody requested waits until checks are green on its current head. Each scan also has a cap on new reviews, 2 by default. Adding the label or requesting the reviewer account gets priority.
+</Q>
+<Q q="It won't approve and says a person should look.">
+When the risk is High, it leaves the call to a person on purpose. That's by design, not an error.
+</Q>
+<Q q="Its findings are off.">
+Write your rules in <code>custom-codereview-guide.md</code>, then request another review. It reads the guide from the PR's latest commit.
+</Q>

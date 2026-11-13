@@ -1,0 +1,118 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: slack-digest
+time: 读 6 分钟，动手 15 分钟
+for: 每天早上想看一眼昨天 Slack 里发生了什么
+step: 6
+tldr: 接好 Slack，开一个每个工作日早上跑的汇总自动化，先手动跑一次看结果。
+description: 建 Slack 应用拿 bot token、把机器人拉进频道、在 Agent Canvas 装 Slack MCP，再用「Slack standup digest」模板或一句话建出每天的站会汇总，手动跑一次确认它发对了地方。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Reply from "../../components/Reply.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+
+## 做完是什么样
+
+每个工作日早上，它读一遍你指定的频道里从昨天到现在的消息。然后按项目分好：做完了什么、在做什么、卡在哪、定了什么。最后把汇总发到一个频道里，带上负责人和链接。
+
+这是现成<Term k="自动化" /> [Slack standup digest](/automations/slack-standup-digest/) 做的事。
+
+要先准备好：
+
+- Agent Canvas 在跑，已经配好<Term k="模型" />。
+- 你有权限在 Slack 工作区里建应用、装应用。
+- 到点的时候后端得开着。放在自己电脑上，电脑就不能关；想一直开着，见[放到服务器上](/howto/server/)。
+
+## 1. 建一个 Slack 应用
+
+1. 打开 [Slack API 后台](https://api.slack.com/apps)，点 `Create New App`，选 `From scratch`。
+2. 起个名字，比如 `OpenHands`，选你的工作区，点 `Create App`。
+3. 进 `OAuth & Permissions`，往下翻到 `Scopes`，在 `Bot Token Scopes` 里点 `Add an OAuth Scope`，加上这些：
+
+<Copy id="sd-scopes" title="Bot Token Scopes" code={`app_mentions:read
+channels:read
+channels:history
+chat:write
+emoji:read
+groups:history
+reactions:read
+reactions:write
+users:read`} />
+
+这是官方文档给 Slack 频道监控列的那套权限。汇总要用的读消息、发消息，都在里面。
+
+4. 还在这一页，点 `Install to Workspace`，看一下权限，点 `Allow`。
+5. 复制 `OAuth Tokens` 里的 `Bot User OAuth Token`。
+
+<Callout type="warn" title="这串 token 就是机器人的钥匙">
+拿到它就能用机器人的身份读频道、发消息。只填进 Agent Canvas，别贴到聊天里。
+</Callout>
+
+## 2. 把机器人拉进频道
+
+机器人不会自己进频道。<mark>要汇总的频道、要发汇总的频道，都要把它邀请进去。</mark>它只看得到自己在的频道。
+
+## 3. 在 Agent Canvas 里接上 Slack
+
+1. 先看左下角的后端切换器，确认当前<Term k="后端" />就是你想让汇总跑在上面的那个。
+2. 打开 `Customize` → `MCP Servers`，在库里选 `Slack`。
+3. 粘贴 bot token，填上工作区 ID。工作区 ID 怎么找，见 Slack 的[帮助页](https://slack.com/help/articles/221769328-Locate-your-Slack-URL-or-ID)。
+4. 确认自动创建密钥的开关是打开的，保存。
+
+这一步装的是 <Term k="MCP" />，让 AI 能读 Slack、发 Slack。
+
+## 4. 建汇总自动化
+
+两种开法，结果一样：
+
+- **用模板。** 打开左边的 `Automate`，在模板里找 `Slack standup digest`。它会开一个对话，一项一项问你。
+- **直接说。** 开一个新<Term k="对话" />，把下面这段改成你的频道和时间，发给它：
+
+<Copy id="sd-prompt" title="发给它" code={`帮我建一个自动化，名字叫「Slack 站会汇总」。
+每个工作日早上 9 点运行，时区 Asia/Shanghai。
+读 #engineering 和 #frontend 里从上一个工作日到现在的消息，不读私信。
+按项目分成：做完了、在做、卡住了、定下来的事。每条写上负责人和消息链接，没人回答的问题单列出来。
+发到 #standup。`} />
+
+它会问清楚缺的部分，大概是这几样：
+
+<Reply code={`① 要读哪些频道？
+② 汇总发到哪个频道？
+③ 什么时候跑？默认工作日早上 9 点。
+④ 你在哪个时区？
+⑤ 直接发出去，还是先存成草稿给你看？
+⑥ 怎么分组？默认按项目，分做完、在做、卡住、决定。`} />
+
+拿不准的话，⑤ 先选草稿，看几天再改成直接发。
+
+## 5. 先手动跑一次
+
+不用等到明天早上：
+
+1. 打开 `Automate`，确认新的自动化在列表里，而且是开着的。
+2. 点它那一行的 `⋮`，选 `Run now`。
+3. 等这次运行变成 `COMPLETED`。
+
+<Callout type="ok">
+目标频道里出现一条汇总。`Activity Log` 里能看到这次运行，以及它花了多少钱。每次运行都是一个对话，点进去能看它具体做了什么。
+</Callout>
+
+## 卡住了？
+
+<Q q="运行成功了，但 Slack 里什么都没有。">
+先看机器人是不是在目标频道里。再看 Slack MCP 装在了哪个后端上，它要和自动化在同一个后端。点进这次运行的对话，看它卡在哪一步。
+</Q>
+<Q q="Automate 显示不可用。">
+自动化跑在当前后端上，这个后端要带自动化服务。先切回默认的本地后端试试。远程后端的话，看它的日志里自动化服务有没有起来。
+</Q>
+<Q q="想改时间、改频道。">
+在 `Automate` 里点开它，选 `Edit`，能改名字、提示词、模型、超时和时间表。也可以开个对话直接说：「把『Slack 站会汇总』改到早上 10 点」。
+</Q>
+<Q q="想让它在有人 @ 它的时候才回话。">
+那是另一个现成的自动化 [Slack channel monitor](/automations/slack-channel-monitor/)。它每分钟看一次频道，有人 @openhands 就开一个对话。做完以后，它在原来的帖子里回复。
+</Q>
+
+<Checkpoint id="h-slack" items={["机器人在要读和要发的频道里", "Slack MCP 装在了跑自动化的那个后端上", "Run now 以后，目标频道里出现了汇总"]} />

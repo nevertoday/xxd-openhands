@@ -1,0 +1,108 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: local-llm
+time: 6-minute read, plus the model download
+for: You want a model on your own machine instead of the cloud
+step: 2
+tldr: Serve a model with LM Studio, then enter its address in Agent Canvas's Advanced settings.
+description: Run Qwen3.6-35B-A3B locally with LM Studio, then give Agent Canvas the model name, address and a placeholder key. Hardware requirements, what to do when it won't use tools, and the Ollama version.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Copy from "../../../components/Copy.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+
+## Check your hardware first
+
+OpenHands recommends starting with **Qwen3.6-35B-A3B**, an open-weight model built for coding and tool use. It needs:
+
+- a recent GPU with at least 24 GB of VRAM (for a quantized version), or
+- an Apple silicon Mac with at least 64 GB of unified memory (also quantized).
+
+<Callout type="warn" title="Local models can do less">
+Local models are often worse at using tools than large cloud models. If your machine falls short, or you just want the workflow running first, start with a cloud <Term k="模型" />. See [step 2 of the full guide](/en/guide/2-model/).
+</Callout>
+
+## 1. Install LM Studio and download the model
+
+1. Download and install LM Studio from [lmstudio.ai](https://lmstudio.ai/).
+2. At the bottom of the window, set the interface level to "Power User".
+3. Click "Discover" (the magnifying glass) on the left to open the model hub.
+4. Search for **Qwen3.6-35B-A3B**, check that the publisher is the official Qwen one, and download it.
+5. Wait for the download to finish.
+
+## 2. Load the model and start the server
+
+1. Click "Developer" (the console icon) on the left.
+2. Click "Select a model to load" at the top of the window.
+3. Turn on "Manually choose model load parameters" and pick Qwen3.6-35B-A3B.
+4. Turn on "Show advanced settings". <mark>Set "Context Length" to at least 22000, ideally 32768</mark>, and turn on Flash Attention.
+5. Click "Load Model".
+6. Turn on the switch next to "Status" at the top left. The server is now running.
+7. Note the Model API Identifier in the right sidebar. You need it next.
+
+With too little context, the agent's own instructions don't fit and it behaves badly.
+
+## 3. Connect it in Agent Canvas
+
+1. Open `Settings > LLM` and switch to the `Advanced` tab.
+2. Fill it in as below. The address depends on where Agent Canvas runs:
+
+<Tabs id="ll-where" label="Where Agent Canvas runs" items={[["host", "Directly on the computer (desktop app, npm)"], ["docker", "In Docker"]]}>
+<div slot="host">
+
+- **Model**: `openai/` plus the identifier from step 2, for example `openai/qwen/qwen3.6-35b-a3b`
+- **Base URL**: `http://127.0.0.1:1234/v1`
+- **API Key**: `local-llm`
+
+</div>
+<div slot="docker">
+
+- **Model**: `openai/` plus the identifier from step 2, for example `openai/qwen/qwen3.6-35b-a3b`
+- **Base URL**: `http://host.docker.internal:1234/v1`
+- **API Key**: `local-llm`
+
+Inside a container, `127.0.0.1` is the container itself, not your computer, so use `host.docker.internal`. On Linux, also turn on **"Serve on Local Network"** in LM Studio's server settings so the container can reach it.
+
+</div>
+</Tabs>
+
+3. Save. Saving tests the model first, and if it can't connect, the save is blocked and the error is shown.
+4. Start a new <Term k="对话" /> and send a short message.
+
+<Callout type="ok">
+It replies normally.
+</Callout>
+
+LM Studio doesn't need a key, so any placeholder works for `API Key`. These settings are saved as an <Term k="LLM Profile" />.
+
+## It chats but won't do anything
+
+If it only chats, won't read files, or keeps failing tool calls, the model is usually the problem, not your setup. Try, in order:
+
+1. Make sure "Context Length" is large enough.
+2. Switch to a model the community reports working: `qwen2.5-coder-14b-instruct`, or `qwopus3.5-27b-v3 Q8_0`.
+3. Use a strong cloud model for this task.
+
+## Stuck?
+
+<Q q="Saving fails with LLM Provider NOT provided.">
+The model name is missing its provider. Local servers speak the OpenAI API format, so the name is `openai/<model-name>`. The part after the slash must match the name the server reports exactly.
+</Q>
+<Q q="I use Ollama, not LM Studio.">
+
+After installing [Ollama](https://ollama.com/download), start it as in the official example. Context must be at least 22000, and the default of 4096 is far too small:
+
+<Copy id="ll-ollama" lang="bash" title="Serve the model with Ollama" code={`OLLAMA_CONTEXT_LENGTH=32768 OLLAMA_HOST=0.0.0.0:11434 OLLAMA_KEEP_ALIVE=-1 nohup ollama serve &
+ollama pull qwen3.6:35b-a3b`} />
+
+In Agent Canvas, use `openai/qwen3.6:35b-a3b`, change the port in the address to `11434`, and enter any placeholder key, such as `local-llm`. `OLLAMA_HOST=0.0.0.0` lets other devices on your network reach Ollama too.
+
+</Q>
+<Q q="I want to switch between local and cloud models.">
+Save one LLM profile for each. In a conversation, type `/model` to list them and `/model name` to switch. A switch only affects later requests, and the conversation so far is kept.
+</Q>
+
+<Checkpoint id="h-local-llm" items={["The model is loaded in LM Studio and Status is on", "Agent Canvas has a saved local model starting with openai/", "It replied in a new conversation"]} />

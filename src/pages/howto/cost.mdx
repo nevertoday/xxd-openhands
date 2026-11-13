@@ -1,0 +1,62 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: cost
+time: 读 6 分钟
+for: 担心账单，想知道钱花在哪、怎么少花
+step: 2
+tldr: 花多少看模型、任务长短和自动化跑得多勤；小事用便宜模型，定时任务别开太密。
+description: 钱主要花在模型上：模型单价、任务长短、同时跑几个、自动化多久跑一次。在哪看每个对话和每次自动化花了多少，以及几招省钱的办法。
+---
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+
+## 钱花在哪
+
+Agent Canvas 本身是开源的，钱主要花在背后的<Term k="模型" />上。<Term k="代理" />干活时会一遍遍问模型，每一遍都按 <Term k="token" /> 算钱。
+
+决定花多少的有四样：
+
+- **哪个模型。** 不同模型单价差很多，见下表。
+- **任务多长。** 读的文件越多、来回越多，用的 token 越多。
+- **同时跑几个。** 每个<Term k="对话" />各花各的。
+- **自动化多勤。** 用提示词的自动化，每次运行都是一个完整的对话。每 15 分钟跑一次，一天就是 96 个对话。
+
+## 单价差多少
+
+OpenHands 官方模型服务按各家原价收，不加价。下面是它列出的几个，单位是每 100 万 token：
+
+| 模型 | 输入 | 输出 |
+| --- | --- | --- |
+| Claude Sonnet 4.5 | $3.00 | $15.00 |
+| Claude Haiku 4.5 | $1.00 | $5.00 |
+| GPT-5 mini | $0.25 | $2.00 |
+| Devstral Small | $0.10 | $0.30 |
+
+同样的内容重复发，按更低的缓存价算。完整的表和最新价格，看官方的 [OpenHands LLM Provider](https://docs.openhands.dev/openhands/usage/llms/openhands-llms)。用别家的 key，就按那家的价格。
+
+## 在哪看花了多少
+
+- **对话里的 `Usage`。** 显示这个对话花了多少。设了上限的话，还会显示用了百分之几。<u>它只提醒，不会拦着</u>，可以超过 100%。
+- **自动化的 `Activity Log`。** 每次运行后面有花费，美元，精确到小数点后四位。可以导出 CSV 或 JSON。
+- **OpenHands Cloud。** `Billing` 标签里充值。`Settings > Application` 里可以填 `Maximum Budget Per Conversation`，到了它会停下，你可以让它继续。
+- **模型服务商的后台。** 官方建议在那边设好花费上限、盯着用量。
+
+## 少花钱的几招
+
+1. **先用免费模型跑通流程。** 用 OpenHands 当服务商时，标着 `Free` 的模型不另收 token 费，现在是 DeepSeek V4 Flash。
+2. **小事用便宜的，大事用强的。** <mark>日常小改用便宜的模型，规划、查 bug、审代码再切回强的。</mark>各存一个 <Term k="LLM Profile" />，对话里打 `/model` 切换。
+3. **标题用小模型生成。** `Settings > Application > Conversation titles` 里选一个便宜的 Profile，不占干活那个模型的钱。
+4. **自动化别开太密。** 能一天一次就别一小时一次。超时设短一点，不用的就关掉。
+5. **换成本地模型。** 跑在自己的机器上，不按 token 付给服务商。但对电脑要求高，见[用本地模型](/howto/local-llm/)。
+
+## 卡住了？
+
+<Q q="已经用 Claude Code 或 Codex 的订阅了，还要再买一份模型额度吗？">
+不一定。在 Agent Canvas 里把<Term k="代理" />换成 Claude Code、Codex 或 Gemini CLI。它们用你自己登录的账号访问模型，不用另配 LLM Profile，钱走的是那边的订阅。
+</Q>
+<Q q="开了 critic 以后，对话变慢、变贵了。">
+critic 是给 AI 的结果打分的功能，在 `Settings > Verification` 里。开了反复修改，它会一轮轮重做。把 `Max Refinement Iterations` 调低，或者关掉 `Enable Iterative Refinement`。
+</Q>
+<Q q="一个自动化跑一次花多少，事先能知道吗？">
+官方没给估算的办法。建好以后用 `Run now` 跑一次，在 `Activity Log` 里看这一次的花费，再乘以它一个月要跑的次数。
+</Q>

@@ -1,0 +1,89 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: parallel
+time: 5-minute read
+for: You want several agents working on different things at once
+step: 5
+tldr: Give each conversation its own folder, worktree or container, and they won't overwrite each other.
+description: One backend can run several conversations at the same time. The real problem is a shared folder; three ways to keep them apart are separate folders, worktrees, and one Docker container per conversation.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+
+## Just start another conversation
+
+One <Term k="Agent Server" /> can run several <Term k="代理" text="agents" /> at once. While the first <Term k="对话" /> is still working, go back to Home and start another.
+
+Each conversation has its own history and settings.
+
+## The catch is a shared folder
+
+<mark>Two conversations in the same folder edit the same files.</mark> One can overwrite the other's half-finished work.
+
+Pick one of the three ways below to keep them apart.
+
+## Option 1: one folder each
+
+The simplest. Before starting a conversation, click `Open Workspace` and give each conversation a different folder. Good for unrelated jobs, like two different projects.
+
+## Option 2: worktrees
+
+Use this for two jobs in the same Git project. A worktree is a second working copy of the project on its own branch.
+
+1. Click `Open Workspace` and open a Git project.
+2. Where you start a conversation on Home, switch the mode from `Local` to `Worktree`.
+3. Send the task. The agent works in the new copy and leaves yours alone.
+4. Start the second task the same way.
+
+<Callout type="tip" title="No Worktree option?">
+The open folder has to be a Git repository. With no folder open, Home doesn't offer it.
+</Callout>
+
+To choose which branch new worktrees start from, or the prefix for their branch names, go to `Settings > Runtime`.
+
+## Option 3: a Docker container per conversation
+
+Use this when every agent should be shut in its own <Term k="沙盒" />. Each new conversation gets its own container and its own Agent Server. The last section of [Run it in a Docker sandbox](/en/howto/docker-sandbox/) shows how.
+
+To choose per conversation whether it runs on your computer or in a container, start it like this instead:
+
+<Copy id="pl-select" lang="bash" title="Choose per conversation" code={`OH_CONVERSATION_RUNTIME_SELECTABLE=1 \\
+OH_CONVERSATION_IMAGE=ghcr.io/openhands/agent-server:latest-python \\
+agent-canvas`} />
+
+Home then offers `Docker` as a mode too. Set the default in `Settings > Runtime`.
+
+This also listens on every network interface, and the page stops filling in the key. Set `LOCAL_BACKEND_API_KEY` first, as that section explains.
+
+<Callout type="warn" title="Containers don't separate a shared folder">
+Two containers pointed at the same folder still see the same files. Containers wall off the rest of your computer. The folders still need to be separate.
+</Callout>
+
+## Keep an eye on them
+
+- **The sidebar.** Conversations are grouped by folder, so you can see which one is changing which project.
+- **The `Stop` button.** It interrupts that conversation's agent only.
+- **`Usage`.** Each conversation spends its own <Term k="token" />. Three at once cost three times as much. See [Keep costs down](/en/howto/cost/).
+
+## Stuck?
+
+<Q q="I want separate settings per project, with its own model and keys.">
+
+Run several local backends, one per port:
+
+<Copy id="pl-backends" lang="bash" title="Three backends" code={`agent-canvas --backend-only --port 8001
+agent-canvas --backend-only --port 8002
+agent-canvas --backend-only --port 8003`} />
+
+Run each in its own terminal. Then open the UI with <Cmd c="agent-canvas --frontend-only" />. In the backend switcher choose `Manage Backends` and then `Add Backend`, and enter `http://localhost:8001` with its API key, once per backend. To choose the keys yourself, set a different `LOCAL_BACKEND_API_KEY` in each terminal before starting. Each <Term k="后端" /> keeps its own models, secrets and automations.
+
+</Q>
+<Q q="An automation run shows SKIPPED.">
+The backend hit its limit on work running at once, so it skipped that run. Spread your automations' times out, or run fewer manual conversations alongside them.
+</Q>
+<Q q="Can the agent start helper conversations itself?">
+Yes. It can launch child conversations. A local child can use its own worktree or share the parent's folder, and it reports its result back to the parent.
+</Q>

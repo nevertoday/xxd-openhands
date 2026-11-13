@@ -1,0 +1,113 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: custom-automation
+time: 读 7 分钟，动手 10 分钟
+for: 现成的模板里没有你要的那种
+step: 6
+tldr: 说清楚做什么、什么时候做、结果发到哪，让它建；手动跑一次再放手。
+description: 自己建一个自动化：一句话让 AI 建，或者用 Custom automation 表单选提示词、插件或脚本；定时和事件两种触发；提示词怎么写才稳；建好以后怎么试跑、停用、导出。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+
+## 先想好三件事
+
+- **做什么。** 每次运行时 AI 照着做的那段话，就是提示词。
+- **什么时候做。** 按时间表，或者等某个事件发生，比如 GitHub 上有了新评论。
+- **结果去哪。** 发到 Slack、存成文件、开一个 GitHub issue。
+
+每次运行都是一个完整的<Term k="对话" />。它新开一个<Term k="沙盒" />，能用终端、改文件、上网。模型、密钥和 <Term k="MCP" /> 都用你配好的。
+
+## 最快的办法：一句话让它建
+
+开一个新对话，照这个样子写：
+
+<Copy id="ca-ask" title="发给它" code={`建一个自动化，名字叫「每日 GitHub 小结」，每个工作日早上 9 点运行，时区 Asia/Shanghai。
+它要：
+1. 汇总过去 24 小时里新开、合并、被审过的 PR
+2. 列出开了超过 3 天还没合并的 PR
+3. 整理成一段 Markdown
+4. 发到 Slack 的 #engineering 频道`} />
+
+它会跟你确认名字和要做的事，定好时间表，然后建出来。
+
+几处没说的，它按默认来：
+
+- **时区**默认 UTC。
+- **超时**默认 10 分钟，最多可以要 30 分钟，比如说「超时设成 20 分钟」。
+- **时间**用大白话说就行：「每周一早上」「每 15 分钟」「每月 1 号」。会写 cron 的，也可以直接给 `0 9 * * 1-5`。
+
+<Callout type="warn" title="发 Slack 要先接好 Slack">
+自动化只能用你接好的服务。在 OpenHands Cloud 上用 GitHub、GitLab 或 Bitbucket 登录的，那个平台的权限会自动带上。Slack 这类要先装 MCP，步骤见[每天自动汇总 Slack](/howto/slack-digest/)。
+</Callout>
+
+## 想自己填：用 Custom automation 表单
+
+打开左边的 `Automate`，在模板里选 [Custom automation](/automations/custom-automation/)。先挑一种做法：
+
+| 做法 | 适合 |
+| --- | --- |
+| `Prompt` | 大多数事，写一段话就行 |
+| `Plugin` | 要用某个插件带的技能和工具 |
+| `Upload tarball` | 固定不变的脚本，不用 AI 判断 |
+
+然后填这几项：
+
+1. **名字。** 列表里显示的名字。
+2. **触发。** 选 `Schedule` 填时间表，默认 `0 9 * * *`、时区 UTC。或者选事件，填来源和事件类型，比如 `issue_comment.created`。
+3. **提示词。** 选了 `Prompt` 或 `Plugin` 才有。要它先拉一个 GitHub 仓库，就在下面选仓库和分支。
+4. **模型和超时。** 都可以空着。模型空着就用当前的 <Term k="LLM Profile" />，超时最多 1800 秒。
+
+表单旁边有个对话框。你用大白话描述，AI 会帮你填表，它填过的格子会带一个 ✦。<mark>它只帮你填，不会替你按「创建」。</mark>
+
+没建完的会存成草稿，刷新也不丢。建之前可以先在草稿那一行试跑一次。
+
+## 提示词写得具体
+
+AI 每次都只看这段话，写成交代给一个能干的助手：
+
+<Copy id="ca-vague" title="太含糊" code="生成一份报告" />
+
+<Copy id="ca-clear" title="能照着做" code={`生成一份周报：
+1. 列出过去 7 天合并的所有 GitHub PR
+2. 按优先级汇总还开着的 issue
+3. 整理成 Markdown
+4. 发到 Slack 的 #team-updates 频道`} />
+
+做检查类的事，还要写清楚出问题时怎么办：
+
+<Copy id="ca-error" title="写上出错怎么办" code={`检查 https://api.example.com/health。
+如果返回的不是 200 OK，把状态码和返回内容发到 #ops。
+如果正常，只记一行成功，不要发提醒。`} />
+
+## 建好以后
+
+1. **先手动跑一次。** 在 `Automate` 里点它那一行的 `⋮`，选 `Run now`。
+2. **看结果。** 等运行变成 `COMPLETED`，点进这次运行的对话，看它做了什么。`FAILED` 的也点进去看卡在哪。
+3. **看花了多少。** `Activity Log` 里每次运行后面有花费，美元，精确到小数点后四位。
+
+<Callout type="ok">
+建好就是开着的，下一个时间点会自己跑。结果出现在你说的地方，对话列表里也多了一条。
+</Callout>
+
+暂时不想让它跑，在 `⋮` 里关掉就行，设置都留着。删除是永久的，拿不准就先关掉。
+
+## 卡住了？
+
+<Q q="想让它在别的系统出事时马上跑，比如 CI 失败。">
+在 `Automate` → `Events` 里登记一个事件来源。你会拿到一个 webhook 地址和签名密钥，填到那个系统里。这个地址必须能从公网访问。本地后端要先暴露出去，等于把整个后端放上网。先看[放到服务器上](/howto/server/)。做不到的话，改成定时去查那个系统的接口。
+</Q>
+<Q q="运行到一半失败了，显示超时。">
+超过超时时间就会自动失败。说一句「把这个自动化的超时改成 20 分钟」，或者在 `Edit` 里改。最多 30 分钟。
+</Q>
+<Q q="想把自动化分享给同事，或者搬到另一个后端。">
+在 `⋮` 里选 `Export`，会下载一个 `.automation.json` 文件。在另一边的 `Automate` 里点 `Import automation` 导入。<u>导入的自动化默认是关着的</u>，检查一遍再打开。
+</Q>
+<Q q="显示 SKIPPED。">
+后端同时在跑的任务到上限了，这一次就跳过了。错开几个自动化的时间。
+</Q>
+
+<Checkpoint id="h-custom" items={["提示词里写了做什么、什么时候、结果去哪", "Run now 跑了一次，状态是 COMPLETED", "点进运行的对话，看到了它具体做了什么"]} />

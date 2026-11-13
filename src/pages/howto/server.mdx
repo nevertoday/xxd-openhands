@@ -1,0 +1,147 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: server
+time: 读 8 分钟，动手 30 分钟
+for: 想让它在电脑关机时也照样跑
+step: 8
+tldr: 先关好防火墙、定好密钥，再用公开模式在服务器上跑，用 SSH 隧道连过去。
+description: 在一台云服务器或常开的机器上跑 Agent Canvas：先锁门再启动、用 --public 和强密钥、tmux 或 systemd 让它一直开着、用 SSH 隧道安全地连过去，最后对一遍安全清单。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+
+## 先想清楚谁能连上它
+
+放在服务器上，你合上笔记本它也在跑，<Term k="自动化" />也能按时触发。
+
+<Callout type="warn" title="谁能连上它，谁就能指挥它">
+AI 能读写这台机器上的文件、运行命令、上网。能连上 <Term k="Agent Server" /> 的人也能做同样的事。把这台机器当成放着生产环境密码的机器来管。
+</Callout>
+
+## 1. 准备一台机器
+
+任何常开、网络稳定的 Linux 或 macOS 机器都行：
+
+- **云服务器。** 默认选 Ubuntu 24.04 LTS。一个人用，2 核 4 GB 内存就够。
+- **自己的机器。** Mac mini、小主机、旧笔记本都行。局域网里能连上它的设备，都算在风险里。
+
+## 2. 先锁门，再启动
+
+<mark>这一步要在第一次启动之前做完。</mark>在云服务商的防火墙里（比如 AWS 的 Security Group）设成：
+
+- **22 端口（SSH）**：只允许你自己的 IP。
+- **其他所有端口**：全部拒绝。8000、18000、18001、3001 都不能从外面连上。
+
+做完以后，这台机器只能通过 SSH 进去。这就够用了，后面用 SSH 隧道打开界面。
+
+## 3. 装上 Agent Canvas
+
+SSH 登录到服务器。Ubuntu 22.04 或 24.04 上依次运行：
+
+<Copy id="sv-install" lang="bash" title="装 Node.js 24、uv 和 Agent Canvas" code={`sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg git
+
+# Node.js 24.x from NodeSource.
+curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+# uv for the agent server runtime.
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source "$HOME/.local/bin/env"
+
+# Agent Canvas CLI.
+sudo npm install -g @openhands/agent-canvas
+
+node --version
+uv --version
+agent-canvas --version`} />
+
+最后三行各打印出一个版本号，就装好了。Mac 上用 `brew` 装 Node 和 `uv`。
+
+## 4. 定一个密钥
+
+1. 生成一串随机密钥：<Cmd c="openssl rand -base64 32" />
+2. 把它写进一个只有你能读的文件，`<choose-a-strong-secret>` 换成上一步那串：
+
+<Copy id="sv-env" lang="bash" title="保存密钥" code={`cat > ~/.agent-canvas.env <<'EOF_ENV'
+export LOCAL_BACKEND_API_KEY="<choose-a-strong-secret>"
+EOF_ENV
+chmod 600 ~/.agent-canvas.env
+source ~/.agent-canvas.env`} />
+
+这串密钥也复制一份到你的密码管理器里。打开界面时要填它。
+
+## 5. 启动，让它一直开着
+
+`--public` 是公开模式：页面不再自带密钥，谁打开都要先填。服务器上一定要加。
+
+用 tmux 启动，断开 SSH 它也不会停：
+
+<Copy id="sv-tmux" lang="bash" title="在 tmux 里启动" code={`tmux new-session -d -s canvas
+tmux send-keys -t canvas 'source ~/.agent-canvas.env && agent-canvas --public' Enter
+tmux attach-session -t canvas`} />
+
+看到它启动完，按 `Ctrl-b` 再按 `d` 退出 tmux，它会接着跑。以后用 `tmux attach-session -t canvas` 回来看。
+
+## 6. 从你的电脑连过去
+
+在你自己的电脑上运行，`user@your-vm` 换成你的用户名和服务器地址：
+
+<Copy id="sv-ssh" lang="bash" title="SSH 隧道" code="ssh -L 8000:127.0.0.1:8000 user@your-vm" />
+
+这个窗口别关。浏览器打开 `http://localhost:8000`。
+
+<Callout type="ok">
+先出现一个输入 API key 的页面。填进第 4 步那串密钥，就进了 Agent Canvas。这时 AI 干活用的是服务器上的文件，不是你电脑上的。
+</Callout>
+
+你电脑上的 Agent Canvas 如果也占着 8000 端口，<u>先把它关掉</u>，隧道才连得上。
+
+## 出门前对一遍
+
+把它开给更多人或更多设备之前，逐条确认：
+
+1. 用 `--public` 跑，`LOCAL_BACKEND_API_KEY` 够长。
+2. 网络有限制：防火墙、VPN、ngrok 登录或带身份验证的代理，至少一样。
+3. 能从公网打开的地址，一律用 HTTPS。
+4. 能 SSH 上去的人越少越好，系统补丁及时打。
+5. 机器上的文件要保护好：设置、密钥、对话、代码副本都在上面。
+6. 网址、密钥或登录方式给出去太多了，就换掉密钥。
+
+## 卡住了？
+
+<Q q="想用浏览器直接打开，不想每次开 SSH 隧道。">
+要给服务器配一个域名，前面放 nginx 和 Let's Encrypt 证书。防火墙再开 80 和 443，443 尽量只对你的 IP 开。步骤照 OpenHands 的 [SELF_HOSTING.md](https://github.com/OpenHands/OpenHands/blob/main/docs/SELF_HOSTING.md) 第 4 节做，别跳步。想用手机看，也可以先看[在手机上看它干活](/howto/phone/)。
+</Q>
+<Q q="想让它开机自动启动、崩了自动重启。">
+
+用 systemd。建 `/etc/systemd/system/agent-canvas.service`，`<your-key>` 换成你的密钥：
+
+<Copy id="sv-unit" lang="ini" title="agent-canvas.service" code={`[Unit]
+Description=Agent Canvas
+After=network.target
+
+[Service]
+Environment=LOCAL_BACKEND_API_KEY=<your-key>
+ExecStart=npx @openhands/agent-canvas --public
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target`} />
+
+再运行 `sudo systemctl daemon-reload` 和 `sudo systemctl enable --now agent-canvas`。
+
+</Q>
+<Q q="我想界面留在自己电脑上，只把干活的部分放到服务器。">
+服务器上把启动命令换成 `agent-canvas --backend-only --public`。自己电脑上运行 `agent-canvas --frontend-only`，在后端切换器里点 `Manage Backends` → `Add Backend`，填服务器的地址和密钥。用 SSH 隧道时，地址填 `http://localhost:8000`。之后在<Term k="后端" />切换器里就能在本机和服务器之间来回切。
+</Q>
+<Q q="打开网址看到 502 Bad Gateway。">
+服务器上 `127.0.0.1:8000` 那个程序没在跑。用 `tmux attach-session -t canvas` 回去看它是不是停了。
+</Q>
+
+<Checkpoint id="h-server" items={["防火墙只放行我 IP 的 SSH", "它用 --public 和自己的密钥在 tmux 里跑着", "通过 SSH 隧道打开 localhost:8000，填了密钥进得去"]} />

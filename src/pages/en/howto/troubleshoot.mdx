@@ -1,0 +1,157 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: troubleshoot
+time: Look up your symptom, about 2 minutes each
+for: It won't open, won't connect, or errors on the first message
+step: 1
+tldr: Check the window running it for errors first, then match your symptom below.
+description: Common Agent Canvas problems by symptom. The desktop app won't open, command not found, missing uv, busy port, blank page, Docker won't start, backend disconnected, key prompt, model errors, files in the wrong place. Plus how to get more detailed logs and where to ask for help.
+---
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+
+## Run these checks first
+
+<mark>Most of the time, the <Term k="终端" /> running it has already printed the reason.</mark> Look at its last few lines first. Then run the checks for your install:
+
+<Tabs id="ts-check" label="How you installed it" items={[["npm", "npm / npx"], ["docker", "Docker"]]}>
+<div slot="npm">
+
+<Copy id="ts-npm" lang="bash" title="Check the tools" code={`node --version
+npm --version
+uv --version
+agent-canvas --help`} />
+
+Fix whichever one fails first. Node.js must be 24 or later.
+
+</div>
+<div slot="docker">
+
+<Copy id="ts-docker" lang="bash" title="Check Docker" code={`docker --version
+docker ps`} />
+
+If `docker ps` can't connect, open Docker Desktop, or start Docker Engine on Linux, and try again.
+
+</div>
+</Tabs>
+
+## The desktop app won't open
+
+- **macOS says the app is damaged.** The preview build isn't signed by Apple yet. Make sure you downloaded it from the official release. After moving it to Applications, run this in Terminal and open it again:
+
+<Copy id="ts-xattr" lang="bash" title="Clear the macOS quarantine flag" code={`xattr -dr com.apple.quarantine "/Applications/OpenHands Agent Canvas.app"`} />
+
+- **Startup takes forever or fails.** Click **Show details** on the startup screen to see and copy the live log.
+- **Windows shows SmartScreen.** Confirm the installer came from the official OpenHands release, then continue.
+
+## agent-canvas: command not found
+
+1. Check it installed: <Cmd c="npm list -g --depth 0" /> should list `@openhands/agent-canvas` with a version.
+2. Check that npm's global folder is on your `PATH`:
+
+<Tabs id="ts-path" label="Your system" items={[["unix", "macOS / Linux"], ["win", "Windows PowerShell"]]}>
+<div slot="unix">
+
+<Copy id="ts-path-unix" lang="bash" title="Inspect PATH" code={`echo "$(npm prefix -g)/bin"
+which agent-canvas
+echo "$PATH"`} />
+
+If `which` prints nothing and the first folder isn't on your `PATH`, add it for this terminal:
+
+<Copy id="ts-path-add" lang="bash" title="Add it to PATH for now" code={`export PATH="$(npm prefix -g)/bin:$PATH"`} />
+
+To keep it, add that `export` line to `~/.zshrc` or `~/.bashrc`.
+
+</div>
+<div slot="win">
+
+<Copy id="ts-path-win" lang="powershell" title="Inspect PATH" code={`npm prefix -g
+Get-Command agent-canvas
+$env:Path -split ';'`} />
+
+npm's global folder, or your Node.js `bin` folder, needs to be in the last list.
+
+</div>
+</Tabs>
+
+3. Still stuck? Use <Cmd c="npx @openhands/agent-canvas" /> meanwhile. If npx works and `agent-canvas` doesn't, the problem is your `PATH`.
+
+## It says uv or uvx is missing
+
+The local <Term k="Agent Server" /> runs on `uv`. Install it from the [official uv guide](https://docs.astral.sh/uv/getting-started/installation/), <u>open a new terminal</u>, check with `uv --version`, then start again.
+
+## The browser doesn't open, or the page is blank
+
+1. Open `http://localhost:8000` yourself. For Docker, open `http://localhost:8000/canvas`.
+2. Check the terminal for errors.
+3. If port 8000 is busy, use another port: <Cmd c="agent-canvas --port 3000" />, then open `http://localhost:3000`.
+
+If the page loads but stays blank, refresh once and check the terminal again.
+
+## The Docker container keeps restarting
+
+Read its logs:
+
+<Copy id="ts-logs" lang="bash" title="Container logs" code="docker logs <container-id-or-name>" />
+
+If you see `Error [ERR_MODULE_NOT_FOUND]`, that image was published with files missing. It's not your setup. Go back to an earlier version that works, and switch to the new one once a fixed release is out.
+
+## The page opens but the backend is disconnected
+
+1. Open the backend switcher and choose `Manage Backends`.
+2. Check the <Term k="后端" /> URL. The local default is `http://localhost:8000`, or whichever port you chose.
+3. If the backend needs a key, check the key.
+4. Switch back to the default local backend to compare.
+5. Check the terminal or server logs.
+
+## It asks me for an API key
+
+It wants the backend key, <u>not your model provider's key</u>. A model key won't get you in.
+
+- **Docker:** in another terminal, find the container name with `docker ps`, then run `docker exec CONTAINER cat /home/openhands/.openhands/agent-canvas/api-key.txt` with `CONTAINER` replaced. Paste what it prints.
+- **With `--public` or on a server:** enter the `LOCAL_BACKEND_API_KEY` you set.
+
+## The first message fails
+
+Open `Settings > LLM` and check, one by one:
+
+1. The key is missing, wrong or expired.
+2. The provider and model name don't match.
+3. For a local or custom model, the `Base URL` is wrong.
+4. `LLM Provider NOT provided` means no provider is set, or the model name doesn't include one.
+
+Errors come in two kinds. A warning banner is something you can fix, like a key or a model. An error banner is an internal problem that may need a new conversation or a backend restart. For model setup, see [step 2 of the full guide](/en/guide/2-model/). For local models, see [Use a local model](/en/howto/local-llm/).
+
+## Files changed in the wrong place
+
+The <Term k="代理" text="agent" /> only works in the <Term k="工作区" /> attached to the conversation:
+
+1. Click `Open Workspace` and pick the folder before starting the conversation.
+2. Check the conversation uses the backend you expect.
+3. With Docker, the project must be in the mounted folder, which is `/projects` inside the container.
+4. A server backend sees files on the server, not on your computer.
+
+## You want more detailed logs
+
+By default it only prints warnings and errors. Add `--verbose` to see everything: <Cmd c="agent-canvas --verbose" />
+
+For a bit more without everything, use <Cmd c="LOG_LEVEL=INFO agent-canvas" />.
+
+## Still stuck
+
+Take the error from the terminal to the [OpenHands Slack community](https://openhands.dev/joinslack), or open an issue on [GitHub](https://github.com/OpenHands/OpenHands/issues). Remove any keys from logs before you paste them.
+
+## Stuck?
+
+<Q q="I can't find MCP servers in Settings.">
+They aren't in `Settings`. Open the top-level `Customize`, then `MCP Servers`. Start a new conversation after adding one.
+</Q>
+<Q q="The automations page says it's unavailable.">
+Automations run on the active backend. Switch to the default local backend and see if they work there. A remote backend needs the automation service, so check its logs for startup errors.
+</Q>
+<Q q="I'm signed in to Claude Code or Codex, but it isn't used here.">
+They have to be signed in on the machine where the backend runs. A backend in Docker, on a server or in the cloud can't see your laptop's login. Add the key on that backend instead. Restart the conversation afterwards.
+</Q>

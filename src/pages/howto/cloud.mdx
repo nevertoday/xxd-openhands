@@ -1,0 +1,88 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: cloud
+time: 读 6 分钟
+for: 不想自己管机器，或者想用官方的模型额度
+step: 5
+tldr: 用它的模型 key，或者把它加成后端，让对话跑在云上。
+description: OpenHands Cloud 的三种用法：当模型来源（LLM API Key）、当 Agent Canvas 的后端（对话跑在云端沙盒里）、直接在网页、GitHub、Slack 里叫它干活；两种 key 别弄混；钱在哪里充、怎么设上限。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+
+## 它能帮你做三件事
+
+<Term k="OpenHands Cloud" /> 是官方托管的在线版。你可以只用它的一部分：
+
+- **当模型来源。** 拿一个 key，在 Agent Canvas 里用它提供的<Term k="模型" />。
+- **当后端。** 对话和<Term k="自动化" />跑在云端的<Term k="沙盒" />里，不占你的电脑。
+- **直接用。** 在网页上、GitHub 的 issue 里、Slack 里叫它干活。
+
+## 先登录
+
+1. 打开 [app.all-hands.dev](https://app.all-hands.dev)。
+2. 点 `Log in with GitHub`、`Log in with GitLab` 或 `Log in with Bitbucket`。
+3. 看一下它要的权限，同意授权。
+4. 接受服务条款，点 `Continue`。
+
+## 当模型来源
+
+1. 在 OpenHands Cloud 打开 Settings，切到 `API Keys` 标签，复制 `LLM API Key`。拿这个 key 之前，要先在 `Billing` 里充至少 10 美元。
+2. 在 Agent Canvas 打开 `Settings > LLM`，在 `Basic` 标签里把服务商选成 `OpenHands`。
+3. 选一个模型，粘贴 key，保存。
+4. 开一个新<Term k="对话" />，发一句话试试。
+
+标着 `Free` 的模型不另收 token 费，现在是 **DeepSeek V4 Flash**。哪些免费会随活动变。
+
+<Callout type="warn" title="两种 key 别弄混">
+`API Keys` 标签里有两种 key。<mark>给 Agent Canvas 配模型用的是 `LLM API Key`。</mark>另一种 Cloud API Key 是写程序调 OpenHands Cloud 用的，填到模型设置里不管用。
+</Callout>
+
+## 当后端
+
+1. 在 Agent Canvas 顶部点后端切换器。
+2. 选 `Manage Backends` → `Add Backend`。
+3. 点 `Login with OpenHands Cloud`，用你的账号登录。
+4. 连上以后，把它选成当前<Term k="后端" />。
+
+<Callout type="ok">
+新开的对话跑在 OpenHands Cloud 上。每个对话一个独立的云端沙盒，碰不到你电脑上的文件。
+</Callout>
+
+换到云端后端以后，有几处和本地不一样：
+
+- **设置是分开存的。** 模型、密钥、MCP 都要在这个后端上再配一遍，和本地后端互不影响。
+- **代码从仓库来。** 云端看不到你电脑上的文件夹，要选一个仓库和分支。
+- **技能和插件在网页上管。** `Customize > Skills` 会变成 `Skills and Plugins`，点开是 Cloud 的设置页。
+- **能停掉沙盒。** 对话菜单里有 `Stop Sandbox`，只想打断 AI 就点 `Stop`。
+
+公司自己部署了 OpenHands Enterprise 的话，在添加后端时点 `Advanced`，先填公司的地址再登录。
+
+## 在 GitHub、Slack 里叫它
+
+**GitHub。** 在仓库选择框里点 `+ Add GitHub Repos`，选要给它的仓库，点 `Install & Authorize`。之后给 issue 打上 `openhands` 标签，或者留言 `@openhands`。它会先回一条说开工了。它认为解决了，就开一个 <Term k="PR" />，再回来贴总结和链接。详见[把一个 GitHub issue 交给它做成 PR](/howto/issue-to-pr/)。
+
+**Slack。** 工作区管理员先装 OpenHands 的 Slack 应用。每个人再到 Cloud 的 `Settings > Integrations` 点 `Install OpenHands Slack App`，把自己的账号连上。之后在频道里 `@openhands` 就能开一个对话。
+
+## 钱在哪里充、怎么设上限
+
+- **充值。** Cloud 的 `Billing` 标签里给 OpenHands 模型充额度。
+- **每个对话的上限。** Cloud 的 `Settings > Application` 里填 `Maximum Budget Per Conversation`（美元）。到了上限它会停下，你可以说一句让它继续。
+
+花在哪、怎么省，见[控制花费](/howto/cost/)。
+
+## 卡住了？
+
+<Q q="Agent Canvas 里的 LLM Profile，在 Cloud 网页上看不到。">
+正常。Agent Canvas 对 LLM Profile 的支持比 Cloud 网页全，Cloud 还在陆续跟上。而且 Profile 跟着后端走，换了后端看到的就不一样。
+</Q>
+<Q q="云端后端里找不到 Provider Connections。">
+这个面板只在本地后端上有，用 Cloud 后端时会藏起来。直接在 Profile 里填 key 就行。
+</Q>
+<Q q="Free 模型用着也扣钱了。">
+`Free` 只对完整的 `openhands/` 开头的模型有效。别家服务商名字相近的模型要单独付费。
+</Q>
+
+<Checkpoint id="h-cloud" items={["我登录了 app.all-hands.dev", "我知道配模型用的是 LLM API Key", "我知道云端后端的设置要单独配一遍"]} />

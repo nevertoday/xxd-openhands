@@ -1,0 +1,115 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: custom-automation
+time: 7 minutes to read, 10 to set up
+for: None of the templates does what you need
+step: 6
+tldr: Say what to do, when, and where results go. Let it build the automation, then run it once.
+description: Build your own automation, either by asking the agent or with the Custom automation form (a prompt, a plugin or a script). Schedule and event triggers, writing prompts that hold up, and how to test, pause and export it.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+
+## Decide three things first
+
+- **What it does.** The text the agent follows on every run is the prompt.
+- **When it runs.** On a schedule, or when something happens, such as a new GitHub comment.
+- **Where results go.** A Slack post, a saved file, a GitHub issue.
+
+Every run is a full <Term k="对话" />. It starts in a fresh <Term k="沙盒" /> with a terminal, file editing and network access, using your model, secrets and <Term k="MCP" /> servers.
+
+## Fastest: ask for it
+
+Start a new conversation and write something like:
+
+<Copy id="ca-ask" title="Send this" code={`Create an automation called "Daily GitHub Summary" that runs every weekday at 9 AM Eastern.
+
+It should:
+1. Summarize PRs opened, merged, and reviewed in the last 24 hours
+2. List any PRs that have been open for more than 3 days
+3. Format as a clean markdown summary
+4. Post to the #engineering Slack channel`} />
+
+It confirms the name and the job, sets the schedule, and creates it.
+
+Anything you leave out gets a default:
+
+- **Timezone** defaults to UTC.
+- **Timeout** defaults to 10 minutes. You can ask for up to 30, as in "Use a 20-minute timeout."
+- **Schedule** can be plain words: "every Monday morning", "every 15 minutes", "first day of each month". If you know cron, give it directly, like `0 9 * * 1-5`.
+
+<Callout type="warn" title="Posting to Slack needs Slack connected first">
+An automation can only use services you've connected. On OpenHands Cloud, the GitHub, GitLab or Bitbucket account you signed in with is included automatically. Services like Slack need an MCP server first. See [Daily Slack digest](/en/howto/slack-digest/).
+</Callout>
+
+## Fill it in yourself: the Custom automation form
+
+Open `Automate` on the left and pick [Custom automation](/en/automations/custom-automation/) among the templates. First choose a mode:
+
+| Mode | Good for |
+| --- | --- |
+| `Prompt` | Most jobs; you write instructions |
+| `Plugin` | Jobs that need a plugin's skills and tools |
+| `Upload tarball` | Fixed scripts that need no judgment |
+
+Then fill in:
+
+1. **Name.** Shown in the automation list.
+2. **Trigger.** Choose `Schedule` and enter a schedule (default `0 9 * * *`, timezone UTC). Or choose an event, with a source and an event type such as `issue_comment.created`.
+3. **Prompt.** Only for `Prompt` and `Plugin`. To have it clone a GitHub repository first, pick the repository and branch below.
+4. **Model and timeout.** Both optional. With no model, it uses the active <Term k="LLM Profile" />. The timeout can be up to 1800 seconds.
+
+Next to the form is a conversation. Describe what you want and the agent fills in the form, marking each field it filled with ✦. <mark>It only fills the form. It never presses Create for you.</mark>
+
+Unfinished setups are saved as drafts and survive a reload. You can test-run a draft from its row before creating it.
+
+## Write a specific prompt
+
+The agent only sees this text each time, so write it like instructions for a capable assistant:
+
+<Copy id="ca-vague" title="Too vague" code="Generate a report" />
+
+<Copy id="ca-clear" title="Clear and actionable" code={`Generate a weekly status report that:
+1. Lists all GitHub PRs merged in the last 7 days
+2. Summarizes open issues by priority
+3. Formats everything as markdown
+4. Posts to the #team-updates Slack channel`} />
+
+For checks, also say what to do when something's wrong:
+
+<Copy id="ca-error" title="Say what to do on failure" code={`Check the health endpoint at https://api.example.com/health.
+If it returns anything other than 200 OK, send an alert to #ops
+with the status code and response body.
+If it's healthy, just log success without alerting.`} />
+
+## After you create it
+
+1. **Run it once by hand.** In `Automate`, click `⋮` on its row and choose `Run now`.
+2. **Check the result.** When the run reaches `COMPLETED`, open its conversation to see what it did. For a `FAILED` run, open it to see where it stopped.
+3. **Check the cost.** The `Activity Log` shows each run's cost in US dollars, to four decimal places.
+
+<Callout type="ok">
+It starts turned on and runs at the next scheduled time. Results show up where you said, and a new entry appears in your conversation list.
+</Callout>
+
+To pause it, turn it off from `⋮`. Its settings are kept. Deleting is permanent, so turn it off if you're not sure.
+
+## Stuck?
+
+<Q q="I want it to run the moment another system reports something, like a failed CI build.">
+Register an event source under `Automate`, then `Events`. You get a webhook URL and a signing secret to put into that system. The URL has to be reachable from the internet. A local backend must be exposed first, which puts the whole backend online. Read [Run it on a server](/en/howto/server/) before doing that. If you can't, use a schedule that polls the system's API instead.
+</Q>
+<Q q="A run failed partway with a timeout.">
+Runs that go over their timeout fail automatically. Say "Set this automation's timeout to 20 minutes," or change it under `Edit`. The maximum is 30 minutes.
+</Q>
+<Q q="I want to share an automation or move it to another backend.">
+Choose `Export` from `⋮` to download a `.automation.json` file. On the other side, click `Import automation` in `Automate`. <u>Imported automations start turned off</u>, so review it before turning it on.
+</Q>
+<Q q="A run shows SKIPPED.">
+The backend hit its limit on work running at once, so it skipped that run. Spread your automations' times out.
+</Q>
+
+<Checkpoint id="h-custom" items={["My prompt says what to do, when, and where results go", "Run now finished with COMPLETED", "I opened the run's conversation and saw what it did"]} />

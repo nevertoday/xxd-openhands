@@ -1,0 +1,62 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: cost
+time: 6-minute read
+for: You're worried about the bill and want to know where it goes
+step: 2
+tldr: Cost depends on the model, task length and how often automations run. Use cheap models for small things.
+description: Most of the money goes to the model. What drives it is the model's price, task length, how many conversations run at once, and how often automations run. Where to see what each conversation and run cost, and a few ways to spend less.
+---
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+
+## Where the money goes
+
+Agent Canvas itself is open source. Most of the cost is the <Term k="模型" /> behind it. While an <Term k="代理" /> works, it asks the model again and again, and every request is billed in <Term k="token" />.
+
+Four things decide how much you spend:
+
+- **Which model.** Prices differ a lot. See the table below.
+- **How long the task is.** More files read and more back-and-forth means more tokens.
+- **How many run at once.** Each <Term k="对话" /> spends its own.
+- **How often automations run.** Every run of a prompt automation is a full conversation. Every 15 minutes is 96 conversations a day.
+
+## How much prices differ
+
+The OpenHands model provider charges each vendor's own rate with no markup. A few of the models it lists, per million tokens:
+
+| Model | Input | Output |
+| --- | --- | --- |
+| Claude Sonnet 4.5 | $3.00 | $15.00 |
+| Claude Haiku 4.5 | $1.00 | $5.00 |
+| GPT-5 mini | $0.25 | $2.00 |
+| Devstral Small | $0.10 | $0.30 |
+
+Repeated content is billed at a lower cached rate. For the full table and current prices, see the official [OpenHands LLM Provider](https://docs.openhands.dev/openhands/usage/llms/openhands-llms) page. With another provider's key, you pay that provider's prices.
+
+## Where to see what you spent
+
+- **`Usage` in a conversation.** Shows what that conversation has spent. With a cap set, it also shows a percentage. <u>It only reports and never stops anything</u>, so it can pass 100%.
+- **An automation's `Activity Log`.** Each run shows its cost in US dollars, to four decimal places. You can export it as CSV or JSON.
+- **OpenHands Cloud.** Add credit in the `Billing` tab. In `Settings > Application`, set `Maximum Budget Per Conversation`. It stops when it hits that, and you can tell it to continue.
+- **Your model provider's console.** OpenHands recommends setting spending limits there and watching usage.
+
+## Ways to spend less
+
+1. **Try the workflow on a free model first.** With OpenHands as the provider, models labeled `Free` carry no extra token cost. Right now that's DeepSeek V4 Flash.
+2. **Cheap models for small things, strong ones for big things.** <mark>Use a cheaper model for routine edits. Switch back to a strong one for planning, debugging and review.</mark> Save an <Term k="LLM Profile" /> for each and switch with `/model` in the conversation.
+3. **Generate titles with a small model.** In `Settings > Application > Conversation titles`, pick a cheap profile so titles don't use your main model.
+4. **Don't run automations too often.** If once a day is enough, don't run hourly. Keep timeouts short and turn off what you don't use.
+5. **Switch to a local model.** It runs on your own machine, with no per-token bill from a provider. It needs strong hardware, though. See [Use a local model](/en/howto/local-llm/).
+
+## Stuck?
+
+<Q q="I already pay for Claude Code or Codex. Do I need separate model credit?">
+Not necessarily. In Agent Canvas, switch the <Term k="代理" /> to Claude Code, Codex or Gemini CLI. They reach their models through your own signed-in account. No LLM profile is needed, and the cost goes to that subscription.
+</Q>
+<Q q="After turning on the critic, conversations got slower and pricier.">
+The critic scores the agent's results, under `Settings > Verification`. With iterative refinement on, it makes the agent redo work round after round. Lower `Max Refinement Iterations`, or turn off `Enable Iterative Refinement`.
+</Q>
+<Q q="Can I know what one automation run costs before it runs?">
+The docs give no way to estimate it. Create it and run it once with `Run now`. Check that run's cost in the `Activity Log`, then multiply by its runs per month.
+</Q>

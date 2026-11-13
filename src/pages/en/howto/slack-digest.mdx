@@ -1,0 +1,118 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: slack-digest
+time: 6 minutes to read, 15 to set up
+for: You want a quick morning read of what happened in Slack yesterday
+step: 6
+tldr: Connect Slack, create a digest that runs every weekday morning, and run it once by hand to check.
+description: Create a Slack app and copy its bot token, invite the bot to channels, add the Slack MCP server in Agent Canvas, then build a daily standup digest from the "Slack standup digest" template or one message, and run it once to confirm it posts in the right place.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Reply from "../../../components/Reply.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+
+## What you end up with
+
+Every weekday morning it reads the channels you chose, from yesterday until now. It sorts the updates by project: shipped, in progress, blocked, decided. Then it posts that digest to a channel, with owners and links.
+
+This is what the ready-made <Term k="自动化" /> [Slack standup digest](/en/automations/slack-standup-digest/) does.
+
+You need:
+
+- Agent Canvas running, with a <Term k="模型" /> set up.
+- Permission to create and install apps in your Slack workspace.
+- The backend running at digest time. On your own computer, that means the computer stays on. To keep it always on, see [Run it on a server](/en/howto/server/).
+
+## 1. Create a Slack app
+
+1. Open the [Slack API dashboard](https://api.slack.com/apps), click `Create New App`, and choose `From scratch`.
+2. Name it, for example `OpenHands`, pick your workspace, and click `Create App`.
+3. Open `OAuth & Permissions`, scroll to `Scopes`, and under `Bot Token Scopes` click `Add an OAuth Scope`. Add these:
+
+<Copy id="sd-scopes" title="Bot Token Scopes" code={`app_mentions:read
+channels:read
+channels:history
+chat:write
+emoji:read
+groups:history
+reactions:read
+reactions:write
+users:read`} />
+
+This is the set the official docs list for the Slack channel monitor. Reading and posting messages, which the digest needs, are both in it.
+
+4. Still on that page, click `Install to Workspace`, review the permissions, and click `Allow`.
+5. Copy the `Bot User OAuth Token` under `OAuth Tokens`.
+
+<Callout type="warn" title="That token is the bot's key">
+Anyone with it can read channels and post as the bot. Put it only into Agent Canvas, never into a chat.
+</Callout>
+
+## 2. Invite the bot to channels
+
+The bot doesn't join channels by itself. <mark>Invite it to every channel it should read and to the one it posts in.</mark> It only sees channels it's in.
+
+## 3. Connect Slack in Agent Canvas
+
+1. Check the backend switcher at the bottom left. The active <Term k="后端" /> should be the one the digest will run on.
+2. Open `Customize`, then `MCP Servers`, and choose `Slack` from the library.
+3. Paste the bot token and enter your workspace ID. Slack's [help page](https://slack.com/help/articles/221769328-Locate-your-Slack-URL-or-ID) shows where to find the ID.
+4. Make sure the secret-creation toggle is on, then save.
+
+This installs an <Term k="MCP" /> server, which lets the agent read and post in Slack.
+
+## 4. Create the digest
+
+Two ways in, same result:
+
+- **From the template.** Open `Automate` on the left and find `Slack standup digest` among the templates. It opens a conversation that asks you one thing at a time.
+- **Just ask.** Start a new <Term k="对话" />, change the channels and time below to yours, and send it:
+
+<Copy id="sd-prompt" title="Send this" code={`Create an automation called "Slack Standup Digest".
+Run it every weekday at 9 AM, timezone America/New_York.
+Read messages in #engineering and #frontend since the previous workday. Skip DMs.
+Group updates by project into shipped, in progress, blocked, and decisions. Give each item its owner and a message link, and list unanswered questions separately.
+Post it to #standup.`} />
+
+It asks about anything missing, roughly:
+
+<Reply code={`① Which channels should it read?
+② Which channel gets the digest?
+③ When should it run? Default: weekday mornings at 9 AM.
+④ What's your timezone?
+⑤ Post automatically, or save a draft for you to review first?
+⑥ How should it group updates? Default: by project, with shipped, active, blocked and decisions.`} />
+
+If you're unsure about ⑤, start with drafts and switch to auto-post after a few days.
+
+## 5. Run it once by hand
+
+No need to wait until tomorrow:
+
+1. Open `Automate` and check the new automation is listed and turned on.
+2. Click `⋮` on its row and choose `Run now`.
+3. Wait for the run to reach `COMPLETED`.
+
+<Callout type="ok">
+A digest appears in the target channel. The `Activity Log` shows the run and what it cost. Every run is a conversation, so you can open it to see exactly what it did.
+</Callout>
+
+## Stuck?
+
+<Q q="The run succeeded, but nothing appeared in Slack.">
+First check the bot is in the target channel. Then check which backend the Slack MCP server is on. It must be the same backend as the automation. Open the run's conversation to see where it got stuck.
+</Q>
+<Q q="Automate says it's unavailable.">
+Automations run on the active backend, and that backend needs the automation service. Switch to the default local backend and try there. For a remote backend, check its logs for automation service errors.
+</Q>
+<Q q="I want to change the time or the channels.">
+Open it in `Automate` and choose `Edit` to change its name, prompt, model, timeout and schedule. Or just say it in a conversation: "Move the Slack Standup Digest to 10 AM."
+</Q>
+<Q q="I want it to reply only when someone mentions it.">
+That's another ready-made automation, [Slack channel monitor](/en/automations/slack-channel-monitor/). It checks channels every minute, starts a conversation when someone mentions @openhands, and replies in the thread when done.
+</Q>
+
+<Checkpoint id="h-slack" items={["The bot is in the channels it reads and posts to", "The Slack MCP server is on the backend that runs the automation", "After Run now, a digest appeared in the target channel"]} />

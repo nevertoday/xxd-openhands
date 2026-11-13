@@ -1,0 +1,89 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: parallel
+time: 读 5 分钟
+for: 想让几个 AI 同时干不同的活
+step: 5
+tldr: 每个对话用自己的文件夹、Worktree 或容器，同时跑也不会互相改乱。
+description: 同一个后端可以同时跑好几个对话。真正的问题是它们共用一个文件夹；三种分开的办法：各用各的文件夹、Worktree、每个对话一个 Docker 容器。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+
+## 直接再开一个对话就行
+
+一个 <Term k="Agent Server" /> 本来就能同时跑好几个<Term k="代理" />。第一个<Term k="对话" />还在干活时，回到首页再开一个。
+
+每个对话有自己的聊天记录和设置，互不影响。
+
+## 麻烦在同一个文件夹
+
+<mark>两个对话用同一个文件夹，改的就是同一批文件。</mark>一个改到一半，另一个可能把它覆盖掉。
+
+下面三种办法，挑一种让它们分开。
+
+## 办法一：各用各的文件夹
+
+最简单。开对话之前点 `Open Workspace`，每个对话选一个不同的文件夹。适合几件互不相干的事，比如两个不同的项目。
+
+## 办法二：用 Worktree
+
+同一个 Git 项目里同时做两件事，用这个。Worktree 是同一个项目的另一份工作副本，放在单独的分支上。
+
+1. 点 `Open Workspace`，打开一个 Git 项目。
+2. 在首页开对话的地方，把运行方式从 `Local`（中文界面叫「本地」）换成 `Worktree`（「工作树」）。
+3. 发出任务。它会在新的副本里改，不碰你手上的那份。
+4. 第二个任务也这样开。
+
+<Callout type="tip" title="看不到 Worktree？">
+它要求打开的文件夹是一个 Git 仓库。没打开文件夹时，首页不会给这个选项。
+</Callout>
+
+新副本从哪个分支开出来、分支名加什么前缀，在 `Settings > Runtime` 里改。
+
+## 办法三：每个对话一个 Docker 容器
+
+想让每个 AI 都关在自己的<Term k="沙盒" />里，用这个。每个新对话会有自己的容器和自己的 Agent Server。开法见[把它关进 Docker 里跑](/howto/docker-sandbox/)最后一节。
+
+想每次开对话时自己选在电脑上跑还是进容器，换成这样启动：
+
+<Copy id="pl-select" lang="bash" title="每个对话自己选" code={`OH_CONVERSATION_RUNTIME_SELECTABLE=1 \\
+OH_CONVERSATION_IMAGE=ghcr.io/openhands/agent-server:latest-python \\
+agent-canvas`} />
+
+首页的运行方式里会多出 `Docker`。默认用哪种，在 `Settings > Runtime` 里定。
+
+这样启动也会监听所有网卡，页面不再自动带密钥。照那一节先设好 `LOCAL_BACKEND_API_KEY` 再启动。
+
+<Callout type="warn" title="容器也挡不住共用文件夹">
+用同一个文件夹的两个容器，看到的还是同一批文件。容器隔开的是电脑上别的东西，文件夹还是要分开。
+</Callout>
+
+## 盯着它们
+
+- **左边栏。** 对话按文件夹分组，一眼能看出哪个在改哪个项目。
+- **`Stop` 按钮。** 只打断这个对话的 AI，别的照常跑。
+- **`Usage`。** 每个对话各花各的 <Term k="token" />，同时跑三个就是三份钱。详见[控制花费](/howto/cost/)。
+
+## 卡住了？
+
+<Q q="想按项目分开设置，一个项目一套模型和密钥。">
+
+可以开好几个本地后端，各占一个端口：
+
+<Copy id="pl-backends" lang="bash" title="三个后端" code={`agent-canvas --backend-only --port 8001
+agent-canvas --backend-only --port 8002
+agent-canvas --backend-only --port 8003`} />
+
+每条在单独的终端里运行。再用 <Cmd c="agent-canvas --frontend-only" /> 开界面，在后端切换器里点 `Manage Backends` → `Add Backend`，填 `http://localhost:8001` 和它的 API key，每个后端加一次。想自己定密钥，启动前给每个终端设一个不同的 `LOCAL_BACKEND_API_KEY`。每个<Term k="后端" />的模型、密钥、自动化都是分开的。
+
+</Q>
+<Q q="自动化的一次运行显示 SKIPPED。">
+后端同时在跑的任务到上限了，这一次就跳过了。错开几个自动化的时间，或者少开几个手动对话。
+</Q>
+<Q q="AI 能不能自己派出帮手对话？">
+能。AI 可以开「子对话」，本地的子对话可以用单独的 Worktree，也可以和它共用文件夹。子对话做完会把结果交回给它。
+</Q>

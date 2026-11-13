@@ -1,0 +1,153 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: qa-changes
+time: 装技能一分钟，试一次看改动大小
+for: 代码改完了、测试也过了，还想确认它真的能用
+step: 6
+tldr: 打 /qa-changes，它把程序真跑起来，像用户一样用一遍，带着证据回报。
+description: 用 qa-changes 技能让 OpenHands 把改动真跑一遍：装环境、像用户一样操作、带着命令输出和截图交回一份报告；再用 QA changes 自动化或 GitHub Actions 让每个 PR 都试一遍。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+import Tabs from "../../components/Tabs.astro";
+import Reply from "../../components/Reply.astro";
+
+## 先装技能，试一个 PR
+
+1. 在对话里发这句，装上 qa-changes <Term k="技能" />：<Cmd c="/add-skill https://github.com/OpenHands/extensions/tree/main/skills/qa-changes" />
+2. 出现「Start new conversation with this skill」横幅，点它。技能要新对话才生效。
+3. 在新对话里发：
+
+<Copy id="qa-once" title="QA 一个 PR" code={`/qa-changes 帮我 QA <owner/repo> 的 PR #<编号>。
+我想要：确认这个 PR 真的做到了它说的事。重点试 <比如新的仪表盘页面>。
+做好的样子：真的把程序跑起来用一遍，不是只跑测试。修 bug 的话，先在旧代码上让 bug 出现一次，再在新代码上确认它没了。
+做完给我看：结论，每一步跑的命令和看到的输出；界面上的改动配截图。`} />
+
+<mark>它把软件真的用一遍。</mark>读代码挑毛病是[代码审查](/howto/code-review/)的事，跑测试是 CI 的事，这两样它都不做。
+
+要读 GitHub 上的 PR，先接好 GitHub，步骤看[把一个 GitHub issue 交给它做成 PR](/howto/issue-to-pr/)。
+
+## 还没开 PR，只是本地改完了
+
+不用技能，直接这样说：
+
+<Copy id="qa-local" title="试一下本地的改动" code={`我刚改完 <功能>，还没开 PR。像真用户一样试一遍。
+我想要：照 README 或 AGENTS.md 里的步骤装好、跑起来，然后 <具体怎么用，比如打开 /dashboard，点「导出」>。
+做好的样子：真的启动程序、真的点、真的发请求。只跑 --help 不算试过。
+做完给我看：跑了哪些命令、看到了什么，界面上的改动给截图。试不了的地方写清楚为什么。
+只试，不改代码。`} />
+
+## 它会怎么试
+
+分四步，一步不通就停下报告：
+
+1. **看懂改动。** 读 PR 的说明和改动，弄清它想做成什么，用户从哪里用到它。
+2. **装环境。** 照项目自己写的步骤装依赖、编译。看一眼 CI 结果，不重跑测试。
+3. **真用一遍。** 这是最要紧的一步，按改动的种类来：
+
+| 改了什么 | 它怎么试 |
+| --- | --- |
+| 界面 | 起开发服务器，开浏览器点，截图 |
+| 命令行 | 用真实参数跑，再试一个错的输入 |
+| 接口 | 起服务，发真请求，看返回 |
+| 修 bug | 旧代码上复现，新代码上确认 |
+| 函数库 | 写个小脚本，调用改过的函数 |
+
+4. **写报告。** 结论放最前面，长的日志折叠起来。
+
+## 报告怎么看
+
+<Reply code={`QA Report: PASS
+
+这个 PR 达到目标了吗？是。新的 /api/health 接口返回 200 和版本号。
+
+证据（点开看）
+1. 用 npm run dev 启动服务
+2. curl http://localhost:3000/api/health  返回 200 OK
+3. 打开 /dashboard，页面正常显示  [截图]
+
+发现的问题：无`} />
+
+结论有四种：
+
+- **PASS**：改动能用，没弄坏别的。
+- **PASS WITH ISSUES**：大体能用，但发现了问题，会列出来。
+- **FAIL**：没做到它说的事，或者弄坏了别的。
+- **PARTIAL**：有的试了，有的试不了，会写清哪些没试。
+
+它知道什么时候该停。同一种办法换三种试法都不行，它就换一种办法。两种办法都不行，就停下，写明试过什么、哪些没验证。一句「X 没验证成，因为 Y」，比一句假的「全部正常」有用。
+
+## 让它下次试得更顺
+
+- **把怎么装、怎么跑写进 <Term k="AGENTS.md" />。** 它装环境时先看这里。
+- **界面上的流程写清楚。** 官方文档说，它看界面的能力还差一些，不熟流程时会出错。点哪里、填什么，写进提示词。
+- **给项目写一份 QA 规矩。** 建 `.agents/skills/qa-guide.md`，触发词写 `/qa-changes`：
+
+```markdown
+---
+name: qa-guide
+description: 本项目的 QA 规矩
+triggers:
+- /qa-changes
+---
+
+# 本项目的 QA 规矩
+
+## 环境
+- 先跑 make setup
+- 开发服务器在 8080 端口
+
+## 每次都要试
+- 改了后端，都打开 /admin 看一眼
+
+## 试不了的
+- 支付要 Stripe 测试密钥，跳过支付流程
+```
+
+## 每个 PR 都自动试
+
+<Tabs id="qa-auto" items={[["canvas", "Agent Canvas 自动化"], ["actions", "GitHub Actions"]]}>
+<div slot="canvas">
+
+用现成的<Term k="自动化" />「QA changes」。有 PR 开出来，它就照上面的方法试一遍。
+
+- **什么时候开工**：PR 新开出来，或者草稿改成可审。二选一。
+- **先过三道关**：PR 不是草稿。作者在主分支上已经有 3 个以上的提交。PR 说明里还没有「QA Agent」这一节。有一条不满足，它就停下，什么都不改。
+- **结果放哪**：它不发评论。它在 PR 说明的最后加一条分隔线，再加一节「QA Agent」，报告写在里面。
+- **要填的**：仓库、基础分支（默认 `main`）、在哪种 PR 事件时开工。要先接好 GitHub。
+
+有的部署不能直接跑这种由 GitHub 事件触发的自动化。这时它会开一个设置对话，问清仓库、分支和事件，再帮你建好。详情看[现成自动化：QA changes](/automations/qa-changes/)。
+
+</div>
+<div slot="actions">
+
+放进仓库的 GitHub Actions 里跑，一个仓库配一次：
+
+1. 照[官方页面](https://docs.openhands.dev/openhands/usage/use-cases/qa-changes)把示例 workflow 复制到 `.github/workflows/qa-changes.yml`。
+2. 在仓库的 Settings → Secrets and variables → Actions 里加 `LLM_API_KEY`。
+3. 按需要改触发条件和模型。
+
+</div>
+</Tabs>
+
+<Callout type="tip" title="和代码审查一起用">
+代码审查读改动，找写法上的问题。QA 跑软件，找用起来的问题。官方建议两个一起用。
+</Callout>
+
+## 卡住了？
+
+<Q q="它说起不来服务。">
+它照 README 或 AGENTS.md 装环境。把安装和启动的步骤写进去；有特别的步骤，写进 qa-guide。
+</Q>
+<Q q="报告是 PARTIAL。">
+点开报告看哪些没试成。常见原因是缺环境变量、要连外部服务、权限不够。补上以后再让它试一次。
+</Q>
+<Q q="试得太久。">
+改动入口很多时，它要花更久。把大 PR 拆小，或者在 qa-guide 里写明最要紧的几个场景。
+</Q>
+<Q q="开了自动化，PR 说明里一直没有 QA Agent 这一节。">
+看那三道关。PR 是不是草稿？作者在主分支上的提交是不是不到 4 个？说明里是不是已经有「QA Agent」？
+</Q>

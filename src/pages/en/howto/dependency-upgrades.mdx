@@ -1,0 +1,141 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: dependency-upgrades
+time: One conversation for the list; major versions over several
+for: Your dependencies are out of date and you want to know what to upgrade and how to do it safely
+step: 3
+tldr: Get a list of what's outdated first. Upgrade minor versions in a batch, majors one at a time, then check everything.
+description: Have OpenHands list outdated and risky dependencies, upgrade minor versions in batches, handle breaking changes in major versions one at a time, and run a full check afterward. You can also set up a weekly automated check.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Tabs from "../../../components/Tabs.astro";
+
+## Start with a list
+
+<Copy id="du-list" title="List what needs upgrading" code={`Analyze the dependencies in this project and create a report.
+What I want:
+1. Every direct dependency with its current and latest version
+2. Dependencies more than 2 major versions behind
+3. Dependencies with known security vulnerabilities
+4. Dependencies that are deprecated or unmaintained
+5. A priority order: which updates matter most
+What done looks like: a table with one package per row: current, latest, risk, priority.
+What to show me when done: the table and the three packages you'd upgrade first. Read only for now.`} />
+
+See the whole picture before you touch anything. Anything with a security issue goes first. See [Fix security vulnerabilities](/en/howto/vulnerability-remediation/) for those.
+
+## Minor versions: upgrade a batch
+
+Patch and minor updates can usually go together. Pick your stack:
+
+<Tabs id="du-minor" items={[["node", "Node.js"], ["python", "Python"], ["java", "Java"]]}>
+<div slot="node">
+
+<Copy id="du-node" title="package.json" code={`Update all patch and minor versions in package.json.
+What I want:
+1. Review each update's changelog notes
+2. Update package.json with the new versions
+3. Update package-lock.json
+4. Run the test suite
+What done looks like: all tests pass.
+What to show me when done: which packages moved from which version to which, and any deprecation warnings.`} />
+
+</div>
+<div slot="python">
+
+<Copy id="du-py" title="requirements.txt" code={`Update the dependencies in requirements.txt.
+What I want:
+1. Check each package for updates
+2. Update requirements.txt with compatible versions
+3. Update requirements-dev.txt the same way
+4. Run the tests and verify things work
+What done looks like: all tests pass.
+What to show me when done: which packages moved from which version to which, and any deprecation warnings.`} />
+
+</div>
+<div slot="java">
+
+<Copy id="du-java" title="pom.xml" code={`Update the dependencies in pom.xml.
+What I want:
+1. Check for newer versions of each dependency
+2. Update the version numbers in pom.xml
+3. Run mvn dependency:tree to check for conflicts
+4. Run the test suite
+What done looks like: no conflicts, and all tests pass.
+What to show me when done: which dependencies changed, and any API changes you ran into.`} />
+
+</div>
+</Tabs>
+
+## Major versions: check compatibility, then fix one spot at a time
+
+Major versions often break things. The docs count framework and major dependency upgrades as complex tasks, best split into smaller pieces.
+
+**Step one: find out what you'll hit.**
+
+<Copy id="du-compat" title="Check compatibility first" code={`Check compatibility for upgrading React from 16 to 18.
+What I want:
+1. Find deprecated React patterns in our code
+2. List all components using lifecycle methods
+3. Find any use of string refs or findDOMNode
+4. Check whether our third-party libraries support React 18
+5. Estimate the effort
+What done looks like: a list where every item names its file.
+What to show me when done: the list, and which third-party libraries also need a major upgrade. Read only for now.`} />
+
+**Step two: work through the list.**
+
+<Copy id="du-major" title="Handle breaking changes" code={`Upgrade axios from v0.x to v1.x and handle the breaking changes.
+What I want:
+1. List every breaking change in the axios 1.0 changelog
+2. Find every place our code uses axios
+3. For each one: show the current code, the updated code, and why it changed
+4. Make one commit per logical change
+What done looks like: all tests pass.
+What to show me when done: the list of commits, with an explanation of each change.`} />
+
+"One commit per logical change" means that if one step causes trouble, you can roll back just that step.
+
+When several packages move together, such as react, react-dom, and react-router-dom, give it every current and target version. Have it work out the order before it changes anything.
+
+## Afterward, have it check everything
+
+<Copy id="du-check" title="Check after upgrading" code={`The dependency upgrades are done. Validate the application.
+What I want:
+1. Run the full test suite (unit, integration, end-to-end)
+2. Confirm test coverage hasn't dropped
+3. Run type checking, if the project has it
+4. Run linting with the new rule versions
+5. Build the application for production
+What done looks like: all of the above pass.
+What to show me when done: the result of each step, and your analysis of anything that failed.`} />
+
+## Check every week automatically
+
+Send this in a new conversation and it sets up an <Term k="自动化" /> for you:
+
+<Copy id="du-auto" title="Weekly dependency check" code={`Create an automation called "Dependency Checker" that runs every Monday at 8 AM.
+What I want it to do each time:
+1. Scan all package.json and requirements.txt files
+2. Check for outdated dependencies
+3. Write a report listing packages with available updates, grouped by major, minor, and patch
+4. Post the report to the #engineering Slack channel
+What done looks like: the automation exists and is enabled.
+What to show me when done: its name, its schedule, and what it does each run.`} />
+
+Step 4 needs Slack connected. If it isn't, drop step 4. Each report then stays in the conversation the automation starts, which you'll find in the conversation list. For managing automations, see [full guide step 6](/en/guide/6-automations/).
+
+## Stuck?
+
+<Q q="After upgrading, a pile of tests failed.">
+Roll back and upgrade one major-version package at a time. Use the compatibility check above to list the problems first, then fix them one by one.
+</Q>
+<Q q="/codereview won't approve my upgrade PR because the version is too new.">
+The code-review skill won't approve a third-party version published less than 7 days ago. Wait a few days and ask again, or make the call yourself.
+</Q>
+<Q q="The weekly report never shows up in Slack.">
+Check that the Slack bot is installed in the workspace and invited to #engineering. The bot can't read channels it hasn't joined.
+</Q>

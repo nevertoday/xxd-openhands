@@ -1,0 +1,143 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: update-remove
+time: 读 4 分钟
+for: 想更新、停掉，或者彻底删掉 Agent Canvas
+step: 1
+tldr: 按当初的装法找对应命令；更新和卸载都不碰你的数据，要删数据得另外删。
+description: 按桌面版、npm、npx、Docker 四种装法，分别怎么停止、更新、卸载；设置和对话存在哪；怎么连数据一起删干净。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Tabs from "../../components/Tabs.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+
+## 先认出你是怎么装的
+
+- 双击图标打开的：**桌面版**。
+- 在<Term k="终端" />里打 `agent-canvas` 启动的：**npm**。
+- 打 `npx @openhands/agent-canvas` 启动的：**npx**。
+- 用 `docker run` 启动的：**Docker**。
+
+## 停掉它
+
+<Tabs id="ur-stop" label="你的装法" items={[["app", "桌面版"], ["npm", "npm / npx"], ["docker", "Docker"]]}>
+<div slot="app">
+
+从应用菜单里退出 **OpenHands Agent Canvas**。
+
+</div>
+<div slot="npm">
+
+回到运行它的终端，按 `Ctrl+C`。
+
+</div>
+<div slot="docker">
+
+回到运行容器的终端，按 `Ctrl+C`。在后台跑的话，先找到容器，再停掉它：
+
+<Copy id="ur-dstop" lang="bash" title="停掉后台的容器" code={`docker ps
+docker stop <container-id-or-name>`} />
+
+</div>
+</Tabs>
+
+<Callout type="warn" title="停了，本地的自动化也停了">
+<Term k="自动化" />跑在后端上。本地后端停了，它上面的定时任务到点也不会跑。
+</Callout>
+
+## 更新
+
+先停掉它，再按装法更新。
+
+<Tabs id="ur-update" label="你的装法" items={[["app", "桌面版"], ["npm", "npm"], ["npx", "npx"], ["docker", "Docker"]]}>
+<div slot="app">
+
+到 [OpenHands 最新版本](https://github.com/OpenHands/OpenHands/releases/latest) 下载新的安装包，照第一次那样装。`Settings > Application` 里能看到当前版本，也能检查有没有更新。
+
+</div>
+<div slot="npm">
+
+<Copy id="ur-npm" lang="bash" title="更新并确认版本" code={`npm install -g @openhands/agent-canvas@latest
+agent-canvas --version`} />
+
+最后一行打印出新的版本号，就更新好了。
+
+</div>
+<div slot="npx">
+
+<Cmd c="npx @openhands/agent-canvas@latest" />
+
+这样会直接下载并运行最新版。
+
+</div>
+<div slot="docker">
+
+本站的 Docker 命令固定了版本号 `1.40.0`。到 [OpenHands 发布页](https://github.com/OpenHands/OpenHands/releases) 看最新的版本号，把命令里的 `1.40.0` 换掉，再用同一个卷启动。
+
+用的是 `latest` 镜像的话，先拉一次新的，再运行原来的命令：
+
+<Cmd c="docker pull ghcr.io/openhands/agent-canvas:latest" />
+
+</div>
+</Tabs>
+
+<Callout type="ok" title="更新不会丢东西">
+设置和对话存在程序外面：npm 和 npx 在 `~/.openhands`，Docker 在那个卷里。换新版本、拉新镜像，都不会动它们。
+</Callout>
+
+## 卸载
+
+<Tabs id="ur-remove" label="你的装法" items={[["app", "桌面版"], ["npm", "npm"], ["npx", "npx"], ["docker", "Docker"]]}>
+<div slot="app">
+
+先退出它。macOS 上把它从「应用程序」拖进废纸篓。Windows 上在「已安装的应用」里卸载。Linux 上删掉 AppImage 文件，或者卸掉那个 Debian 包。
+
+</div>
+<div slot="npm">
+
+先停掉它，再运行：<Cmd c="npm uninstall -g @openhands/agent-canvas" />
+
+Windows 报 `uv.exe` 之类的文件正在使用，就把运行它的终端都关掉，再试一次。
+
+</div>
+<div slot="npx">
+
+npx 没有装任何东西，停掉就行。想清一下 npm 下载过的缓存：<Cmd c="npm cache verify" />
+
+</div>
+<div slot="docker">
+
+先停掉容器，再删镜像：
+
+<Copy id="ur-rmi" lang="bash" title="删掉镜像" code={`docker ps
+docker stop <container-id-or-name>
+docker rmi ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+当初用的是 `latest` 镜像，就把最后一行的 `1.40.0` 换成 `latest`。
+
+</div>
+</Tabs>
+
+## 连数据一起删
+
+卸载只删程序，<mark>设置、密钥和对话记录都还留着。</mark>彻底不用了，再删掉它们。<u>删了就找不回来。</u>
+
+- **npm、npx：** 删掉 `~/.openhands` 这个文件夹。
+- **Docker（照本站命令装的）：** 运行 <Cmd c="docker volume rm openhands-state" />
+- **Docker（照官方文档装的）：** 卷叫 `openhands-data`，运行 <Cmd c="docker volume rm openhands-data" />
+- **Windows 上的 Docker：** 删掉用户目录下的 `.openhands` 文件夹。
+
+## 卡住了？
+
+<Q q="npm 更新以后，打 agent-canvas 还是旧版本。">
+运行 `agent-canvas --version` 看一下。不对的话，可能是终端找到了另一份旧的。见[打不开、连不上怎么办](/howto/troubleshoot/)里命令找不到的那一条。
+</Q>
+<Q q="桌面版的数据存在哪？">
+官方文档只写了怎么删掉应用本身，没写桌面版把设置和对话放在哪。
+</Q>
+<Q q="换了卷名以后，以前的设置都没了。">
+设置存在卷里，换一个新卷就是从头开始，旧卷里的东西不会搬过来。改回原来的卷名启动，就能看到以前的设置。
+</Q>

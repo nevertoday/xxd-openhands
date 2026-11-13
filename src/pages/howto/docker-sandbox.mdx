@@ -1,0 +1,163 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: docker-sandbox
+time: 读 5 分钟，动手 15 分钟
+for: 不想让 AI 碰到电脑上别的文件
+step: 5
+tldr: 用 Docker 启动它，AI 只看得到你挂进去的那个项目文件夹。
+description: 用官方 Docker 镜像跑 Agent Canvas，只把一个项目文件夹交给 AI；数据存在哪、怎么自动重启；想让每个对话各用一个容器，怎么开。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Tabs from "../../components/Tabs.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+
+## 它能碰到什么
+
+桌面版和 npm 版直接跑在你的电脑上。AI 能用你账号的权限读写任何文件。
+
+放进 <Term k="Docker" /> 以后，AI 在一个容器里干活。<mark>它只看得到你挂进去的文件夹</mark>，在容器里叫 `/projects`。这个容器就是它的<Term k="沙盒" />。
+
+## 先把 Docker 跑起来
+
+macOS 和 Windows 装 Docker Desktop，Linux 装 Docker Engine 或 Docker Desktop。装好以后打开它，在<Term k="终端" />里运行：
+
+<Copy id="ds-check" lang="bash" title="确认 Docker 在跑" code={`docker --version
+docker ps`} />
+
+两条都没报错，就可以往下走。`docker ps` 连不上的话，先打开 Docker Desktop 再试。
+
+## 启动
+
+<Tabs id="ds-os" label="选择你的系统" items={[["unix", "macOS / Linux"], ["win", "Windows"]]}>
+<div slot="unix">
+
+1. 建一个专门放项目的文件夹。AI 只能看到这里面的东西：
+
+<Copy id="ds-ws" lang="bash" title="准备文件夹" code={`export PROJECTS_PATH="$HOME/projects"  # directory containing your project folders
+mkdir -p "$PROJECTS_PATH"`} />
+
+2. 只有 Linux 上的 Docker Engine 要做这一步。容器里的用户 uid 是 10001，要能读写这个文件夹。下面两条让本机所有用户都能读写它，只用在这个专门的文件夹上：
+
+<Copy id="ds-chmod" lang="bash" title="仅 Linux Docker Engine" code={`find "$PROJECTS_PATH" -type d -exec chmod a+rwX {} +
+find "$PROJECTS_PATH" -type f -exec chmod a+rw {} +`} />
+
+3. 启动 Agent Canvas：
+
+<Copy id="ds-run" lang="bash" title="启动" code={`docker run -it --rm \\
+  -p 127.0.0.1:8000:8000 \\
+  -e AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true \\
+  -v openhands-state:/home/openhands/.openhands \\
+  -v "\${PROJECTS_PATH}:/projects" \\
+  ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+</div>
+<div slot="win">
+
+在 PowerShell 里依次运行。Docker Desktop 会自己处理文件夹权限。
+
+<Copy id="ds-w-pull" lang="powershell" title="1. 下载镜像" code="docker pull ghcr.io/openhands/agent-canvas:1.40.0" />
+
+<Copy id="ds-w-ws" lang="powershell" title="2. 准备文件夹" code={`$env:PROJECTS_PATH = Join-Path $HOME "projects"  # directory containing your project folders
+New-Item -ItemType Directory -Force -Path $env:PROJECTS_PATH, (Join-Path $env:USERPROFILE ".openhands") | Out-Null`} />
+
+<Copy id="ds-w-run" lang="powershell" title="3. 启动" code={`docker run -it --rm \`
+  -p 127.0.0.1:8000:8000 \`
+  -e AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true \`
+  -v "$($env:USERPROFILE)\\.openhands:/home/openhands/.openhands" \`
+  -v "$($env:PROJECTS_PATH):/projects" \`
+  ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+PowerShell 用反引号换行，别删。
+
+</div>
+</Tabs>
+
+<Callout type="ok">
+浏览器打开 `http://localhost:8000/canvas`，能看到 Agent Canvas，并且不用输入任何密钥就连上了。
+</Callout>
+
+<Callout type="no" title="这两处要一起留着">
+`-p 127.0.0.1:8000:8000` 让只有这台电脑能打开它。`AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true` 让页面自动带上登录密钥。前者在，后者才安全。想从别的设备访问，先看[放到服务器上](/howto/server/)。
+</Callout>
+
+## 让它在项目里干活
+
+1. 把要处理的项目放进刚才那个 `projects` 文件夹。
+2. 在 Agent Canvas 里点 `Open Workspace`，选 `/projects` 下面的那个项目。
+3. 开一个新<Term k="对话" />，先让它报一下能看到什么：
+
+<Copy id="ds-try" title="发给它" code="运行 ls /projects，告诉我你看到了哪些文件夹。" />
+
+它列出的应该就是你放进 `projects` 的那些文件夹。
+
+## 下次再用，东西都还在
+
+设置、密钥和对话存在 Docker 卷 `openhands-state` 里，Windows 版存在你用户目录下的 `.openhands` 里。`--rm` 只删容器，不删这些。下次用同一条命令启动就行。
+
+想看这个卷在哪：<Cmd c="docker volume inspect openhands-state" />
+
+## 崩了自动重启
+
+它的后台程序大约 30 秒没响应，容器就会以失败状态退出。想让 Docker 自动把它拉起来，把命令里的 `--rm` 换成 `--restart unless-stopped`。
+
+## 每个对话一个容器
+
+上面的做法是整个 Agent Canvas 进一个容器。还有一种：Agent Canvas 留在电脑上，<u>每个新对话各开一个容器</u>。同时跑好几个 AI 时更安全，见[同时开好几个对话](/howto/parallel/)。
+
+要先装好 Node.js 24 以上、`uv`，Docker 也要开着。
+
+<Tabs id="ds-multi" label="选择你的系统" items={[["unix", "macOS / Linux"], ["win", "Windows"]]}>
+<div slot="unix">
+
+1. 生成一串密钥，复制下来存好：<Cmd c="openssl rand -base64 32" />
+2. 把它设好，再启动：
+
+<Copy id="ds-multi-run" lang="bash" title="每个对话一个容器" code={`export LOCAL_BACKEND_API_KEY="<上一步打印的那串>"
+npm install -g @openhands/agent-canvas
+OH_CONVERSATION_RUNTIME=docker agent-canvas`} />
+
+3. 打开 `http://localhost:8000`，页面会要一个 API key，填刚才那串。
+
+</div>
+<div slot="win">
+
+Windows 本机不支持这种方式，要在 WSL 2 里跑：
+
+1. 在 WSL 2 里装一个 Linux 发行版，在 Docker Desktop 里给它打开 WSL integration。
+2. 在这个 Linux 里装 Node.js 24 以上和 `uv`，确认 `docker info` 能跑通。
+3. 在 WSL 的终端里照 macOS / Linux 那一栏做。项目路径用 Linux 里的路径。
+
+</div>
+</Tabs>
+
+<Callout type="warn" title="这时它对整个局域网开着">
+这种方式会监听电脑的所有网卡，容器才能连回电脑。所以页面不再自动带密钥，要你自己填。同一个网络里的设备也能打开这个登录页，密钥一定要够长、别外传。
+</Callout>
+
+检查一下：开一个新对话，让它运行 `id` 和 `printf 'PWD=%s\nHOME=%s\n' "$PWD" "$HOME"`。看到 `PWD` 是 `/workspace`、`HOME` 是 `/var/openhands/.openhands`，就说明它在容器里。
+
+以前的对话不会搬进容器。用同一个文件夹的对话共用里面的文件，各用各的文件夹就不会互相改乱。
+
+## 卡住了？
+
+<Q q="打开页面以后让我输入 API key。">
+这是连后端用的密钥，不是模型的 key。另开一个终端，用 `docker ps` 找到容器名，再运行 `docker exec CONTAINER cat /home/openhands/.openhands/agent-canvas/api-key.txt`，把 `CONTAINER` 换成容器名。把打印出来的那串填进去。
+</Q>
+<Q q="Linux 上报 Permission denied。">
+看报错里提到的路径，确认 uid 10001 能读写它。SELinux 系统还要看挂载要不要加 `:z` 或 `:Z`。别给存密钥的目录开所有人可写。
+</Q>
+<Q q="AI 想在容器里再跑 Docker，报 operation not permitted。">
+默认不行。要在 `docker run` 里加 `--privileged`，但这会让容器拿到宿主机内核的大部分权限，隔离基本没了。只在 AI 真要跑容器、你也愿意承担的机器上这么做。详见官方 [Use Docker with Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/backend-setup/docker)。
+</Q>
+<Q q="官方文档里的命令写的是 latest 和 openhands-data。">
+那是文档站的写法，用 `ghcr.io/openhands/agent-canvas:latest` 镜像和叫 `openhands-data` 的卷。本页照 OpenHands 仓库 README，固定版本 1.40.0、卷叫 `openhands-state`。两种都能用，挑一种一直用下去，卷名换了，以前的设置就看不到了。
+</Q>
+<Q q="8000 端口被占了。">
+把 `-p 127.0.0.1:8000:8000` 换成 `-p 127.0.0.1:3000:8000`，再打开 `http://localhost:3000/canvas`。
+</Q>
+
+<Checkpoint id="h-docker" items={["docker ps 能跑通", "localhost:8000/canvas 打开了，没要密钥", "让它 ls /projects，看到的正是我放进去的文件夹"]} />

@@ -1,0 +1,157 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: troubleshoot
+time: 按症状查，每条 2 分钟
+for: 它打不开、连不上，或者一发消息就报错
+step: 1
+tldr: 先看运行它的那个窗口有没有报错，再按下面的症状一条条对。
+description: Agent Canvas 常见故障按症状查：桌面版打不开、命令找不到、缺 uv、端口被占、页面空白、Docker 起不来、后端断开、要输密钥、模型报错、文件改错地方；怎么看更详细的日志，去哪求助。
+---
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Tabs from "../../components/Tabs.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+
+## 先做这几项检查
+
+<mark>大部分问题，运行它的那个<Term k="终端" />里都打印了原因。</mark>先去那里看最后几行。然后按装法跑一遍：
+
+<Tabs id="ts-check" label="你的装法" items={[["npm", "npm / npx"], ["docker", "Docker"]]}>
+<div slot="npm">
+
+<Copy id="ts-npm" lang="bash" title="检查工具" code={`node --version
+npm --version
+uv --version
+agent-canvas --help`} />
+
+哪条报错，就先解决那一样。Node.js 要 24 以上。
+
+</div>
+<div slot="docker">
+
+<Copy id="ts-docker" lang="bash" title="检查 Docker" code={`docker --version
+docker ps`} />
+
+`docker ps` 连不上，先打开 Docker Desktop，Linux 上启动 Docker Engine，再试。
+
+</div>
+</Tabs>
+
+## 桌面版打不开
+
+- **macOS 说应用已损坏。** 预览版还没经过苹果签名。先确认安装包来自官方发布页。拖进「应用程序」以后，在终端运行下面这条，再打开：
+
+<Copy id="ts-xattr" lang="bash" title="解除 macOS 的隔离标记" code={`xattr -dr com.apple.quarantine "/Applications/OpenHands Agent Canvas.app"`} />
+
+- **启动很久，或者失败了。** 启动画面上点 **Show details**，能看到并复制实时日志。
+- **Windows 弹出 SmartScreen。** 确认安装包来自 OpenHands 官方发布页，再继续。
+
+## 打 agent-canvas，说找不到命令
+
+1. 确认装上了：<Cmd c="npm list -g --depth 0" /> 列表里应该有 `@openhands/agent-canvas` 和版本号。
+2. 确认 npm 的全局目录在 `PATH` 里：
+
+<Tabs id="ts-path" label="你的系统" items={[["unix", "macOS / Linux"], ["win", "Windows PowerShell"]]}>
+<div slot="unix">
+
+<Copy id="ts-path-unix" lang="bash" title="查 PATH" code={`echo "$(npm prefix -g)/bin"
+which agent-canvas
+echo "$PATH"`} />
+
+`which` 什么都没打印，而第一行的目录不在 `PATH` 里，就先在当前终端加上：
+
+<Copy id="ts-path-add" lang="bash" title="临时加进 PATH" code={`export PATH="$(npm prefix -g)/bin:$PATH"`} />
+
+想一直生效，把这行 `export` 加进 `~/.zshrc` 或 `~/.bashrc`。
+
+</div>
+<div slot="win">
+
+<Copy id="ts-path-win" lang="powershell" title="查 PATH" code={`npm prefix -g
+Get-Command agent-canvas
+$env:Path -split ';'`} />
+
+npm 的全局目录，或者 Node.js 的 `bin` 目录，要出现在最后打印的列表里。
+
+</div>
+</Tabs>
+
+3. 还不行，先用 <Cmd c="npx @openhands/agent-canvas" /> 顶上。npx 能用、`agent-canvas` 不能用，问题就在 `PATH`。
+
+## 说缺 uv 或 uvx
+
+本地的 <Term k="Agent Server" /> 要靠 `uv` 跑。照 [uv 官方安装说明](https://docs.astral.sh/uv/getting-started/installation/) 装上，<u>再开一个新终端</u>，运行 `uv --version` 确认，然后重新启动。
+
+## 浏览器打不开，或者一片空白
+
+1. 手动打开 `http://localhost:8000`。Docker 装的打开 `http://localhost:8000/canvas`。
+2. 看终端里有没有报错。
+3. 说 8000 端口被占了，就换一个端口：<Cmd c="agent-canvas --port 3000" />，再打开 `http://localhost:3000`。
+
+页面开了但一片空白，刷新一次，再看终端里的报错。
+
+## Docker 容器一直重启
+
+看它的日志：
+
+<Copy id="ts-logs" lang="bash" title="看容器日志" code="docker logs <container-id-or-name>" />
+
+日志里有 `Error [ERR_MODULE_NOT_FOUND]`，说明这一版镜像发布时缺了文件，不是你配错了。先换回上一个能用的版本号，等修好的新版出来再换回去。
+
+## 页面开了，但后端显示断开
+
+1. 打开后端切换器，选 `Manage Backends`。
+2. 核对<Term k="后端" />的地址，比如本地默认是 `http://localhost:8000`，换过端口就用你换的那个。
+3. 这个后端要密钥的话，核对密钥。
+4. 切回默认的本地后端试试。
+5. 看终端或服务器上的日志。
+
+## 让我输入一个 API key
+
+这是连后端用的密钥，<u>不是模型服务商的 key</u>，填模型的 key 进不去。
+
+- **Docker 装的：** 另开一个终端，用 `docker ps` 找到容器名。再运行 `docker exec CONTAINER cat /home/openhands/.openhands/agent-canvas/api-key.txt`，把 `CONTAINER` 换成容器名。填打印出来的那串。
+- **用了 `--public` 或服务器：** 填你设的 `LOCAL_BACKEND_API_KEY`。
+
+## 一发消息就报错
+
+打开 `Settings > LLM` 逐项核对：
+
+1. key 没填、填错或过期了。
+2. 服务商和模型名对不上。
+3. 本地或自定义的模型，`Base URL` 填对了没有。
+4. 报 `LLM Provider NOT provided`：服务商没选，或者模型名里没带服务商。
+
+报错分两种样子。警告条是你能自己改的，比如换 key、换模型。错误条说明内部出了问题，可能要重开对话或重启后端。模型的具体配法见[完整教程第 2 步](/guide/2-model/)，本地模型见[用本地模型](/howto/local-llm/)。
+
+## 文件改到了别的地方
+
+<Term k="代理" />只在对话绑定的那个<Term k="工作区" />里干活：
+
+1. 开对话之前先点 `Open Workspace` 选好文件夹。
+2. 确认这个对话用的是你想要的后端。
+3. Docker 装的，项目要放在挂进去的文件夹里，在容器里叫 `/projects`。
+4. 服务器后端看到的是服务器上的文件，不是你电脑上的。
+
+## 想看更详细的日志
+
+它默认只打印警告和错误。加 `--verbose` 能看到全部：<Cmd c="agent-canvas --verbose" />
+
+只想多看一点，用 <Cmd c="LOG_LEVEL=INFO agent-canvas" />。
+
+## 还是不行
+
+带上终端里的报错，去 [OpenHands 的 Slack 社区](https://openhands.dev/joinslack) 问，或者到 [GitHub](https://github.com/OpenHands/OpenHands/issues) 开一个 issue。日志里的密钥先删掉再贴。
+
+## 卡住了？
+
+<Q q="MCP 服务器在 Settings 里找不到。">
+它不在 `Settings` 里。打开顶层的 `Customize`，再进 `MCP Servers`。加完以后要开一个新对话才用得上。
+</Q>
+<Q q="自动化页面显示不可用。">
+自动化跑在当前后端上。先切回默认的本地后端，看那边能不能用。远程后端要带自动化服务，看它的日志里有没有启动报错。
+</Q>
+<Q q="Claude Code 或 Codex 登录了，在这里却用不上。">
+它们要在后端那台机器上登录。后端跑在 Docker、服务器或云上时，看不到你笔记本上的登录状态。在那个后端上另外加 key，改完重开对话。
+</Q>

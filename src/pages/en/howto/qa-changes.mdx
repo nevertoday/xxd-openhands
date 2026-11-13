@@ -1,0 +1,153 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: qa-changes
+time: A minute to install the skill; each run depends on the size of the change
+for: The code is done and the tests pass, but you want to know it actually works
+step: 6
+tldr: Type /qa-changes. It runs the software, uses it like a real user, and reports back with evidence.
+description: Use the qa-changes skill to have OpenHands actually run your change, set up the environment, use it like a real user, and report with command output and screenshots. Then QA every PR with the QA changes automation or GitHub Actions.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Reply from "../../../components/Reply.astro";
+
+## Install the skill and QA one PR
+
+1. Send this in a conversation to install the qa-changes <Term k="技能" />: <Cmd c="/add-skill https://github.com/OpenHands/extensions/tree/main/skills/qa-changes" />
+2. A banner appears with **Start new conversation with this skill**. Select it. The skill works only in a new conversation.
+3. In the new conversation, send:
+
+<Copy id="qa-once" title="QA one PR" code={`/qa-changes Please QA PR #<number> in <owner/repo>.
+What I want: confirm the PR actually does what it says. Focus on <the new dashboard page, for example>.
+What done looks like: you really run the software and use it, beyond running tests. For a bug fix, make the bug happen on the old code first, then confirm it's gone on the new code.
+What to show me when done: the verdict, every command you ran and what it printed, and screenshots for anything visual.`} />
+
+<mark>It actually uses the software.</mark> Reading code for problems is [code review](/en/howto/code-review/)'s job, and running tests is CI's job. It does neither.
+
+To read a PR on GitHub, connect GitHub first. The steps are in [Hand a GitHub issue to it and get a PR](/en/howto/issue-to-pr/).
+
+## No PR yet, just local changes
+
+You don't need the skill. Say it directly:
+
+<Copy id="qa-local" title="Try my local changes" code={`I just finished <the feature> and haven't opened a PR. Try it the way a real user would.
+What I want: install and start it using the steps in README or AGENTS.md, then <exactly what to do, such as open /dashboard and click "Export">.
+What done looks like: you really start the app, really click, really send requests. Running --help doesn't count.
+What to show me when done: the commands you ran and what you saw, with screenshots for anything visual. If you couldn't try something, say why.
+Only test. Don't change any code.`} />
+
+## How it tests
+
+Four phases. If one fails, it stops and reports:
+
+1. **Understand the change.** It reads the PR description and diff, works out the goal, and finds where a user would touch it.
+2. **Set up.** It installs and builds using the project's own steps. It notes CI results and doesn't rerun tests.
+3. **Use it.** This is the main phase, and it depends on what changed:
+
+| What changed | How it tests |
+| --- | --- |
+| UI | Starts the dev server, clicks through in a browser, takes screenshots |
+| CLI | Runs it with real arguments, then one bad input |
+| API | Starts the server, sends real requests, checks responses |
+| Bug fix | Reproduces on the base branch, confirms on the PR branch |
+| Library | Writes a short script that calls the changed functions |
+
+4. **Report.** Verdict first, long logs folded away.
+
+## Reading the report
+
+<Reply code={`QA Report: PASS
+
+Does this PR achieve its stated goal? Yes. The new /api/health endpoint returns 200 with the version.
+
+Evidence (expand to see)
+1. Started the server with npm run dev
+2. curl http://localhost:3000/api/health  returned 200 OK
+3. Opened /dashboard and the page rendered  [screenshot]
+
+Issues found: none`} />
+
+There are four verdicts:
+
+- **PASS**: the change works and nothing else broke.
+- **PASS WITH ISSUES**: it mostly works, with problems listed.
+- **FAIL**: it doesn't do what it claims, or it broke something.
+- **PARTIAL**: some things were tested and some couldn't be. It lists which.
+
+It knows when to stop. If one approach fails after three different attempts, it switches approaches. If two approaches both fail, it stops and writes down what it tried and what it couldn't verify. "I couldn't verify X because Y" is worth more than a false "everything works".
+
+## Make the next run smoother
+
+- **Put install and run steps in <Term k="AGENTS.md" />.** That's where it looks during setup.
+- **Spell out UI flows.** The docs say it's weaker at reading UIs visually. It can slip when it doesn't know the workflow. Write what to click and what to type.
+- **Give the project a QA guide.** Create `.agents/skills/qa-guide.md` with the `/qa-changes` trigger:
+
+```markdown
+---
+name: qa-guide
+description: Project-specific QA guidelines
+triggers:
+- /qa-changes
+---
+
+# QA guidelines for this project
+
+## Environment setup
+- Run make setup first
+- The dev server runs on port 8080
+
+## Always test
+- After backend changes, check the admin dashboard at /admin
+
+## Known limitations
+- Payments need a Stripe test key, so skip the payment flow
+```
+
+## QA every PR automatically
+
+<Tabs id="qa-auto" items={[["canvas", "Agent Canvas automation"], ["actions", "GitHub Actions"]]}>
+<div slot="canvas">
+
+Use the ready-made "QA changes" <Term k="自动化" />. When a PR comes in, it runs the method above.
+
+- **When it starts**: a PR is opened, or a draft is marked ready for review. You pick one.
+- **Three gate checks first**: the PR isn't a draft. Its author already has more than 3 commits on the base branch. The description has no "QA Agent" section yet. If any check fails, it stops and changes nothing.
+- **Where the result goes**: it doesn't post a comment. It appends a horizontal rule and a "QA Agent" section to the end of the PR description, with the report inside.
+- **What you fill in**: the repository, the base branch (default `main`), and which PR event starts it. Connect GitHub first.
+
+Some deployments can't run this kind of GitHub-event automation directly. Then it opens a setup conversation, confirms the repo, branch, and event, and creates the automation for you. Details are on [Ready-made automations: QA changes](/en/automations/qa-changes/).
+
+</div>
+<div slot="actions">
+
+Run it in a repo's GitHub Actions. You set it up once per repo:
+
+1. Copy the example workflow from the [official page](https://docs.openhands.dev/openhands/usage/use-cases/qa-changes) into `.github/workflows/qa-changes.yml`.
+2. In the repo's Settings → Secrets and variables → Actions, add `LLM_API_KEY`.
+3. Adjust the triggers and model as needed.
+
+</div>
+</Tabs>
+
+<Callout type="tip" title="Pair it with code review">
+Code review reads the diff and finds problems in how it's written. QA runs the software and finds problems in how it behaves. The docs recommend using both.
+</Callout>
+
+## Stuck?
+
+<Q q="It says it can't start the server.">
+It sets up from README or AGENTS.md. Write the install and start steps there. Put any unusual steps in the QA guide.
+</Q>
+<Q q="The report says PARTIAL.">
+Open the report to see what couldn't be tested. Common causes are missing environment variables, external services, or missing permissions. Fix those and run it again.
+</Q>
+<Q q="It takes too long.">
+A change with many entry points takes longer. Split large PRs, or list the most important scenarios in the QA guide.
+</Q>
+<Q q="The automation is on, but no QA Agent section appears.">
+Check the three gates. Is the PR a draft? Does the author have fewer than 4 commits on the base branch? Does the description already have a "QA Agent" section?
+</Q>

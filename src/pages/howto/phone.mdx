@@ -1,0 +1,72 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: phone
+time: 读 5 分钟，动手 10 分钟
+for: 想躺在沙发上用手机看它干活
+step: 8
+tldr: 用 Tailscale 连起手机和电脑，手机浏览器打开电脑的地址。
+description: 从手机或平板打开电脑上的 Agent Canvas：首选 Tailscale，不用对公网开放；临时要一个公网地址再用 ngrok，而且必须先开公开模式、设强密钥。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+
+## 先挑一条路
+
+- **Tailscale（推荐）。** 在你的设备之间建一个私有网络，只有你自己的设备能连。不用改路由器，也不用域名。
+- **ngrok。** 给电脑一个临时的公网网址。任何拿到网址的人都能打开登录页，所以必须用公开模式和强密钥。
+
+两条路都要电脑开着，Agent Canvas 在跑。
+
+## 用 Tailscale
+
+1. 在电脑和手机上都装 [Tailscale](https://tailscale.com/download)，用同一个账号登录。
+2. 在电脑的 Tailscale 里找到这台电脑的 IP，通常长这样：`100.x.y.z`。
+3. 生成一串密钥，复制下来存好：<Cmd c="openssl rand -base64 32" />
+4. 在电脑的<Term k="终端" />里设好密钥，再启动：
+
+<Copy id="ph-ts" lang="bash" title="让手机能连上" code={`export LOCAL_BACKEND_API_KEY="<上一步打印的那串>"
+agent-canvas --host 0.0.0.0`} />
+
+5. 手机浏览器打开 `http://<tailscale-ip>:8000/`，`<tailscale-ip>` 换成第 2 步的 IP。
+
+<Callout type="ok">
+手机上先出现输入 API key 的页面。填进第 3 步那串，就能看到电脑上的对话。
+</Callout>
+
+为什么要加 `--host 0.0.0.0`：<mark>Agent Canvas 默认只让本机连。</mark>加上它，才会接受别的设备的连接，页面也会改成要先填密钥。
+
+<Callout type="warn" title="同一个 Wi-Fi 里的设备也能看到登录页">
+`0.0.0.0` 表示所有网卡都在听，不只是 Tailscale。密钥要够长，别在公共 Wi-Fi 上这样开。不用了就按 `Ctrl+C` 停掉，下次照平常的 `agent-canvas` 启动。
+</Callout>
+
+## 用 ngrok（临时的公网网址）
+
+网址谁都能打开，<u>先开公开模式、设强密钥，再开 ngrok</u>：
+
+<Copy id="ph-public" lang="bash" title="终端一：公开模式" code={`export LOCAL_BACKEND_API_KEY="<choose-a-strong-secret>"
+agent-canvas --public`} />
+
+再开第二个终端：
+
+<Copy id="ph-ngrok" lang="bash" title="终端二：ngrok" code="ngrok http 8000" />
+
+手机打开 ngrok 打印出来的转发网址，填密钥。
+
+<Callout type="no" title="别不设密钥就开 ngrok">
+没有密钥，拿到网址的人就能用你的 Agent Canvas，还能花你配在里面的模型额度。ngrok 还能加登录、IP 白名单，要长期用就照[放到服务器上](/howto/server/)的安全清单来。
+</Callout>
+
+## 卡住了？
+
+<Q q="手机能打开页面，但一直连不上后端。">
+手机上的页面可能还指着 `127.0.0.1` 或 `localhost`。在手机上打开 `Manage Backends`，把本地<Term k="后端" />的 `Host / Base URL` 改成 `http://<tailscale-ip>:8000`。改了又变回去的话，在手机浏览器设置里清掉这个网址的网站数据，再刷新。
+</Q>
+<Q q="我用的是桌面版。">
+上面的命令是 npm 装的 `agent-canvas`。桌面版怎么从手机连，官方文档还没写，以后补上我们再更新这一页。
+</Q>
+<Q q="不想让电脑一直开着。">
+放到一台常开的机器上，见[放到服务器上](/howto/server/)。或者让对话跑在 <Term k="OpenHands Cloud" /> 上，见[用 OpenHands Cloud](/howto/cloud/)。
+</Q>

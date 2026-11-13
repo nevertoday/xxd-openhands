@@ -1,0 +1,170 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: recipes
+time: Look things up as you need them
+for: You want a prompt you can copy, tweak, and send
+step: 3
+tldr: Find the prompt for what you're doing, replace the parts in angle brackets, and send it.
+description: "OpenHands prompts by situation: understand a project, fix a bug, add a feature, refactor, add tests, review a plan first, pick up where you left off, start the day, run a helper in parallel, prepare a release. Each one copies in a click, with a line on why it works."
+---
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+
+Replace the parts in angle brackets with your own files, errors, and definition of done. Every prompt follows the same order: what I want, what done looks like, what to show me when done.
+
+## Understand the project first
+
+**Walk me through this project**
+
+<Copy id="r-tour" code={`Walk me through this project: what it does, how to run it locally, and where the main code lives.
+What done looks like: every point names the file you learned it from.
+What to show me when done: a short write-up. Read only for now.`} />
+
+"Read only" keeps it investigating. The full routine is in [Take over an unfamiliar project](/en/howto/new-codebase/).
+
+**Write the project notes into AGENTS.md**
+
+<Copy id="r-agents" code={`Read this repo's docs, code, and the workflows in .github/, then create an AGENTS.md at the root.
+What I want: its purpose, how to install and run it, the folder structure, and what CI checks.
+What done looks like: short enough that a newcomer can get started from it alone.
+What to show me when done: the full file. Don't touch anything else.`} />
+
+New conversations don't remember old ones, but every one reads <Term k="AGENTS.md" />.
+
+## Fix a bug
+
+**A bug with an error message**
+
+<Copy id="r-bug" code={`Fix the <TypeError> in <src/api/users.py> line <45>.
+Error message: <paste the error>
+Expected: <get_user_preferences() returns default preferences when the user has none saved>
+Actual: <it crashes when user.preferences is None>
+What done looks like: <it returns DEFAULT_PREFERENCES in that case>, existing tests pass, and a new test covers this case.
+What to show me when done: the real cause, what you changed, and the test results.`} />
+
+File, line, exact error, expected and actual behavior. With all four, it doesn't have to guess.
+
+**Something broke after a deploy**
+
+<Copy id="r-incident" code={`Users can't log in since <yesterday's deployment>.
+Symptoms: <the login form returns a 500 error>
+Logs: <Redis connection refused>
+Likely cause: <Redis moved to a new host yesterday, and src/config/redis.js may still have the old one>
+What done looks like: <login works against the new Redis at redis.internal:6380>.
+What to show me when done: the cause you found and the evidence, then a proposed fix. Wait for my OK before fixing.`} />
+
+Include every clue you already have. It saves a lot of searching.
+
+## Add a feature
+
+<Copy id="r-feature" code={`Add <email and password login> to <our Express.js API>.
+What I want:
+1. <A POST /api/auth/login endpoint>
+2. <Email and password in the request body>
+3. <Validation against users in PostgreSQL>
+4. <A JWT on success, 401 on failure>
+Follow the patterns in <src/api/routes.js>, and use the db.query() helper in <src/db/index.js>.
+What done looks like: <calling the endpoint with valid credentials returns a JWT that works with our existing auth middleware>.
+What to show me when done: the files you changed, and the result of actually calling the endpoint.`} />
+
+Name the files to copy from, so it knows how the project already does things.
+
+## Refactor
+
+<Copy id="r-refactor" code={`Refactor the <UserService> class in <src/services/user.js>.
+Problems to address:
+1. <It's 500+ lines. Split it into smaller services>
+2. <Database queries are mixed with business logic. Separate them>
+Constraint: keep the public API unchanged, since other code depends on it.
+What done looks like: the same behavior, and <npm test> passes.
+What to show me when done: the new pieces, and the test results.`} />
+
+"Keep the public API unchanged" says exactly what's off-limits.
+
+## Add tests
+
+**Up to a coverage target**
+
+<Copy id="r-coverage" code={`Add tests for <UserService>. Coverage is <45%> now, and the target is <85%>.
+What I want: use <codecov> to find uncovered paths, then add unit tests for edge cases. Re-run coverage after each batch.
+What done looks like: coverage reaches <85%> and all tests pass. If a test uncovers a bug, fix the code, not the test.
+What to show me when done: coverage before and after, and any bugs you found.`} />
+
+**Keep going until it's done: /goal**
+
+<Copy id="r-goal" code={`/goal --max 3 add unit tests for <the parser> and verify they pass`} />
+
+`/goal` works in rounds. After each round, a judge model checks whether the goal is met. If not, the agent keeps going, up to `--max` rounds. Your backend has to support it. The judge adds model calls, so it costs more. Sending a normal message stops the goal.
+
+## Review the plan before it acts
+
+<Copy id="r-plan" code={`Inspect <the failing CI on PR #123>, explain the root cause, and propose a fix.
+What done looks like: the cause comes with evidence, and the fix names specific files.
+What to show me when done: the cause and the fix. Don't edit files, push, or comment on GitHub until I approve.`} />
+
+When it acts too early, the docs' fix is exactly this: say it must wait for your approval.
+
+## Pick up where you left off
+
+<Copy id="r-continue" code={`Last time you added <the login endpoint>, in <src/api/auth/login.js>.
+Now add <logout>:
+1. <A POST /api/auth/logout endpoint>
+2. <Invalidate the current token>
+3. <Clear any server-side session data>
+Follow the same patterns as login.
+What done looks like: <after logout, the old token gets 401>.
+What to show me when done: the files you changed, and the result of actually calling it.`} />
+
+It doesn't remember the last conversation. Put where you left off, and where the code is, in your first message.
+
+## Start the day by sorting your work
+
+<Copy id="r-daily" code={`Do my daily workflow using the connected GitHub and Slack MCP servers.
+What I want you to gather: PRs that need my attention or review, assigned issues, GitHub notifications and failing CI, and Slack messages that need a reply.
+What done looks like: grouped by urgency, each item with its title, why it matters, and a direct link.
+What to show me when done: the list, ending with the single highest-priority task for me to start. Don't change anything or send any message without asking me first.`} />
+
+Connect GitHub and Slack in Customize → MCP Servers first.
+
+## Run a helper on something else in parallel
+
+<Copy id="r-child" code={`Start a separate agent to look at the failing CI and unaddressed review comments on my other open PRs.
+What I want: it may edit files in its own workspace and run tests.
+Off-limits: pushing, merging, or commenting on GitHub.
+What done looks like: a conclusion for each PR.
+What to show me when done: a summary and proposed changes for each PR.`} />
+
+Hand off only work that's independent of what you're doing. Its conversation shows up in the conversation list. More in [Run several conversations at once](/en/howto/parallel/).
+
+## Before a release
+
+<Copy id="r-release" code={`Prepare for a production release.
+What I want:
+1. Review all changes since the last release
+2. Check for breaking API changes
+3. Verify database migrations are reversible
+4. Update the changelog and write release notes
+5. List the rollback steps
+What done looks like: a conclusion for every item.
+What to show me when done: the release notes draft, and any risks you found.`} />
+
+## Other situations
+
+- **Review a PR**: [Have it review your PRs](/en/howto/code-review/)
+- **Try a change**: [Have it test your change like a user](/en/howto/qa-changes/)
+- **Turn an issue into a PR**: [Hand a GitHub issue to it and get a PR](/en/howto/issue-to-pr/)
+- **Upgrade dependencies**: [Upgrade dependencies](/en/howto/dependency-upgrades/)
+- **Fix vulnerabilities**: [Fix security vulnerabilities](/en/howto/vulnerability-remediation/)
+
+## Common traps
+
+<Q q="I handed over a big job in one message, and it drifted.">
+Split it. The docs suggest one prompt per feature, usually under 100 lines of change. Break big work into steps, one prompt each.
+</Q>
+<Q q="It says it's done, and I can't tell whether it is.">
+The prompt has no "what done looks like". Add something checkable: which tests pass, what an endpoint returns.
+</Q>
+<Q q="It started changing code before I saw a plan.">
+Write "Don't edit files until I approve." If it already did, select "Stop", then ask it to undo.
+</Q>

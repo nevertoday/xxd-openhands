@@ -1,0 +1,143 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: update-remove
+time: 4-minute read
+for: You want to update, stop, or completely remove Agent Canvas
+step: 1
+tldr: Use the commands for how you installed it. Updating and uninstalling keep your data until you delete it.
+description: How to stop, update and uninstall Agent Canvas for each install method (desktop app, npm, npx, Docker), where settings and conversations are stored, and how to delete them too.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+
+## Work out how you installed it
+
+- You open it from an app icon: **desktop app**.
+- You start it with `agent-canvas` in a <Term k="终端" />: **npm**.
+- You start it with `npx @openhands/agent-canvas`: **npx**.
+- You start it with `docker run`: **Docker**.
+
+## Stop it
+
+<Tabs id="ur-stop" label="How you installed it" items={[["app", "Desktop app"], ["npm", "npm / npx"], ["docker", "Docker"]]}>
+<div slot="app">
+
+Quit **OpenHands Agent Canvas** from its application menu.
+
+</div>
+<div slot="npm">
+
+Go back to the terminal running it and press `Ctrl+C`.
+
+</div>
+<div slot="docker">
+
+Go back to the terminal running the container and press `Ctrl+C`. If it runs in the background, find the container and stop it:
+
+<Copy id="ur-dstop" lang="bash" title="Stop a background container" code={`docker ps
+docker stop <container-id-or-name>`} />
+
+</div>
+</Tabs>
+
+<Callout type="warn" title="Stopping it stops local automations too">
+<Term k="自动化" text="Automations" /> run on a backend. When the local backend is stopped, its scheduled automations don't run.
+</Callout>
+
+## Update
+
+Stop it first, then update for your install method.
+
+<Tabs id="ur-update" label="How you installed it" items={[["app", "Desktop app"], ["npm", "npm"], ["npx", "npx"], ["docker", "Docker"]]}>
+<div slot="app">
+
+Download the new installer from the [latest OpenHands release](https://github.com/OpenHands/OpenHands/releases/latest) and install it as before. `Settings > Application` shows the installed version and can check for updates.
+
+</div>
+<div slot="npm">
+
+<Copy id="ur-npm" lang="bash" title="Update and check the version" code={`npm install -g @openhands/agent-canvas@latest
+agent-canvas --version`} />
+
+When the last line prints the new version, you're done.
+
+</div>
+<div slot="npx">
+
+<Cmd c="npx @openhands/agent-canvas@latest" />
+
+This downloads and runs the latest version directly.
+
+</div>
+<div slot="docker">
+
+This site's Docker command pins version `1.40.0`. Check the newest version on the [OpenHands releases page](https://github.com/OpenHands/OpenHands/releases), replace `1.40.0` in the command, and start it with the same volume.
+
+If you use the `latest` image, pull it again and then run your usual command:
+
+<Cmd c="docker pull ghcr.io/openhands/agent-canvas:latest" />
+
+</div>
+</Tabs>
+
+<Callout type="ok" title="Updating keeps your data">
+Settings and conversations live outside the program: in `~/.openhands` for npm and npx, and in the volume for Docker. A new version or a new image doesn't touch them.
+</Callout>
+
+## Uninstall
+
+<Tabs id="ur-remove" label="How you installed it" items={[["app", "Desktop app"], ["npm", "npm"], ["npx", "npx"], ["docker", "Docker"]]}>
+<div slot="app">
+
+Quit it first. On macOS, move it from Applications to the Trash. On Windows, uninstall it from **Installed apps**. On Linux, delete the AppImage or remove the Debian package.
+
+</div>
+<div slot="npm">
+
+Stop it, then run: <Cmd c="npm uninstall -g @openhands/agent-canvas" />
+
+If Windows says `uv.exe` or another file is in use, close every terminal running it and try again.
+
+</div>
+<div slot="npx">
+
+npx didn't install anything, so stopping it is enough. To clear npm's download cache: <Cmd c="npm cache verify" />
+
+</div>
+<div slot="docker">
+
+Stop the container, then remove the image:
+
+<Copy id="ur-rmi" lang="bash" title="Remove the image" code={`docker ps
+docker stop <container-id-or-name>
+docker rmi ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+If you used the `latest` image, replace `1.40.0` with `latest` on the last line.
+
+</div>
+</Tabs>
+
+## Delete your data too
+
+Uninstalling removes the program only. <mark>Settings, secrets and conversation history stay.</mark> If you're done for good, delete them as well. <u>This can't be undone.</u>
+
+- **npm, npx:** delete the `~/.openhands` folder.
+- **Docker, installed with this site's command:** run <Cmd c="docker volume rm openhands-state" />
+- **Docker, installed with the official docs' command:** the volume is `openhands-data`, so run <Cmd c="docker volume rm openhands-data" />
+- **Docker on Windows:** delete the `.openhands` folder in your user directory.
+
+## Stuck?
+
+<Q q="After updating with npm, agent-canvas is still the old version.">
+Run `agent-canvas --version` to check. If it's wrong, your terminal may be finding another, older copy. See the command-not-found entry in [It won't open or connect](/en/howto/troubleshoot/).
+</Q>
+<Q q="Where does the desktop app keep its data?">
+The official docs only explain removing the app itself. They don't say where the desktop app stores settings and conversations.
+</Q>
+<Q q="After changing the volume name, my old settings are gone.">
+Settings live in the volume, so a new volume starts from scratch, and nothing is copied from the old one. Start with the old volume name again and your settings are back.
+</Q>

@@ -1,0 +1,88 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: cloud
+time: 6-minute read
+for: You'd rather not run machines yourself, or want the official model credit
+step: 5
+tldr: Use its model key in Agent Canvas, or add it as a backend so conversations run in the cloud.
+description: Three ways to use OpenHands Cloud. As a model source (the LLM API key), as an Agent Canvas backend (conversations run in cloud sandboxes), or directly on the web, in GitHub and in Slack. Which key is which, where to add credit, and how to cap spending.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+
+## Three things it can do for you
+
+<Term k="OpenHands Cloud" /> is the hosted version run by the OpenHands team. You can use just part of it:
+
+- **As a model source.** Get a key and use its <Term k="模型" text="models" /> in Agent Canvas.
+- **As a backend.** Conversations and <Term k="自动化" text="automations" /> run in cloud <Term k="沙盒" text="sandboxes" />, not on your computer.
+- **On its own.** Ask it to work on the web, in GitHub issues, or in Slack.
+
+## Sign in
+
+1. Go to [app.all-hands.dev](https://app.all-hands.dev).
+2. Click `Log in with GitHub`, `Log in with GitLab` or `Log in with Bitbucket`.
+3. Review the permissions it asks for and authorize it.
+4. Accept the terms of service and click `Continue`.
+
+## As a model source
+
+1. In OpenHands Cloud, open Settings, go to the `API Keys` tab, and copy your `LLM API Key`. You need at least $10 of credits under `Billing` before this key is available.
+2. In Agent Canvas, open `Settings > LLM` and choose `OpenHands` as the provider on the `Basic` tab.
+3. Pick a model, paste the key, and save.
+4. Start a new <Term k="对话" /> and send a message to test it.
+
+Models labeled `Free` carry no extra token cost. Right now that's **DeepSeek V4 Flash**. Which models are free changes with promotions.
+
+<Callout type="warn" title="Don't mix up the two keys">
+The `API Keys` tab has two kinds of key. <mark>Agent Canvas needs the `LLM API Key`.</mark> A Cloud API key is for programs that call OpenHands Cloud, and it won't work in model settings.
+</Callout>
+
+## As a backend
+
+1. Click the backend switcher at the top of Agent Canvas.
+2. Choose `Manage Backends`, then `Add Backend`.
+3. Click `Login with OpenHands Cloud` and sign in.
+4. Once connected, select it as the active <Term k="后端" />.
+
+<Callout type="ok">
+New conversations now run on OpenHands Cloud, each in its own cloud sandbox, away from the files on your computer.
+</Callout>
+
+A few things change on a cloud backend:
+
+- **Settings are separate.** Models, secrets and MCP servers need setting up again on this backend. They don't affect your local one.
+- **Code comes from a repository.** The cloud can't see folders on your computer, so you pick a repository and branch.
+- **Skills and plugins live on the web.** `Customize > Skills` becomes `Skills and Plugins` and opens the Cloud settings.
+- **You can stop the sandbox.** The conversation menu has `Stop Sandbox`. To just interrupt the agent, use `Stop`.
+
+If your company runs OpenHands Enterprise, click `Advanced` when adding the backend and enter your company's host before signing in.
+
+## Call it from GitHub or Slack
+
+**GitHub.** In the repository picker, click `+ Add GitHub Repos`, choose the repositories, and click `Install & Authorize`. Then label an issue `openhands`, or comment `@openhands`. It replies that it's on it. If it decides the issue is solved, it opens a <Term k="PR" /> and comments again with a summary and the link. See [Turn a GitHub issue into a PR](/en/howto/issue-to-pr/).
+
+**Slack.** A workspace admin installs the OpenHands Slack app first. Then each person goes to `Settings > Integrations` in Cloud and clicks `Install OpenHands Slack App` to link their account. After that, mention `@openhands` in a channel to start a conversation.
+
+## Adding credit and capping spend
+
+- **Credit.** Add credit for OpenHands models in Cloud's `Billing` tab.
+- **A cap per conversation.** In Cloud's `Settings > Application`, set `Maximum Budget Per Conversation` in US dollars. It stops when it hits the cap, and you can tell it to continue.
+
+For where the money goes and how to spend less, see [Keep costs down](/en/howto/cost/).
+
+## Stuck?
+
+<Q q="My LLM profiles in Agent Canvas don't show up on the Cloud website.">
+That's expected. Agent Canvas supports LLM profiles more fully than the Cloud website, which is still catching up. Profiles also belong to a backend, so switching backends changes which ones you see.
+</Q>
+<Q q="I can't find Provider Connections on the cloud backend.">
+That panel only exists on local backends and is hidden on Cloud. Put the key in the profile directly.
+</Q>
+<Q q="A Free model still cost money.">
+`Free` only applies to the full `openhands/` model routes. Similar-sounding models from other providers are billed separately.
+</Q>
+
+<Checkpoint id="h-cloud" items={["I signed in at app.all-hands.dev", "I know model setup uses the LLM API key", "I know a cloud backend needs its own settings"]} />
