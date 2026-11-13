@@ -1,0 +1,30 @@
+// 正文里虚线标出的术语：悬停看一句话解释（Term 组件），点一下进对应的 Wiki 条目。
+// 键是中文正文里写的词；英文页照样写 <Term k="中文键" />，显示 en.label。
+// wiki: 对应的 Wiki 条目 slug（src/data/wiki.js 里必须有这一条）。
+// 依据：OpenHands/OpenHands 1a7c59b（v1.40.0）、OpenHands/docs edd916f（2026-11-13 核对）。
+export const GLOSSARY = {
+  OpenHands: { tip: "一个开源的 AI 编程代理项目：AI 能自己敲命令、改文件、开 PR，你在旁边看着、拍板。", wiki: "openhands", en: { label: "OpenHands", tip: "An open-source coding-agent project: the AI runs commands, edits files and opens PRs while you watch and decide." } },
+  "Agent Canvas": { tip: "OpenHands 的网页控制台。你在这里和 AI 对话、换后端、管自动化。", wiki: "agent-canvas", en: { label: "Agent Canvas", tip: "OpenHands' browser control center. You talk to agents, switch backends and manage automations here." } },
+  代理: { tip: "能自己动手的 AI：不只是回答，还会运行命令、读写文件、反复试，直到做完。", wiki: "agent", en: { label: "agent", tip: "An AI that acts on its own: it runs commands, reads and writes files, and keeps trying until the task is done." } },
+  "Agent Server": { tip: "真正跑 AI 的那个后台程序。Agent Canvas 只是界面，活是它干的。", wiki: "agent-server", en: { label: "Agent Server", tip: "The background program that actually runs the agents. Agent Canvas is just the screen; this does the work." } },
+  后端: { tip: "AI 在哪台机器上干活：你的电脑、Docker 容器、云服务器，或 OpenHands Cloud。", wiki: "backend", en: { label: "backend", tip: "Where the agent does its work: your computer, a Docker container, a server, or OpenHands Cloud." } },
+  对话: { tip: "你交给 AI 的一件事。每个对话有自己的历史和设置，换一件事就开一个新对话。", wiki: "conversation", en: { label: "conversation", tip: "One task you hand to the agent. Each has its own history and settings; start a new one for a new task." } },
+  工作区: { tip: "AI 能读写的那个文件夹。它只该碰这里面的东西。", wiki: "workspace", en: { label: "workspace", tip: "The folder the agent can read and write. It should only touch what's inside." } },
+  沙盒: { tip: "一个隔离出来的小环境（通常是 Docker 容器）。AI 在里面乱来，也碰不到你电脑上别的东西。", wiki: "sandbox", en: { label: "sandbox", tip: "An isolated environment, usually a Docker container. Whatever the agent does inside can't reach the rest of your computer." } },
+  Docker: { tip: "一个开「独立小房间」的软件。OpenHands 用它把 AI 关在容器里干活。", wiki: "docker", en: { label: "Docker", tip: "Software that runs programs in isolated containers. OpenHands uses it to keep the agent boxed in." } },
+  模型: { tip: "背后真正思考的大模型（LLM），比如 Claude、GPT、Gemini。OpenHands 本身不带模型，要你接一个。", wiki: "llm", en: { label: "model", tip: "The large language model doing the thinking, such as Claude, GPT or Gemini. OpenHands doesn't include one; you connect your own." } },
+  "API key": { tip: "一串密钥，相当于模型服务商给你的「门卡」。用它付费调用模型，不要发给别人。", wiki: "api-key", en: { label: "API key", tip: "A secret string the model provider gives you, like a key card. It's how you pay for model calls. Never share it." } },
+  "LLM Profile": { tip: "一套保存好的模型设置（哪家、哪个模型、哪个 key），可以存好几套随时切换。", wiki: "llm-profile", en: { label: "LLM profile", tip: "A saved model setup (provider, model, key). Keep several and switch any time." } },
+  "Agent Profile": { tip: "一套保存好的代理设置：用哪个 AI（OpenHands、Claude Code……）、配哪套模型。", wiki: "agent-profile", en: { label: "agent profile", tip: "A saved agent setup: which agent to run (OpenHands, Claude Code…) and which model it uses." } },
+  ACP: { tip: "Agent Client Protocol，一种通用接口。支持它的 AI（Claude Code、Codex、Gemini CLI……）都能在 Agent Canvas 里用。", wiki: "acp", en: { label: "ACP", tip: "Agent Client Protocol, a shared interface. Agents that speak it (Claude Code, Codex, Gemini CLI…) can run inside Agent Canvas." } },
+  自动化: { tip: "定好时间或条件，让 AI 自己开对话干活。比如每天早上汇总 Slack，有新 PR 就自动审。", wiki: "automation", en: { label: "automation", tip: "A rule that starts agent conversations on a schedule or event, like a daily Slack digest or reviewing every new PR." } },
+  技能: { tip: "一份写给 AI 看的说明书（Markdown），告诉它某类事怎么做。相关的时候它会自己加载。", wiki: "skill", en: { label: "skill", tip: "A Markdown guide written for the AI on how to do one kind of task. It loads itself when relevant." } },
+  "AGENTS.md": { tip: "放在项目根目录的一份说明：这个项目怎么装、怎么测、有什么规矩。AI 每次进来先读它。", wiki: "agents-md", en: { label: "AGENTS.md", tip: "A file in the project root saying how to install, test and work in it. The agent reads it first." } },
+  插件: { tip: "打包好的一组技能、命令、钩子或 MCP 配置，装一次就都有了。", wiki: "plugin", en: { label: "plugin", tip: "A bundle of skills, commands, hooks or MCP settings you install in one go." } },
+  MCP: { tip: "Model Context Protocol：让 AI 接上外部工具的通用插口，比如 GitHub、Slack、Notion。", wiki: "mcp", en: { label: "MCP", tip: "Model Context Protocol: a standard plug that connects the agent to outside tools like GitHub, Slack or Notion." } },
+  "OpenHands Cloud": { tip: "OpenHands 官方托管的在线版。不用自己装，登录就能用，按用量付费。", wiki: "cloud", en: { label: "OpenHands Cloud", tip: "The hosted version run by the OpenHands team. Nothing to install; sign in and pay for what you use." } },
+  SDK: { tip: "给程序员用的 Python 工具包，可以用代码自己搭一个代理。Agent Server 就是用它做的。", wiki: "sdk", en: { label: "SDK", tip: "A Python toolkit for building your own agents in code. The Agent Server is built on it." } },
+  终端: { tip: "打命令的黑窗口。Mac 上叫「终端」，Windows 上是 PowerShell。", wiki: "terminal", en: { label: "terminal", tip: "The window where you type commands. Terminal on a Mac, PowerShell on Windows." } },
+  PR: { tip: "Pull Request：把一组改动交上去，请人看过以后再并进正式版本。", wiki: "pr", en: { label: "PR", tip: "Pull Request: a set of changes submitted for review before being merged into the main version." } },
+  token: { tip: "模型用量的计算单位，相当于「字数额度」。任务越长、来回越多，花得越多。", wiki: "token", en: { label: "tokens", tip: "The unit model usage is counted and billed in. Longer tasks and more back-and-forth cost more." } },
+};

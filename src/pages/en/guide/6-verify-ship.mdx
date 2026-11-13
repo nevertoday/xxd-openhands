@@ -1,0 +1,91 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 6
+need: A finished change; a GitHub repo helps
+tldr: "Get evidence you can check yourself, then have the AI open the PR, get it ready to merge, and merge what's verified."
+description: "Say what done means up front, ask for evidence that fits the change, let the AI verify in your app, then open the PR, get it mergeable, and merge on verified results."
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+import Fig from "../../../components/Fig.astro";
+
+<Fig id="g6-ship" />
+
+## Say what done means in the first sentence
+
+<Copy id="done" code="/poteto-mode Add JSON output to this command. The text output must stay byte-for-byte identical, the JSON must parse, and run both on the example project. Show me the evidence." />
+
+The reply should include the real commands and their output. If a check couldn't run, it says "inconclusive".
+
+<mark><strong>"It compiles" isn't proof.</strong></mark> Ask for evidence that fits the change:
+
+| What changed | Evidence to ask for |
+| --- | --- |
+| Command line | Run the real command |
+| UI | Walk through it in the running app |
+| Parsers, migrations | Replay a saved input |
+| Performance | Compare before and after measurements |
+| Storage | Read back the value written |
+
+## Let the AI verify in your app
+
+If the AI has no way to drive your app, run this first:
+
+<Copy id="cvs" code="/create-verification-skill" />
+
+**What you get**: a `/verify-<your-app-name>` <Term k="验证技能" />. It mostly reads your code, and does a full trial run before handing it over. <u>If the trial run fails, don't use what it made.</u>
+
+After that, ask for evidence like this:
+
+<Copy id="use-vs" code="/poteto-mode Build the bulk archive feature. Verify it with /verify-<your-app-name>, and give me a screen recording and screenshots as evidence." />
+
+Commit the verification skill to the repo. Review it regularly with `/maintain-verification-skill` (daily is best). For what it generates, how to check it, and how the author uses it, see [Give your project a verification skill](/en/howto/verify-app/).
+
+## Open the PR
+
+A <Term k="PR" /> is a set of changes sent for review, then merged.
+
+<Copy id="pr" code="/poteto-mode Open a PR. Small, ordered commits, with the evidence in the description." />
+
+**What you get**: it arranges small commits in a <Term k="worktree" />, and gives you the PR link at the end.
+
+## Get it ready to merge: babysit the PR
+
+<Copy id="babysit" code="/poteto-mode Babysit this PR and get it green." />
+
+**What you get**: it handles conflicts, then review comments, then CI (the checks that run after every push). Real problems get fixed. Comments without merit get a reply with the reason.
+
+<strong>It stops at "ready to merge". It never merges for you.</strong>
+
+## Merge: land the stack
+
+A stack is a chain of PRs built on top of each other.
+
+<Copy id="ship" code="/poteto-mode land the stack." />
+
+**What you get**: an AI that didn't write each PR verifies it again. Starting from the bottom, it merges only the unbroken run that passed. It tells you where the chain broke.
+
+<Callout type="tip" title="Using Claude Code">
+Opening PRs uses `gh`. Log in to GitHub on your machine first: `gh auth login`.
+</Callout>
+
+## Stuck?
+
+<Q q="It says it's done, but didn't show any evidence.">
+<p>Reply: "apply prove it works. Show me the real output, not the build log." prove it works means "prove it works with real results". It's a principle name pstack knows.</p>
+</Q>
+<Q q="I measured a speedup. How do I know it's real?">
+<Copy id="bench" code="/benchmark-checklist Check this export speedup before it goes into the PR" />
+<p>It asks 7 questions. There are only four verdicts: faster, slower, no measurable difference, inconclusive.</p>
+</Q>
+<Q q="It's a small change, but I'm uneasy.">
+<p>Use <code>/blast-radius</code>. It finds why the change is safe, then proves it by running code.</p>
+</Q>
+<Q q="Some cases tests can't reach, like two retries colliding.">
+<p>Use <Term k="形式化验证" />: <code>/create-formal-verification-skill Task leases and retry logic. The same task must never run twice at the same time.</code> When it's worth it and how to read a counterexample: <a href="/en/howto/formal-verify/">Bugs tests can't reach: formal verification</a>.</p>
+</Q>
+
+<Checkpoint id="s6" items={["My prompt says what done means and what evidence I want to see", "I know a \"done\" with no evidence can't be trusted", "I know babysitting won't merge; merging needs me to say land the stack"]} />

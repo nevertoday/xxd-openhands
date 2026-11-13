@@ -1,0 +1,75 @@
+---
+layout: ../../layouts/Guide.astro
+step: 2
+need: 上一步装好的 pstack
+tldr: 跑一次 /setup-pstack，答几个问题配好模型和预算，再开一个新对话。
+description: 跑一次 /setup-pstack：选预算、看每个角色用什么模型、决定要不要验证技能，然后开新对话。
+---
+import Callout from "../../components/Callout.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+import Term from "../../components/Term.astro";
+import Copy from "../../components/Copy.astro";
+import Q from "../../components/Q.astro";
+
+## 发这一条命令
+
+<Copy id="setup" code="/setup-pstack" />
+
+它会查你能用哪些模型，再问几个问题。答案写进一个配置文件，以后每个技能都按它选模型。
+
+## 问预算时：拿不准就选 large
+
+<Term k="推理预算" />就是让模型想多久。越久越仔细，也越贵。
+
+| 选项 | 推理档位 | 适合 |
+| --- | --- | --- |
+| `large` | xhigh（默认） | 拿不准就选它 |
+| `unlimited` | max | 很难的活，不在乎钱 |
+| `medium` | high | 想省一点 |
+| `small` | medium | 简单任务、预算紧 |
+
+## 问每个角色用什么模型时：先用默认
+
+每种<Term k="模型角色" />可以用不同的模型：
+
+- **写代码的**：默认 grok，快又便宜。
+- **做判断的**（最难的改动、拿主意）：默认 opus 5.5。
+- **评审小组**：默认 opus 5.5 加 grok，故意让两家互相挑错。
+
+只改你在意的。设成 `auto` 或 `inherit-parent`，就是跟主对话用同一个模型。
+
+<Callout type="tip" title="用 Claude Code 的话">
+Claude Code 里派出去的帮手 AI 只能用 Claude 家的模型。默认给 grok 的角色，会改用当前对话的模型。三套现成搭配见[在 Claude Code 里用](/howto/claude-code/#怎么配最好)。
+</Callout>
+
+## 问要不要验证技能时：新手选「要」
+
+项目里还没有办法证明「应用真的能用」的话，它会提议生成一个<Term k="验证技能" />。
+
+<strong>新手选「要」。</strong>能检查自己工作的 AI，会一直干到检查通过，不用你手动查。
+
+它可能还会问要不要<Term k="形式化验证" />技能。代码里有并发、重试这类难测的地方才选「要」，以后也能补。
+
+## 配完开一个新对话
+
+配置文件写在这里：
+
+- **Cursor**：`~/.cursor/rules/pstack-models.mdc`
+- **Claude Code**：`~/.claude/rules/pstack-models.md`
+- **Codex 等其他工具**：`~/.agents/pstack-models.md`
+
+Cursor 和 Claude Code 只在新对话开始时读它。所以<mark>配完关掉这个对话，开一个新的</mark>。
+
+## 卡住了？
+
+<Q q="以后想换模型、换预算怎么办？">
+<p>再跑一次 <code>/setup-pstack</code>，改过的角色会保留。想让某个角色回到默认，删掉配置文件里那一行。</p>
+</Q>
+<Q q="pstack 更新后默认模型变了，我的没跟着变。">
+<p>旧配置里还是旧值。删掉那几行（或整个文件），再跑一次 <code>/setup-pstack</code>。</p>
+</Q>
+<Q q="验证技能当时没要，现在想要。">
+<p>运行 <code>/create-verification-skill</code>。详见<a href="/guide/6-verify-ship/">第 6 步</a>。</p>
+</Q>
+
+<Checkpoint id="s2" items={["跑完了 /setup-pstack，选了一个预算", "它告诉我配置写到了哪个文件", "想清楚了要不要验证技能（新手建议要）", "已经开了一个新对话"]} />

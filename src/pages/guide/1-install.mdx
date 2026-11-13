@@ -1,0 +1,92 @@
+---
+layout: ../../layouts/Guide.astro
+step: 1
+need: Claude Code、Cursor 或 Codex 之一；用 npx 安装的话要 Node.js 22.20+
+tldr: 用一两条命令装好 pstack，再发一句话确认它能用。
+description: 一条命令把 pstack 装进 Claude Code、Cursor 或 Codex，再用一句话确认装好了。
+---
+import Callout from "../../components/Callout.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+import Tabs from "../../components/Tabs.astro";
+import Copy from "../../components/Copy.astro";
+import Q from "../../components/Q.astro";
+import ToolPick from "../../components/ToolPick.astro";
+
+## 按你的工具装
+
+<div data-sk-keep>
+<Tabs id="install" label="选择你的工具" items={[["cc", "Claude Code"], ["cursor", "Cursor"], ["other", "Codex 和其他"]]}>
+<div slot="cc">
+
+在 Claude Code 的对话框里，依次发这两条：
+
+<Copy id="cc-1" title="第一条：添加插件市场" code="/plugin marketplace add cursor/plugins" />
+<Copy id="cc-2" title="第二条：安装 pstack" code="/plugin install pstack@cursor-plugins" />
+
+装好以后，<mark><strong>命令都挂在 `pstack:` 下面</strong></mark>：要打 `/pstack:poteto-mode`，只打 `/poteto-mode` 不认。这是 Claude Code 给插件定的规矩，免得两个插件的命令撞名。
+
+它默认**不自动更新**。想打开：输入 `/plugin`，打开「marketplaces」标签，选 `cursor-plugins`，再选「enable auto-update」。
+
+不想打前缀，也可以用「Codex 和其他」里的 `npx skills` 装。
+
+</div>
+<div slot="cursor">
+
+在 Cursor 的对话框里发：
+
+<Copy id="cursor-1" code="/add-plugin pstack" />
+
+命令就是原样的 `/poteto-mode`、`/how`，不用加前缀。
+
+可选：再装 `cursor-team-kit` 插件，pstack 有几处会用到。不装也行。
+
+</div>
+<div slot="other">
+
+在**你的项目目录**里打开终端，运行：
+
+<Copy id="npx-1" lang="bash" title="装进当前项目" code="npx skills add backnotprop/pstack" />
+
+它会列出所有技能。**第一次用，全选**，再选要装进哪些工具。以后想精简，见[只装几个技能](/howto/pick-skills/)。
+
+想让所有项目都能用，加 `-g`：
+
+<Copy id="npx-2" lang="bash" title="装到全局" code="npx skills add backnotprop/pstack -g" />
+
+需要 Node.js 22.20 以上。不确定就先运行 `node -v` 看看。
+
+</div>
+</Tabs>
+</div>
+
+装好以后，在这里选你用的工具。全站的命令，包括复制按钮复制出来的，都会换成那个工具的写法：
+
+<ToolPick />
+
+## 装完测一下
+
+开一个**新的**对话，发：
+
+<Copy id="test" title="测试一下" code="/poteto-help pstack 里新手最该先学哪个技能？用一两句话回答。" />
+
+回答里提到 poteto-mode，就是装好了。`/poteto-help` 只回答问题，不会开始干活。
+
+<Callout type="ok">
+在对话框里输入 `/`，弹出的菜单里能找到 `poteto-mode`（Claude Code 插件版是 `pstack:poteto-mode`）。
+</Callout>
+
+## 卡住了？
+
+<Q q="输入 / 之后找不到 poteto-mode。">
+<p>先开一个新对话。还找不到：Claude Code 插件版搜 <code>pstack:</code>；用 <code>npx skills</code> 装的，确认工具是在<strong>装的那个项目目录</strong>里打开的，或者加 <code>-g</code> 重装到全局。</p>
+</Q>
+<Q q="npx skills 报错说 Node 版本太低。">
+<p>它要 Node.js 22.20 以上。到 <a href="https://nodejs.org">nodejs.org</a> 装一个新的 LTS 版本，再运行一次。</p>
+</Q>
+<Q q="插件版和 npx 版能一起装吗？">
+<p>不要。同一个技能有两份容易混，选一种就好。</p>
+</Q>
+
+以后要更新或者卸掉，看[更新、查看、卸载](/howto/update-remove/)。
+
+<Checkpoint id="s1" items={["pstack 已经装进我的工具里", "新对话里输入 / 能看到 poteto-mode（或 pstack:poteto-mode）", "/poteto-help 回答了我的问题"]} />

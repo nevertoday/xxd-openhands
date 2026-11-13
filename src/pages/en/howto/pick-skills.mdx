@@ -1,0 +1,74 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: pick-skills
+time: 4 minutes to read
+for: You're installing with npx skills and want to pick a few, not install everything
+step: 1
+tldr: Using /poteto-mode? Install everything. Want one or two features? Pick here, and bring what they need along.
+description: Some pstack skills work alone, and some need others installed with them. Which work alone, what each one needs, a few common sets, and how to pick in the npx skills list.
+---
+import Q from "../../../components/Q.astro";
+import Cmd from "../../../components/Cmd.astro";
+
+## Using /poteto-mode? Install everything
+
+`/poteto-mode` uses almost every skill. <mark><strong>If you plan to use it, install everything</strong></mark>. Only pick from the lists below if you want one or two features.
+
+If you installed the Cursor plugin or from the Claude Code marketplace, you already have the full set. Skip this page.
+
+## 17 that work on their own
+
+Install one, and you can use that one:
+
+- **Understanding and explaining**: `how` (how code works), `bro` (says it again in plain words), `in-your-own-words` (restates your goal first).
+- **Writing**: `unslop` (removes the AI feel), `sharpen` (makes your prompt more precise).
+- **Writing code**: `tdd` (write a failing test first), `typescript-best-practices` (keeps the type rules), `statechart` (draws a checked state chart).
+- **Several AIs together**: `arena` (several takes on one task, keep the best), `swarm` (split it up and work in parallel), `interrogate` (several models pick at it).
+- **Checking and recording**: `benchmark-checklist` (checks performance numbers), `show-me-your-work` (keeps a decision log), `correct` (stops a repeated mistake at the root).
+- **Other**: `figure-it-out` (designs an approach on the spot), `reflect` (turns lessons into suggested edits), `automate-me` (sums up a skill of your own).
+
+## These need others along
+
+If you skip what's right of the arrow, that step won't find it:
+
+- `teach` → also `how`, `why`
+- `why` → also `how`
+- `technical-writing` → also `unslop`
+- `architect` → also `arena`, `how`
+- `blast-radius` → also `arena`, `how`, `why`, `unslop`
+- `create-verification-skill` → also `maintain-verification-skill`
+- `create-formal-verification-skill` → also `maintain-formal-verification-skill`, `statechart`
+- `ketchup` → also `bro`; `ketchup-video` → also `ketchup`, `bro`
+- `poteto-help` → also whichever skills you want to ask about
+
+## A few common sets
+
+- **Just understand code**: `how`, `why`, `teach`
+- **Remove the AI feel from writing**: `unslop`, `bro`
+- **Settle a design before changing code**: `architect`, `arena`, `how`
+- **Let the AI verify your app itself**: `create-verification-skill`, `maintain-verification-skill`
+
+What the author actually uses is `/poteto-mode` chaining them together. For the full experience, select all.
+
+## How to pick in the list
+
+In your terminal, run:
+
+<Cmd c="npx skills add backnotprop/pstack" />
+
+Type a skill name to filter. Check what you want, including the "also" ones, then pick which tools to install into. Missed one? Run it again and add it. For per-tool details, see [Use it in Codex and other tools](/en/howto/codex/).
+
+## Stuck?
+
+<Q q="I only installed teach, and it's missing things.">
+`teach` relies on `how` and `why`. Run `npx skills add backnotprop/pstack` again and check those two as well.
+</Q>
+<Q q="I only installed a few. Can I use /poteto-mode?">
+Not recommended. It reads every principle skill (`principle-*`) and calls most of the other skills. Missing one leaves a step incomplete.
+</Q>
+<Q q="What do recall, no-comments, and setup-pstack need?">
+`recall` uses `why` and `unslop`. `no-comments` mentions `how`, `why`, and `architect`, so bring those along to be safe. `setup-pstack` needs nothing else. Install it if you want to pick models.
+</Q>
+<Q q="Do I pick the principle skills (principle-*) separately?">
+Install all of them when you install `poteto-mode`. You never type them. Just say their names when you steer, as in <a href="/en/howto/steer/">Pull it back in one line</a>.
+</Q>

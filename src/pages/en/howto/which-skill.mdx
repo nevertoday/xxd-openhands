@@ -1,0 +1,88 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: which-skill
+time: 2 minutes to look up
+for: You have something to do and don't know which command to type
+step: 3
+tldr: Not sure? Use /poteto-mode. Name a specific skill only when you want more or less checking than it gives.
+description: "Default to /poteto-mode when unsure; an \"I want to... → use this\" list; ask /poteto-help; skill pairs people mix up; how much design a job deserves; why not to order skills in your prompt."
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+
+## Not sure? Use /poteto-mode
+
+<mark>When you're not sure, the answer is almost always `/poteto-mode`</mark>. You say the goal and what "done" means. It picks an approach (a <Term k="剧本" />) and calls skills like `/how` and `/architect` itself when needed.
+
+Name a skill directly only when you want **more or less** than it gives. For example, to understand code without it changing anything, use `/how`.
+
+Except for `/setup-pstack`, every skill runs only when you type it yourself.
+
+## I want to... → use this
+
+- **Understand code**: how it works now `/how`; why it was done this way `/why`; explain it fully `/teach`
+- **Get aligned before starting**: check it understood `/in-your-own-words`; make the prompt more precise `/sharpen`
+- **Pick up where you were**: across conversations `/recall`; what changed in this one `/ketchup`
+- **Settle a design**: structure first `/architect`; several takes on one task `/arena`; check many things separately `/swarm`
+- **Check**: several models pick at it `/interrogate`; what else might break `/blast-radius`; failing test first `/tdd`; check performance numbers `/benchmark-checklist`; let the AI drive your app `/create-verification-skill`
+- **Writing**: remove the AI feel `/unslop`; docs and PR descriptions `/technical-writing`; say it in plain words `/bro`
+- **Big jobs and long runs**: something very big `/figure-it-out`; keep a decision record `/show-me-your-work`; stop a repeated mistake `/correct`
+- **Setup**: pick models, set the budget `/setup-pstack`; make a mode of your own `/automate-me`
+
+For details and example prompts for each skill, see [Skills reference](/en/skills/).
+
+## Still not sure? Ask /poteto-help
+
+<Cmd c="/poteto-help I want to review this branch. Which skill should I use?" />
+
+It answers, gives you a prompt you can send as-is, and links the source. It **doesn't start work**. Whether to send the prompt is up to you.
+
+<Callout type="warn" title="Ask it to do the work, and it will">
+If you tell it something like "use pstack to fix this bug," it goes straight to work under `/poteto-mode`'s rules.
+</Callout>
+
+## Pairs people mix up
+
+- **`/arena` and `/swarm`**: `/arena` does one task several times, picks the best, and grafts in good ideas from the rest. `/swarm` splits a pile of work, does it separately, and merges one report.
+- **`/how`, `/why`, `/teach`**: `/how` explains what the code does, `/why` explains why it's that way, and `/teach` runs one or both and then explains it fully.
+- **`/interrogate` and `/blast-radius`**: the first reviews the change itself. The second finds what might break outside the change.
+- **`/recall` and `/ketchup`**: the first finds your progress across conversations. The second covers only changes in this one.
+- **`/architect`**: starts writing as soon as the design is settled. To see the design first, say "with checkpoint."
+
+## How much design a job deserves
+
+Most changes need none. Step up by size:
+
+- **Done writing, but unsure**: just `/interrogate`.
+- **One standalone choice** (naming, format, algorithm): `/arena` directly.
+- **The change crosses function boundaries**: `/architect`.
+- **A question one run can answer** (layout, timing): build a prototype instead of arguing.
+- **Disputed and expensive to change**: `/architect` first, then `/interrogate` before shipping.
+- **Spans several PRs**: once the design is settled, write the plan.
+
+`/poteto-mode` already climbs this ladder on its own.
+
+## Don't order skills in your prompt
+
+<Copy id="ws-bad" title="Don't write this" code="/poteto-mode first use /how, then /architect, then /arena, and finally /interrogate, and help me add an export feature." />
+
+It already has the order worked out. Ordering it again tends to scramble or drop steps. State the goal and requirements instead:
+
+<Copy id="ws-good" title="Write this" code="/poteto-mode add a CSV export. The existing JSON export must stay byte-for-byte identical. Verify both." />
+
+Name a skill only to change one default choice, like "use /arena with 5 options this time."
+
+## Stuck?
+
+<Q q="I typed /how, and it didn't go on to fix anything.">
+That's right. `/how` only explains. It doesn't touch code. Once you understand it, use `/poteto-mode` to say what you want done.
+</Q>
+<Q q="What I want to do isn't in the list.">
+Hand it to `/poteto-mode`. When no ready-made approach fits, it passes the job to `/figure-it-out` to design one on the spot.
+</Q>
+<Q q="There's an /orchestrate in the slash menu. Is that pstack's?">
+No. Orchestrate is one of the approaches inside `/poteto-mode`. The one in the menu comes from another plugin.
+</Q>

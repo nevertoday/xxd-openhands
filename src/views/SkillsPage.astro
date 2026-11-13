@@ -1,0 +1,102 @@
+---
+// 技能速查：34 个技能按用途分组，每个一张卡（名字、谁来调用、一句话、什么时候用），整张卡点进去是详情页。
+// 上面一条筛选：按名字或用途搜，按「谁来调用」过滤。锚点就是技能名（搜索直接跳过来）。没有 JS 时卡片照常全显示。
+import Site from "../layouts/Site.astro";
+import { SKILL_COUNT } from "../data/skills.js";
+import { skillsFor } from "../data/skills.i18n.js";
+import { link, wikiHref, langOf } from "../data/nav.js";
+const lang = langOf(Astro.url.pathname);
+const en = lang === "en";
+const SKILLS = skillsFor(lang);
+const headings = SKILLS.map((g) => ({ slug: g.id, text: g.title, depth: 2 }));
+const kind = (s) => (s.auto ? "auto" : s.manual ? "manual" : "named");
+const count = (k) => SKILLS.reduce((n, g) => n + g.items.filter((s) => kind(s) === k).length, 0);
+const T = en
+  ? { h: "Skills at a glance", desc: `All ${SKILL_COUNT} pstack skills, each in one plain sentence: what it does and when to use it.`,
+      all: "All", auto: "Auto", manual: "Type it yourself", named: "Call when needed", use: "When to use",
+      search: "Filter by name or task, e.g. review, slow, why", filterLabel: "Who calls it", empty: "No skill matches. Try fewer words, or pick “All”.",
+      legend: { auto: "/poteto-mode uses it when a step needs it", manual: "Runs only when you type it yourself", named: "Type it when you want it" },
+      shown: (n) => `${n} shown` }
+  : { h: "技能速查", desc: `pstack 的 ${SKILL_COUNT} 个技能，每个一句人话：干什么、什么时候用。`,
+      all: "全部", auto: "自动调用", manual: "要你亲手打", named: "按需点名", use: "什么时候用",
+      search: "按名字或想做的事筛选，比如：审、性能、为什么", filterLabel: "谁来调用", empty: "没有对得上的技能。少打几个字，或者选「全部」。",
+      legend: { auto: "/poteto-mode 需要时自己用，不用你点名", manual: "只有你亲手打出来才会运行", named: "想用的时候自己打" },
+      shown: (n) => `显示 ${n} 个` };
+const filters = [["all", T.all, SKILL_COUNT], ["auto", T.auto, count("auto")], ["manual", T.manual, count("manual")], ["named", T.named, count("named")]];
+const tone = { auto: "success", manual: "warning", named: undefined };
+// 筛选也搜例句和详情页「用它和不用它」那几行，这样打「审」「性能」也能找到对的技能
+const docs = import.meta.glob("../data/skill-docs/*.json", { eager: true, import: "default" });
+const briefText = (n) => { const b = docs[`../data/skill-docs/${n}.json`]?.brief?.[en ? "en" : "zh"]; return b ? b.compare.map((r) => `${r.without} ${r.with}`).join(" ") : ""; };
+---
+<Site title={T.h} description={T.desc} headings={headings}>
+  <article class="xxd-prose skills">
+    <h1>{T.h}</h1>
+    {en
+      ? <p>{SKILL_COUNT} skills, plus <a href={wikiHref("principles", lang)}>24 principles</a>. <strong>You don't need to memorize them.</strong> Day to day, type <code class="xxd-code-inline">/poteto-mode</code> and it calls the “Auto” ones itself. Come here to call one by name, or to look up a name the AI mentioned. Click a card to see how it differs from just asking, what its document says, and the full text.</p>
+      : <p>{SKILL_COUNT} 个技能，外加 <a href={wikiHref("principles")}>24 条原则</a>。<strong>新手不用全记住</strong>：平时只打 <code class="xxd-code-inline">/poteto-mode</code>，标着「自动调用」的它会自己叫上。想点名用某一个，或者 AI 提到一个名字想查查，就来这里。点开一张卡，能看到它和直接跟 AI 说有什么不同、文档每一节写了什么，还有全文。</p>}
+
+    <div class="skills__filter" data-skills-filter hidden>
+      <div class="xxd-input-wrap skills__search">
+        <i data-xxd-icon="Search" data-size="16" aria-hidden="true"></i>
+        <input class="xxd-input" type="search" id="skills-q" placeholder={T.search} aria-label={T.search} autocomplete="off" />
+      </div>
+      <div class="xxd-segmented skills__kinds" data-xxd-segmented role="radiogroup" aria-label={T.filterLabel} id="skills-kind">
+        {filters.map(([v, label, n], i) => (
+          <button type="button" role="radio" data-value={v} aria-checked={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1} title={v === "all" ? undefined : T.legend[v]}>{label}<span class="skills__n">{n}</span></button>
+        ))}
+      </div>
+      <p class="skills__hint" id="skills-hint" aria-live="polite"></p>
+    </div>
+
+    {SKILLS.map((g) => (
+      <section class="skills__group" data-group>
+        <h2 id={g.id}>{g.title}</h2>
+        <ul class="skcards">
+          {g.items.map((s) => (
+            <li class="skcard" id={s.name} data-kind={kind(s)} data-name={s.name} data-text={`${s.name} ${s.zh} ${s.use} ${s.ex} ${briefText(s.name)}`.toLowerCase()}>
+              <a class="skcard__link" href={link(`/skills/${s.name}/`, lang)}>
+                <span class="skcard__head">
+                  <code class="skcard__name">/{s.name}</code>
+                  <span class="xxd-badge" data-size="sm" data-tone={tone[kind(s)]}>{T[kind(s)]}</span>
+                </span>
+                <span class="skcard__zh">{s.zh}</span>
+                <span class="skcard__use"><span>{T.use}</span>{s.use}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+    <p class="skills__empty" id="skills-empty" hidden>{T.empty}</p>
+  </article>
+  <script is:inline define:vars={{ shown: T.shown("#") }}>
+    (() => {
+      const box = document.querySelector("[data-skills-filter]");
+      if (!box) return;
+      box.hidden = false;
+      const q = document.getElementById("skills-q");
+      const seg = document.getElementById("skills-kind");
+      const hint = document.getElementById("skills-hint");
+      const empty = document.getElementById("skills-empty");
+      const cards = [...document.querySelectorAll(".skcard")];
+      const groups = [...document.querySelectorAll("[data-group]")];
+      let k = "all";
+      const apply = () => {
+        const words = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        let n = 0;
+        for (const c of cards) {
+          // 「/how」这样带斜杠的按技能名开头找，其他的在名字、简介、例句里找
+          const ok = (k === "all" || c.dataset.kind === k) && words.every((w) => (w.startsWith("/") ? c.dataset.name.startsWith(w.slice(1).replace(/^pstack:/, "")) : c.dataset.text.includes(w)));
+          c.hidden = !ok;
+          if (ok) n++;
+        }
+        for (const g of groups) g.hidden = !g.querySelector(".skcard:not([hidden])");
+        const filtered = words.length || k !== "all";
+        hint.textContent = filtered ? shown.replace("#", n) : "";
+        empty.hidden = n > 0;
+      };
+      q.addEventListener("input", apply);
+      seg.addEventListener("xxd:change", (e) => { k = e.detail.value; apply(); });
+    })();
+  </script>
+</Site>

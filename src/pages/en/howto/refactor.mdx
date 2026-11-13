@@ -1,0 +1,79 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: refactor
+time: One or two conversations for a medium refactor
+for: The code keeps getting messier, and you want to clean up its structure without changing anything for users
+step: 5
+tldr: Save the current output, then change the structure. Compare the same output afterward to prove nothing changed.
+description: "Refactor with /poteto-mode: record what the code does now, change the structure, then use the record to prove nothing changed. Includes an Astro static site example."
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Fig from "../../../components/Fig.astro";
+
+## Copy this first
+
+<Copy id="ref-min" title="The shortest version" code="/poteto-mode move parsing into one module, zero behavior change. record the current output first and prove it's unchanged after." />
+
+A refactor means: <mark><strong>the code's structure changes, and its behavior doesn't change at all.</strong></mark>
+
+- **Zero behavior change**: nothing users see changes. It treats the task as a refactor. No new features, no bug fixes.
+- **Record the current output first**: save a "before" so there's something to compare. "Type checks pass" doesn't count. That only shows the code compiles.
+
+<Fig id="h-refactor" />
+
+## An Astro static site example
+
+A dozen pages each have their own date-formatting code, all a little different. You want one utility function.
+
+<Copy id="ref-astro" title="Astro static site example" code={`/poteto-mode Pull the date-formatting code from all the pages into one utility function, zero behavior change.
+Before you start: run npm run build and copy the whole dist folder as a baseline.
+When you're done, build again and diff against the baseline. The diff must be empty for every HTML file.
+Delete all the old code. Don't keep any old functions for compatibility.
+Show me the diff command and its output.`} />
+
+- **An empty diff of dist**: empty means nothing changed. One extra line means something did. You don't need to read every line. That one output is enough.
+- **No old functions kept**: every caller moves over, and the old code goes in the same pass.
+
+If the diff isn't empty, have it explain each difference. Some may come from pages that formatted dates differently to begin with.
+
+## Where to look after you send it
+
+**At the start: how it recorded the current behavior.** A test, an output snapshot, or a comparison script.
+
+**In the middle: delete before adding.** It removes unused code first, then adds the new structure.
+
+**At the end: the comparison.** The reply says what structure changed, what it compared, the result, and which changes it reverted. If the code isn't easier to read, it reverts the change.
+
+## You find a bug halfway through
+
+Cleaning up often turns up "this was wrong all along." Split it:
+
+1. **Finish the refactor and commit it.** Leave the old bug as it is.
+2. **Fix the bug as a new task.** See [Fix a bug](/en/howto/fix-bug/).
+
+That way the refactor still compares cleanly against the baseline. Fix things while refactoring, and you can't tell fixes from breakage.
+
+<Callout type="warn" title="Actually want to change behavior?">
+Then it isn't a refactor. Say so, and treat it as a feature. See <a href="/en/howto/add-feature/">Add a feature</a>. For a big change across many modules, it hands off to <code>/figure-it-out</code> to plan the whole run first.
+</Callout>
+
+## Stuck?
+
+<Q q="It says “type checks and tests pass,” so nothing changed.">
+Reply: "Type checks aren't a comparison. Record the real output from before, run the same input after, and show me the diff." If it already finished, have it check out the earlier commit and rebuild the baseline.
+</Q>
+<Q q="It starts by adding new files and abstraction layers.">
+Reply: "subtract-before-you-add." It means: delete what isn't needed first, then build on the simpler base. It's the name of a pstack <Term k="原则" text="principle" />. Type it as is, and it knows what you mean.
+</Q>
+<Q q="It kept an old function “for compatibility.”">
+Reply: "migrate-callers-then-delete-legacy-apis. Move all callers over and delete the old function in this pass." That principle name means exactly this. It only covers code inside your project. If outside users depend on that interface, tell it first.
+</Q>
+<Q q="The code is more convoluted after the change.">
+Just say: "This change makes readers jump through more layers. Revert it." If it isn't easier to read, it should be reverted.
+</Q>
+<Q q="It fixed a bug along the way.">
+Reply: "Revert the bug fix, finish the refactor with the original behavior, and verify it. Open a separate task for the bug."
+</Q>

@@ -1,0 +1,99 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 5
+need: A change you're about to make
+tldr: "For big changes, compare a few designs or build prototypes. Say what you saw while building. Clean up before handing it over."
+description: "Settle the design (/architect, /arena, /interrogate, prototypes), build (/tdd), then clean up (/unslop, /no-comments)."
+---
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+import Fig from "../../../components/Fig.astro";
+
+## Most changes need no design step
+
+When a change touches several places, `/poteto-mode` designs it first on its own. Name the skills below only when you want it to think one step more.
+
+<Fig id="g5-arc" />
+
+## It touches several places: /architect
+
+<Copy id="arch" code="/architect Design the import flow first, don't write code yet. What I care about most is how callers use it." />
+
+**What you get**: a few designs side by side. Each one starts with "how a caller uses it". It then builds the one it picked. To see the design first, add "with checkpoint, stop and show me before you implement".
+
+While it builds against the design, if something doesn't fit, it stops and tells you. If the design itself is wrong, it throws it out and starts over instead of patching it. That's normal.
+
+## One decision you're unsure about: /arena
+
+Use it for names, formats or algorithms that will be hard to change later.
+
+<Copy id="arena" code="/arena This cache key format will be hard to change later. Give me 5 options." />
+
+**What you get**: several AIs each write a version. A model from another family scores them (say, Grok instead of Claude). The top one becomes the base, and good ideas from the rest get added.
+
+## It's written, now find the flaws: /interrogate
+
+<Copy id="interro" code="/interrogate Review the whole branch, and be picky. Don't report nitpicks unless it's a real bug or a regression." />
+
+**What you get**: only problems that a command actually made fail. It doesn't change code. It also lists the problems it threw out. **Read that list too.** If it threw one out wrongly, ask it to check again.
+
+## Can't settle it? Prototype
+
+<Copy id="proto" code="/poteto-mode Build a few prototypes of the new dropdown menu. Give me screenshots or screen recordings to compare." />
+
+**What you get**: a few throwaway drafts, each screenshotted or timed, side by side for you to pick. This works for UI, behavior and algorithms.
+
+Plans work the same way. Prototype the parts you're unsure about, then write what you saw into the plan. A plan that never tried anything can be wrong, however detailed it gets.
+
+## A big feature: write the tutorial first, then the design
+
+<Copy id="backwards" title="The author's version, swap in your own task" code={`(1) /recall what I did on virtual list bugs and perf issues in the past 7 days. Use /how and /why to understand how our current virtual list works.
+(2) Then plan with /poteto-mode and /technical-writing: design a new engine that removes flicker and jitter at the root. Start with a tutorial on how I'd use the new package to add a virtual list to a React app.
+(3) Once the plan is written, /teach me, and prove the new approach beats the current one.`} />
+
+Each part does one job:
+
+- **Bring back the context**: the bugs you fixed and how it works now are what the new design has to solve.
+- **Design from the usage**: write how people will use it first, and you see right away whether it's easy to use.
+- **Ask for proof**: reasons aren't enough, ask for a comparison. With a [verification skill](/en/howto/verify-app/) in the project, it can show real evidence.
+
+[Step 3](/en/guide/3-first-task/) said not to line up skills in your message. That's for small tasks. For a big design like this, the author names skills part by part, each part naming only what it needs.
+
+## While building, say what you saw
+
+- **Fix a bug**: give the symptom, add "reproduce it first". Example: "After a retry it writes two records. Reproduce it first, then fix it, then verify."
+- **Add a feature**: say what must not change. Example: "Add a --json flag. The text output must not change at all."
+- **Refactor**: say behavior stays the same. Example: "Record the current output first, then prove it didn't change."
+- **Find what's slow**: give a measured number. Example: "Startup takes 1.8 seconds. Capture a trace and give me a before/after."
+
+For the full approach, see [fix a bug](/en/howto/fix-bug/), [add a feature](/en/howto/add-feature/), [refactor](/en/howto/refactor/), [find what's slow](/en/howto/perf/).
+
+When a local test can catch the bug, type:
+
+<Copy id="tdd" code="/tdd implement" />
+
+**What you get**: a failing test first, then the fix, then a run that shows it passing.
+
+When you change TypeScript, name `/typescript-best-practices`. <u>It won't load on its own.</u>
+
+## Clean up before you hand it over
+
+- **Writing**: `/unslop` removes the AI tone. You can add rules: `/unslop Clean up the new README content, no em dashes`.
+- **Comments**: `/no-comments` sends an AI that didn't write the code to review the comments. Only the needed ones stay.
+- **Code**: just say "Remove narrating comments, unjustified defensive checks, dead compatibility code, and changes unrelated to this task."
+
+## Stuck?
+
+<Q q="It went with the first design and didn't give me a choice.">
+<p>Say "don't decide yet, build two or three prototypes and compare them side by side". Or type <code>exhaust the design space</code>, which means "try all the options". It's a <a href="/en/wiki/principles/">principle name</a> pstack knows, so typing it as is works.</p>
+</Q>
+<Q q="I want it to write a plan before it starts.">
+<p>Once the design is settled, say: <code>/poteto-mode Turn this design into a plan. Split it into small PRs that can each be verified on their own, each with its verification steps.</code> It only writes the plan, and doesn't build. A <Term k="PR" /> is a set of changes handed to someone to review.</p>
+</Q>
+<Q q="How is /swarm different from /arena?">
+<p><code>/arena</code> has several AIs do the same job, and picks the best. <code>/swarm</code> cuts a big job into pieces for several AIs. See <a href="/en/wiki/arena-swarm/">how /arena differs from /swarm</a>.</p>
+</Q>
+
+<Checkpoint id="s5" items={["I know most changes need no design step; I name /architect, /arena or /interrogate only when unsure", "When I can't settle something, I have it build prototypes to compare", "Before handing it over, I have it clean up the writing and the comments"]} />

@@ -1,0 +1,24 @@
+---
+import Site from "../layouts/Site.astro";
+import { HOWTO, howtoHref, langOf, t } from "../data/nav.js";
+const lang = langOf(Astro.url.pathname);
+const en = lang === "en";
+const headings = HOWTO.map((g, i) => ({ slug: `g${i}`, text: t(g, "group", lang), depth: 2 }));
+const T = en
+  ? { h: "How-to: how exactly", p: "One job per article: find the one that matches what you're doing, copy the prompt, change it to fit." }
+  : { h: "How-to：具体怎么做", p: "一篇只讲一件事。找到和你手上的活一样的那篇，复制里面的话，改成你的情况就能用。" };
+---
+<Site title={T.h} headings={headings}>
+  <article class="xxd-prose">
+    <h1>{T.h}</h1>
+    <p>{T.p}</p>
+    {HOWTO.map((g, i) => (
+      <>
+        <h2 id={`g${i}`}>{t(g, "group", lang)}</h2>
+        <ul class="xxd-list" data-interactive>
+          {g.items.map((it) => <li class="xxd-list__item"><a class="xxd-list__main list-link" href={howtoHref(it.slug, lang)}><span class="xxd-list__title">{t(it, "title", lang)}</span></a></li>)}
+        </ul>
+      </>
+    ))}
+  </article>
+</Site>

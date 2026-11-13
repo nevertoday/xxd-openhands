@@ -1,0 +1,232 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: recipes
+time: Look things up as you go
+for: You want a prompt you can copy, tweak, and send
+step: 3
+tldr: Find a prompt for the situation you're in, swap out the angle-bracket parts, and send it.
+description: "pstack prompts grouped by situation: understand first, fix and build, settle a design, check before shipping, leave and come back. Each copies in one click with a line on why it works, plus common mistakes."
+---
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+
+Replace the angle-bracket parts with your own: paths, commands, what "done" means. Keep skill names as they are, since those are the names the AI knows.
+
+## Understand it first
+
+**Ask how it works, then why it broke**
+
+<Copy id="r-how-why" code="Use /how to figure out how this initialization works, then /why to find out why it broke recently." />
+
+Each report names the sources it checked.
+
+**A long discussion? Have it restate the problem**
+
+<Copy id="r-restate" code="/poteto-mode read this thread. In your own words, in plain language, restate the root problem. Don't change any code yet." />
+
+If it misread you, the restatement shows it. Share your own guess after it's done.
+
+**Sharpen the prompt before you send it**
+
+<Copy id="r-sharpen" code="/sharpen write an onboarding doc for the new billing service." />
+
+It adds what you left out and hands back a rewritten prompt. It doesn't do the work.
+
+**Pick up where you left off days ago**
+
+<Copy id="r-recall" code={`/recall what I did on <topic> last week, then read <issue link>.`} />
+
+A new conversation doesn't remember old ones. Have it read your records first.
+
+**Make it convince you**
+
+<Copy id="r-teach" code={`/teach me why you built it this way instead of <another approach>. What did you trade off?`} />
+
+Holes are easier to spot in an argument than in a summary.
+
+## Fix bugs, add features, refactor, chase slowness
+
+**Fix a bug**
+
+<Copy id="r-bug" code={`/poteto-mode <symptom>. Reproduce it first, then fix it, then verify.`} />
+
+"Reproduce" means make the problem happen again. For the full version, see [Fix a bug](/en/howto/fix-bug/).
+
+**With a verification skill, ask for a video as proof**
+
+<Copy id="r-bug-verify" code={`/poteto-mode use /verify-<your-app> to reproduce this. If it reproduces on main, fix it and give me a video as proof.`} />
+
+If the problem is already gone, it stops early. A video lets you check without reading code.
+
+**When a test is easy to write, write it first**
+
+<Copy id="r-tdd" code="/poteto-mode reproduce the duplicate write first. If there's a cheap test path, /tdd it: write a failing test, then fix, then run it again." />
+
+When a test is hard to write, running the real command is more convincing.
+
+**Add a feature without breaking the old one**
+
+<Copy id="r-feature" code={`/poteto-mode add <new behavior>. <current output> must stay byte-for-byte identical. Verify both.`} />
+
+"Byte-for-byte identical" can pass or fail. "Don't affect the old feature" can't.
+
+**Refactor with no change in behavior**
+
+<Copy id="r-refactor" code={`/poteto-mode move <this code> into one module with zero behavior change. Record the current output before you start, and prove it hasn't changed when you're done.`} />
+
+Record the "before" first, so there's something to compare against.
+
+**Chase slowness with numbers**
+
+<Copy id="r-perf" code={`/poteto-mode <some operation> takes <how long> on <some test data>. Capture a performance trace, fix the cause it shows, and show me before and after numbers.`} />
+
+"Faster" only means something with a starting number.
+
+## Settle a design, make a plan
+
+**Build a few prototypes, then pick**
+
+<Copy id="r-proto" code="/poteto-mode build a few prototypes of the settings page layout. Put them behind a toggle and send me a screenshot of each." />
+
+Picking from things that run beats picking from descriptions.
+
+**A bigger design, with a review point**
+
+<Copy id="r-architect" code="/poteto-mode we need to add rate limiting to external webhooks. /architect first, and answer anything uncertain with prototypes. Let me review before you continue." />
+
+The last sentence makes it stop and wait for you before writing real code.
+
+**A package others will use: write the tutorial first**
+
+<Copy id="r-tutorial" code="/poteto-mode first write a tutorial showing how I'd use this new config package. Then /teach me why it's better than what we have now." />
+
+Writing the tutorial first makes it think like the people using it.
+
+**Get a second opinion**
+
+<Copy id="r-arena" code="Have /arena give a second opinion on this discussion and our plan." />
+
+It tells you whether other models found something better, or agree with yours.
+
+**Once the design is settled, ask for the plan**
+
+<Copy id="r-plan" code="/poteto-mode turn this design into a plan. Break it into small, verifiable PRs, each with its own verification steps." />
+
+It hands over only the plan. It won't start writing code.
+
+**Migration plan: keep the bugs too**
+
+<Copy id="r-migrate" code={`/poteto-mode plan the migration from <some library> to <new approach>. Break it into small, verifiable PRs. The results must match the old ones exactly, bugs included.`} />
+
+Fixing bugs mid-migration makes old and new results impossible to compare.
+
+## Check before shipping
+
+**Pick it apart before you commit**
+
+<Copy id="r-interrogate" code="/interrogate the whole branch, and be picky. Don't change anything yet. Don't report nitpicks unless it's a real bug or a regression." />
+
+Glance at the items it dropped in the report, too.
+
+**Check many things at once**
+
+<Copy id="r-swarm" code="/swarm run each package's check.sh under packages/. One worker per package, then give me one report." />
+
+You read one summary.
+
+**Cases tests can't reach**
+
+<Copy id="r-formal" code="/create-formal-verification-skill for the retry queue. A message must never be delivered twice." />
+
+It checks this one rule in every case, and can recheck it on every later change. See <Term k="形式化验证" />.
+
+**Check a number before you publish it**
+
+<Copy id="r-bench" code="/benchmark-checklist check this 40% speedup before it goes in the PR description." />
+
+The verdict is only ever faster, slower, no difference, or can't tell.
+
+**Stop correcting the same mistake by hand**
+
+<Copy id="r-correct" code="/correct the AI keeps adding new config options without registering them in the schema." />
+
+It changes the repo itself, so the next AI can't make the mistake.
+
+**Open a PR and watch it until it can merge**
+
+<Copy id="r-pr" code={`/poteto-mode open a PR. Small commits, in order, with evidence in the description.`} />
+
+<Copy id="r-babysit" code={`/poteto-mode watch this PR and get it green.`} />
+
+It won't merge unless you say so.
+
+## Leave and come back
+
+**Before bed**
+
+<Copy id="r-overnight" code={`/poteto-mode I'm going to bed. In a new worktree (branched from <base branch>), <goal>.
+Done means: <a check that passes or fails>.
+Keep a decision log. No need to ask me before committing.
+/loop until done. If you're truly stuck after a few hours, stop and write down why.`} />
+
+"Done means" gives every round something to check. See [Let it run](/en/guide/7-overnight/).
+
+**Come back and see what it did**
+
+<Copy id="r-smyw" code="/show-me-your-work walk me through what you did last night." />
+
+Read the "needs attention" part first. Every line in the <Term k="决策日志" /> has a reason and evidence.
+
+**Just want to know what changed in this conversation**
+
+<Copy id="r-ketchup" code="/ketchup" />
+
+It lists what changed and what's waiting on your decision. It only looks, never changes.
+
+**Just want to ask how**
+
+<Copy id="r-help" code="/poteto-help how do I keep poteto-mode on for every turn?" />
+
+You get an answer and a prompt. Nothing runs unless you send it.
+
+**Can't follow the reply**
+
+<Copy id="r-bro" code="/bro" />
+
+It says the last reply again in plain words.
+
+**Write down what you learned**
+
+<Copy id="r-reflect" code="/reflect this was too slow. Write down what we learned so it doesn't happen again." />
+
+It only suggests changes. Nothing changes until you approve.
+
+For one-line ways to pull it back when it drifts, see [Pull it back on track](/en/howto/steer/).
+
+## Common mistakes
+
+- **Ordering skills in the prompt.** State the goal and requirements. It orders the skills itself.
+- **A vague definition of done.** "Make it better" can't be checked. Give a command or result that passes or fails.
+- **Leading with your guess about the cause.** It will only look where you pointed.
+- **Going with the first design.** Ask for prototypes first, or use `/architect`.
+- **Several AIs crammed into one folder.** They overwrite each other. Give each attempt its own worktree.
+- **Starting a loop before you trust it.** Get your <Term k="验证技能" /> working first, or you just get unchecked work faster.
+- **Believing a number you haven't checked.** Run `/benchmark-checklist` first.
+- **Using `/arena` like `/swarm`.** `/arena` does one task several times. `/swarm` splits work into different pieces.
+- **Accepting every review comment.** Use `/interrogate`. It keeps only the problems it can prove.
+- **Treating `auto` as a model name.** It means "follow the main conversation." See [Keep costs down](/en/howto/cost/).
+- **Calling a passing build a success.** Compiling only proves it compiles. Ask for real command output.
+- **Writing SKILL.md by hand.** Have `/poteto-mode` write it. It brings checks along.
+
+## Stuck?
+
+<Q q="I copied it exactly, but it did something different from what I wanted.">
+<mark>Most likely, what "done" means wasn't clear</mark>. Add one check that passes or fails, like "this command returns 0." Still unsure? Run the prompt through `/sharpen` before you send it.
+</Q>
+<Q q="Can I write prompts in a language other than English?">
+Yes. Just keep skill names (`/how`) and principle names (`prove it works`) in English.
+</Q>
+<Q q="I don't know which one to copy for this task.">
+Ask `/poteto-help`. It gives you a ready-made prompt. You can also read <a href="/en/howto/which-skill/">Not sure which skill to use</a>.
+</Q>

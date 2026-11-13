@@ -1,0 +1,97 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 3
+need: pstack, set up; a small requirement that's real but not big
+tldr: "Hand over one small task in one message: what you want, what counts as done, what to show you. Then check its restatement and evidence."
+description: "Run your first task with /poteto-mode: what to put in one message and what to leave out, where to look after you send it, and how to keep going."
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+
+## Copy one first
+
+Pick one small, real thing in your project. For example, add an export button to a Chrome extension's settings page:
+
+<Copy id="first-ext" title="Swap in your own task" code="/poteto-mode Add an “Export settings” button to the settings page that downloads the current settings as a JSON file. The existing settings and how they're saved must not change. When done, show me: the exported file's contents and what's stored in chrome.storage. The two must match exactly." />
+
+This message has just three parts:
+
+1. **What you want**: an export button.
+2. **What counts as done**: the export matches what's stored, and the old settings aren't affected.
+3. **What to show you**: the actual contents of both.
+
+The author's advice for beginners fits in one line: <mark><strong>give it a goal and a way to check, in your own words.</strong></mark>
+
+When an AI gets something wrong, it's usually one of two things. It didn't understand what you wanted, or it lacked the background to do it right. These three parts handle the first. [Step 4](/en/guide/4-understand/) handles the second: before it changes anything, have it explain the code as it is now.
+
+## Make "done" something you can check
+
+It uses this part to check its own work. So it has to be a clear pass or fail.
+
+- **Checkable**: the exported file matches what's stored, exactly.
+- **Not checkable**: make it better. Make it look nicer. Spend an hour on it.
+
+Without a check, it can only go by feel when it says "done."
+
+## Two things you can add
+
+They're optional. If you have them, add one sentence each:
+
+- **Clues you already have**: an error line, the step where it breaks, a link. It saves a round of searching.
+- **What it really must not touch**: for example, "Don't change code yet, just investigate," or "The old output must not change at all."
+
+## Two things to leave out at first
+
+- **Exactly how to do it.** Say the result you want. It may find a better way.
+- **Your guess at the cause.** Once you say it, it only looks where you pointed. Wait until it gives its own view, then add yours.
+
+Also, don't line up skills in your message, like "use /how first, then /architect." It calls them in order on its own. Your order can get in its way.
+
+## After you send it, look in three places
+
+**At the start: its restatement.** It says in its own words what you want and where it plans to change things. It won't wait for your OK. So if it got it wrong, interrupt right away.
+
+**In the middle: the <Term k="待办清单" />.** These are the steps it will take next. Once it picks an approach (a <Term k="剧本" />), that approach's steps are copied into the list. Steps it decides to skip stay on the list too, marked `skip:` with a reason.
+
+**At the end: evidence.** What you asked to see should be here, like real commands and their output. If it couldn't check something, it says "not sure."
+
+<Callout type="warn" title="A “done” with no evidence">
+If it sounds sure but can't show any check results, don't trust it. Reply: "Show me the results of what you actually checked."
+</Callout>
+
+## Keep going: shorter is better
+
+Within the same task, follow-ups can be very short:
+
+<Copy id="short" title="Any of these is enough" code={`/poteto-mode go ahead
+continue
+keep going until it's done`} />
+
+It remembers how far the task has gotten. You only need to say what you want next.
+
+**When you switch to something else, say "new task" first.** Otherwise it treats your new question as the next step of the last task:
+
+<Copy id="newtask" code="/poteto-mode new task. Find out why the cache is still there after logging out. Don't change any code yet." />
+
+"Don't change any code yet" makes it only investigate, without touching anything.
+
+<Callout type="tip" title="If you use Cursor">
+Choose `/poteto-mode` from the `/` menu, then press Option+Enter (Mac) or Alt+Enter (Windows). It becomes a <Term k="Custom Mode" />, so it applies to every message after that. A plain Enter applies to that one message only.
+</Callout>
+
+## Stuck?
+
+<Q q="It misunderstood what I meant.">
+<p>Just say so: "No, what I want is...". It's easiest to fix at its first restatement. When the request is messy (a long discussion, a problem you can't quite describe), have it only restate things first: <code>/poteto-mode Read this discussion and say in plain words what the root problem is. Don't change any code yet.</code></p>
+</Q>
+<Q q="It skipped a step I think matters.">
+<p>Read the reason after <code>skip:</code> on that item. If you disagree, say: "Don't skip step 2. Make the problem happen again first."</p>
+</Q>
+<Q q="The reply is too long to follow.">
+<p>Type <code>/bro</code>, and it will say the last reply again in plain words.</p>
+</Q>
+
+<Checkpoint id="s3" items={["I gave /poteto-mode one small, real task and said what counts as done", "I saw its restatement at the start", "The final reply had evidence I can check myself"]} />

@@ -1,0 +1,90 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 4
+need: A module you don't know well, or a problem with an unknown cause
+tldr: Before changing code, have the AI explain how it works now, why it was built that way, and where you left off.
+description: "Have the AI explain before you change code: investigate without touching anything, /how for now, /why for back then, /teach until you get it, /recall for where you left off."
+---
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+
+## Unknown cause: have it investigate, not fix
+
+<Copy id="inv" code="/poteto-mode Find out why the background job times out every few hours. Tell me the known facts, what data you used, and your strongest guesses. Don't change any code yet." />
+
+"Don't change any code yet" makes it only investigate, without touching anything. It ends with an explanation, and each point says where it came from.
+
+The "what data you used" part makes it write evidence and guesses separately.
+
+Once you know the cause and want it fixed, say "new task" to start a new task for the fix.
+
+## Before you change anything, have it explain
+
+<mark>Changing code you don't understand is the number one way hidden bugs reach production.</mark> The same goes for AI.
+
+pstack has four skills for this:
+
+| Skill | What it answers |
+| --- | --- |
+| `/how` | How does it work now? |
+| `/why` | Why was it built this way? |
+| `/teach` | Explain until I get it |
+| `/recall` | Where did I leave off? |
+
+Each one says its understanding out loud. That lets you check whether it got it right.
+
+## Ask how it works now: /how
+
+<Copy id="how" code="/how How are notifications deduplicated? Is there an N+1 query when looking up subscribers?" />
+
+Ask what you really want to know. It reads the code and explains it like a senior coworker showing you around: how the code runs, the key data, the parts that are easy to miss.
+
+For a big module, it first sends a few helper AIs to read different parts.
+
+## Ask why it was built this way: /why
+
+<Copy id="why" code="/why Why is the retry limit 5? Does that reason still hold?" />
+
+It goes through the Git history first. Then it checks the other places you've connected, like issues, docs, and chat. Every point cites a source, and it keeps evidence apart from guesses.
+
+If it finds nothing, it says so. "Nobody wrote down why" is an answer too.
+
+To use both, say "why first, then how."
+
+## Explain until you get it: /teach
+
+<Copy id="teach" code="/teach Walk me through how this PR changes retries. Convince me it fixes the real cause, not a surface symptom." />
+
+Use it when a summary isn't enough. It runs `/how` and `/why`, then writes it all up in plain words.
+
+"Convince me" is worth using often: it lets you push back on what it says. You can also use it to question the AI's own choices:
+
+<Copy id="teach2" code="/teach Explain why you implemented it this way instead of with a queue. What did you give up, and why?" />
+
+## Find where you left off: /recall
+
+<Copy id="recall" code="/recall Help me remember where I left off on the export feature last week" />
+
+It goes through your recent conversations, plus shared records (issues, past fixes). Then it tells you where things stand and what's next.
+
+When you start new work on an old topic, have it bring back the earlier work first, then give it the new material:
+
+<Copy id="recall2" code="/recall my work on the virtual list yesterday, then read this bug report." />
+
+## Pick up unfinished work
+
+<Copy id="pickup" code="/poteto-mode Pick up this branch. Read the decision log, figure out what's done, and continue from there. Don't redo work that's already finished." />
+
+It reads the records left behind and says where it will pick up. For parts someone said were "done," it checks them again against the original goal.
+
+## Stuck?
+
+<Q q="/why says it can't find the reason.">
+<p>That's normal. It can only search places you've connected. To search issues, chat, and docs, connect the matching MCP in your tool first (GitHub, Linear, Slack, Notion, for example). Without them, it will at least go through the Git history.</p>
+</Q>
+<Q q="It's too technical.">
+<p>Say "explain it for someone new to this project," or type <code>/bro</code> after it's done.</p>
+</Q>
+
+<Checkpoint id="s4" items={["I asked /how a real question about my own project", "I know “Don't change any code yet” makes it investigate without touching anything", "I know /why's answers cite sources and keep evidence apart from guesses"]} />

@@ -1,0 +1,75 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 2
+need: pstack, installed in the last step
+tldr: Run /setup-pstack once, answer a few questions to set models and budget, then start a new conversation.
+description: "Run /setup-pstack once: pick a budget, see which model each role uses, decide on a verification skill, then start a new conversation."
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+
+## Send this one command
+
+<Copy id="setup" code="/setup-pstack" />
+
+It checks which models you can use, then asks a few questions. Your answers go into a config file. From then on, every skill picks models from it.
+
+## When it asks about budget: not sure? Pick large
+
+The <Term k="推理预算" /> is how long the model gets to think. Longer is more careful, and more expensive.
+
+| Option | Reasoning level | Good for |
+| --- | --- | --- |
+| `large` | xhigh (default) | Pick this if unsure |
+| `unlimited` | max | Very hard work, cost no issue |
+| `medium` | high | Saving a bit |
+| `small` | medium | Simple tasks, tight budget |
+
+## When it asks about models per role: keep the defaults
+
+Each <Term k="模型角色" /> can use a different model:
+
+- **Coding roles**: grok by default. Fast and cheap.
+- **Judgment roles** (the hardest changes, making calls): opus 5.5 by default.
+- **Review panel**: opus 5.5 plus grok by default. Two model families, on purpose, so they find each other's mistakes.
+
+Only change the ones you care about. `auto` or `inherit-parent` means "use the same model as the main conversation."
+
+<Callout type="tip" title="If you use Claude Code">
+In Claude Code, helper AIs can only use Claude models. Roles that default to grok will use your current conversation's model. For three ready-made setups, see [Using it in Claude Code](/en/howto/claude-code/#how-to-set-it-up-well).
+</Callout>
+
+## When it asks about a verification skill: as a beginner, say yes
+
+If your project has no way yet to prove "the app really works," it offers to generate a <Term k="验证技能" />.
+
+<strong>As a beginner, say yes.</strong> An AI that can check its own work keeps going until the check passes. You don't have to check by hand.
+
+It may also ask about a <Term k="形式化验证" /> skill. Say yes only if your code has hard-to-test spots like concurrency or retries. You can add it later.
+
+## When you're done, start a new conversation
+
+The config file is written here:
+
+- **Cursor**: `~/.cursor/rules/pstack-models.mdc`
+- **Claude Code**: `~/.claude/rules/pstack-models.md`
+- **Codex and other tools**: `~/.agents/pstack-models.md`
+
+Cursor and Claude Code only read it when a new conversation starts. So <mark>once you're set up, close this conversation and start a new one</mark>.
+
+## Stuck?
+
+<Q q="What if I want to change models or budget later?">
+<p>Run <code>/setup-pstack</code> again. Roles you changed are kept. To reset a role to its default, delete that line from the config file.</p>
+</Q>
+<Q q="pstack updated its default models, but mine didn't change.">
+<p>Your old config still has the old values. Delete those lines (or the whole file), then run <code>/setup-pstack</code> again.</p>
+</Q>
+<Q q="I said no to the verification skill, and now I want it.">
+<p>Run <code>/create-verification-skill</code>. See <a href="/en/guide/6-verify-ship/">Step 6</a>.</p>
+</Q>
+
+<Checkpoint id="s2" items={["I ran /setup-pstack and picked a budget", "It told me which file the config was written to", "I've decided whether I want a verification skill (beginners: yes)", "I've started a new conversation"]} />

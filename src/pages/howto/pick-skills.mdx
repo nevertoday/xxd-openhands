@@ -1,0 +1,74 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: pick-skills
+time: 读 4 分钟
+for: 用 npx skills 安装，不想全装，只想挑几个
+step: 1
+tldr: 用 /poteto-mode 就全装；只要一两个功能，照这页挑，带上要一起装的。
+description: pstack 有的技能单独就能用，有的要和别的一起装。哪些能单独装、哪些要带上谁、几组常用搭配，以及在 npx skills 列表里怎么挑。
+---
+import Q from "../../components/Q.astro";
+import Cmd from "../../components/Cmd.astro";
+
+## 要用 /poteto-mode，就全装
+
+`/poteto-mode` 会用到几乎所有技能。<mark><strong>打算用它，就全装</strong></mark>。只想要一两个功能，再照下面挑。
+
+用 Cursor 插件或 Claude Code 插件市场装的，本来就是全套，这页可以跳过。
+
+## 单独装就能用的 17 个
+
+装一个，就能用一个：
+
+- **看懂和讲清楚**：`how`（代码怎么工作）、`bro`（用大白话重说）、`in-your-own-words`（先复述你的目标）。
+- **写文字**：`unslop`（去掉 AI 味）、`sharpen`（把提示词改得更准）。
+- **写代码**：`tdd`（先写会失败的测试）、`typescript-best-practices`（守住类型规矩）、`statechart`（画出检查过的状态图）。
+- **多个 AI 一起**：`arena`（同一题做几份挑最好）、`swarm`（切成几块分头做）、`interrogate`（几个模型挑刺）。
+- **核对和记录**：`benchmark-checklist`（核性能数字）、`show-me-your-work`（记决策日志）、`correct`（从根上堵住重复的错）。
+- **其他**：`figure-it-out`（现场设计做法）、`reflect`（把学到的变成修改建议）、`automate-me`（总结出你自己的技能）。
+
+## 这些要带上别的
+
+少装了箭头右边的，跑到那一步会找不到：
+
+- `teach` → 还要 `how`、`why`
+- `why` → 还要 `how`
+- `technical-writing` → 还要 `unslop`
+- `architect` → 还要 `arena`、`how`
+- `blast-radius` → 还要 `arena`、`how`、`why`、`unslop`
+- `create-verification-skill` → 还要 `maintain-verification-skill`
+- `create-formal-verification-skill` → 还要 `maintain-formal-verification-skill`、`statechart`
+- `ketchup` → 还要 `bro`；`ketchup-video` → 还要 `ketchup`、`bro`
+- `poteto-help` → 还要你想问的那些技能
+
+## 几组常用搭配
+
+- **只想看懂代码**：`how`、`why`、`teach`
+- **去掉文字的 AI 味**：`unslop`、`bro`
+- **改代码前先定设计**：`architect`、`arena`、`how`
+- **让 AI 自己验证你的应用**：`create-verification-skill`、`maintain-verification-skill`
+
+作者平时用的，是 `/poteto-mode` 把它们串起来。想要完整体验，就全选。
+
+## 在列表里怎么挑
+
+在终端里运行：
+
+<Cmd c="npx skills add backnotprop/pstack" />
+
+输入技能名就能筛出来。勾上要的，包括「还要」的那些，再选装进哪些工具。漏了就再跑一次补上。各工具的细节看[在 Codex 和其他工具里用](/howto/codex/)。
+
+## 卡住了？
+
+<Q q="只装了 teach，跑起来缺东西。">
+`teach` 要靠 `how` 和 `why`。再跑一次 `npx skills add backnotprop/pstack`，把这两个也勾上。
+</Q>
+<Q q="只装了几个，能用 /poteto-mode 吗？">
+不建议。它要读所有原则技能（`principle-*`），还会调用大部分其他技能，缺一个就有一步做不全。
+</Q>
+<Q q="recall、no-comments、setup-pstack 这几个要带什么？">
+`recall` 带上 `why`、`unslop`；`no-comments` 带上 `how`、`why`、`architect`。`setup-pstack` 不依赖别的，想选模型就装它。
+</Q>
+<Q q="原则技能（principle-*）要单独挑吗？">
+装 `poteto-mode` 时要全装。平时不用打它们，纠偏时说名字就行，见<a href="/howto/steer/">跑偏了，一句话拉回来</a>。
+</Q>

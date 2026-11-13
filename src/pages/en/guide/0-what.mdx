@@ -1,0 +1,64 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 0
+need: Nothing yet, just read
+tldr: Know what pstack does for you, what it costs, and the four things to have ready before you start.
+description: What pstack is, which bad AI coding habits it fixes, what it costs, and what to have ready before you start.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Fig from "../../../components/Fig.astro";
+
+<Callout type="tip" title="Don't code?">
+This full guide is for people who write code, and it uses words like Git and PR. If you've never written code, start with the [three beginner lessons](/en/start/1-why/). You'll be using it in 20 minutes.
+</Callout>
+
+## What pstack is
+
+pstack is a pack of <Term k="技能" text="skills" />. It goes into the AI coding tool you already use, like Claude Code, Cursor, or Codex.
+
+Once it's in, the AI writes code by a senior engineer's rules: <mark><strong>understand first, then act, then check its own work.</strong></mark>
+
+The model stays the same. What changes is the order it works in and the bar it has to clear.
+
+<Fig id="g0-layers" />
+
+## Which bad habits it fixes
+
+- **Changing code it hasn't understood.** It edits a spot that looks right but isn't.
+- **Treating only the symptom.** It hides duplicate data where it's shown. The bug that creates them is still there.
+- **Saying "done" without trying it.** It says "should be fine now." You run it, and it's still broken.
+- **Changes that keep growing.** It adds code nobody needs, and the next bug hides in it.
+
+## You only need one command
+
+Day to day, just type `/poteto-mode`. You say the goal, and it plans the rest. Behind it there's more, but you don't need to learn it yet:
+
+- **23 <Term k="剧本" text="playbooks" />**: fix a bug, add a feature, refactor... one approach per kind of task.
+- **34 skills**: for example, `/how` explains code and `/bro` puts things in plain words. See the [skills list](/en/skills/).
+- **24 <Term k="原则" text="principles" />**: for example, "subtract before you add" and "prove it works."
+- **2 helper AIs**: one follows the same rules when it's sent off to work; one only reviews comments.
+
+## What you get from it
+
+- **Smaller changes, tried every time.** It deletes what it can, and ends by running real commands and clicking the real UI.
+- **You can run several AIs at once.** Each follows the same rules and works in its own folder.
+- **The same mistake doesn't happen twice.** Use `/correct` to block it at the root.
+
+<Callout type="warn" title="The cost: slower and pricier">
+It sends out more helper AIs and has several models check each other. So it's slower and uses more tokens. Skip it for small changes. To save, see [Controlling cost](/en/howto/cost/).
+</Callout>
+
+## Have four things ready
+
+- **An AI coding tool**: any one of Claude Code, Cursor, or Codex (OpenCode and Pi work too). It must be able to change your code and run commands. <u>A chat-only AI in the browser won't work</u>.
+- **A model you can use**: a paid plan for the tool, or an API key.
+- **A real project in Git**: most playbooks create a <Term k="worktree" /> and open a <Term k="PR" />. Not using Git yet? Run `git init` and make one commit first.
+- **Node.js 22.20 or later**: only if you install with `npx skills`.
+
+<Callout type="tip">
+This site uses the [backnotprop/pstack](https://github.com/backnotprop/pstack) mirror. It syncs with the official version daily, and also works in Claude Code and Codex. You use both the same way.
+</Callout>
+
+<Checkpoint id="s0" items={["I know pstack is a pack of skills that goes into an AI coding tool, not a new model", "I know that day to day I only type one command: <code>/poteto-mode</code>", "I have one of Claude Code, Cursor, or Codex, plus a project I want to work on with it"]} />

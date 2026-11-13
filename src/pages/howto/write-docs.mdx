@@ -1,0 +1,87 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: write-docs
+time: 一份 README 一次对话
+for: 要写 README、使用文档或 PR 说明，不想交出一份一看就是 AI 写的东西
+step: 5
+tldr: 先分好文档类型再写，照着跑通每一步，最后用 /unslop 去掉 AI 腔。
+description: 用 /technical-writing 先选文档类型再动笔，用 /sharpen 把请求磨准，共享代码先写教程，最后用 /unslop 去掉 AI 腔。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+
+## 先照抄一个
+
+<Copy id="doc-tw" title="写一份 README" code="/technical-writing 给这个 Node CLI 写 README。先告诉我每一块该是哪种文档类型，我确认了再写。" />
+
+AI 写的 README 常常什么都有一点：安装、理念、参数表搅在一起。新手和来查参数的人都得跳着读。
+
+`/technical-writing` 的第一条规矩是：<mark><strong>一份文档只做一种事。</strong></mark>它会把每一块分成下面四种之一：
+
+- **教程**：跟着做一遍，每一步都看到结果。
+- **操作指南**：解决一个具体问题的步骤。
+- **讲解**：为什么这样设计，有哪些取舍。
+- **参考**：参数、选项、错误码，只写事实。
+
+一份 README 要好几种，就拆成几块，互相链接。
+
+## Node CLI 的例子
+
+一个把 Markdown 笔记批量导出成 HTML 的 CLI，要写 README 发到 GitHub：
+
+<Copy id="doc-cli" title="Node CLI 的例子" code={`/technical-writing 给这个 CLI 写 README。
+安装和第一次导出写成教程：每一步告诉读者应该看到什么输出。
+所有参数单独放一节参考，从 --help 的真实输出里整理，不要自己编参数。
+写完以后，在一个空目录里照着教程从头跑一遍，每条命令都要跑通，把终端输出贴给我。
+最后 /unslop 一遍，不要用破折号，不要用「强大」「轻松」。`} />
+
+- **「在空目录里照着跑一遍」**：最有用的一句。写得通不通顺可以争，命令跑不跑得通没法争。
+- **「从 --help 的真实输出里整理」**：参考只写事实，事实从代码里来。
+- **「最后 /unslop」**：去掉 AI 腔，再加上你自己不想看到的词。
+
+## 发出去以后看哪里
+
+**开头：它怎么分的类型。** 它把理念塞进了上手部分，就马上纠正。
+
+**最后：终端输出。** 哪一步跑不通，就是教程漏写了一步。
+
+## 写完去掉 AI 腔：/unslop
+
+<Copy id="doc-unslop" code="/unslop README 的改动，不要用破折号" />
+
+它内置的规则针对英文的 AI 腔，比如滥用破折号、凑三个排比、空洞的结尾。写中文时，把你在意的词写进规矩，比如「不要用赋能、无缝、一站式」。
+
+## 要给别人调用的代码：先写教程
+
+做一个别的代码会用的包或接口，可以先写文档、再写代码：
+
+<Copy id="doc-readme-first" title="先写教程" code="/poteto-mode 先写一份教程，讲我会怎么用这个新的 config 包。然后 /teach 我：为什么它比现在这个好。" />
+
+先写教程，它就得站在用的人那边想：第一步写什么、会看到什么。这份教程也成了目标，写代码时拿它对照。
+
+## 不确定问对了没有：/sharpen
+
+<Copy id="doc-sharpen" code="/sharpen 给新的计费服务写一份上手文档。" />
+
+它不写文档，只把你的请求改写得更准。比如这个领域的高手会多做什么、从什么材料入手、拿什么证明结果是对的。你读一遍改写，觉得对，再发出去。
+
+<Callout type="tip" title="PR 说明也是文档">
+开 <Term k="PR" /> 时，它也用 <code>/technical-writing</code> 写说明，再过一遍 <code>/unslop</code>。说明是给评审的一分钟简报，没内容的节直接删掉。
+</Callout>
+
+## 卡住了？
+
+<Q q="写出来的 README 还是什么都有一点。">
+回它：「按 technical-writing 的分法拆开：上手部分只留教程，参数表移到参考那一节，设计理念单独一节讲解。不要混在一起。」
+</Q>
+<Q q="/unslop 过了，中文还是有 AI 味。">
+把你看着别扭的词句列出来，加在命令后面。比如「/unslop 这一段，不要用破折号，不要用『赋能』『无缝』，一句话不超过 30 个字」。规矩越具体，它改得越准。
+</Q>
+<Q q="/sharpen 没帮我写文档。">
+它本来就只改写请求。把改写后的请求发给 <code>/poteto-mode</code> 或 <code>/technical-writing</code>。
+</Q>
+<Q q="PR 说明写得太长。">
+回它：「PR 说明是一分钟简报。每节一到三句，详细数据放进链接的文件里。」
+</Q>

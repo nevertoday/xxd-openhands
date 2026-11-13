@@ -1,0 +1,94 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: codex
+time: 装好 5 分钟，读完 6 分钟
+for: 用 Codex、OpenCode、Pi 或其他支持 Agent Skills 的工具
+step: 1
+# 这一篇的命令都是 Codex 的写法，不跟着「我用的工具」换
+cmds: literal
+tldr: 一条命令装好，跑一次 setup 选模型，用 $poteto-mode 开工。
+description: 用 npx skills 把 pstack 装进 Codex 和其他工具：要什么 Node.js、装到项目还是全局、技能和模型设置放在哪，以及工具缺功能时会怎样。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+import ToolPick from "../../components/ToolPick.astro";
+
+## 一条命令装
+
+pstack 的每个技能是一份 `SKILL.md`，用的是通用的 <Term k="Agent Skill" /> 格式，不用 Cursor 也能装。在终端里输入：
+
+<Cmd c="npx skills add backnotprop/pstack" />
+
+要 Node.js 22.20 或更新的版本。不确定就先跑 `node -v`。
+
+勾好技能，再选装进哪些工具。不知道勾哪些，就全选。只要几个，看[只装几个技能](/howto/pick-skills/)。
+
+<Callout type="tip" title="装到所有项目">
+<p>默认只装进当前的项目文件夹。想让所有项目都能用，加 <code>-g</code>：</p>
+<p><Cmd c="npx skills add backnotprop/pstack -g" /></p>
+</Callout>
+
+## 看看装到了哪里
+
+去对应的文件夹里，看有没有 `poteto-mode` 这样的子文件夹：
+
+| 工具 | 当前项目 | 所有项目（-g） |
+| --- | --- | --- |
+| Codex 等 | `.agents/skills/` | `~/.agents/skills/` |
+| Claude Code | `.claude/skills/` | `~/.claude/skills/` |
+| Pi | `.pi/skills/` | `~/.pi/agent/skills/` |
+| Cursor | `.cursor/skills/` | `~/.cursor/skills/` |
+
+Codex 还会读 `~/.codex/skills/`。
+
+<mark>技能不会自己启动</mark>。除了 `setup-pstack`，都要你点名才运行。
+
+## 选模型
+
+装完先跑一次 `setup-pstack`。它会列出你能用的模型，问你<Term k="推理预算" />（让模型想多久），然后写一个文件：
+
+<Copy id="codex-file" title="设置文件的位置" code="~/.agents/pstack-models.md" />
+
+技能挑模型时会自己去读它，不用重开对话。
+
+<Callout type="warn" title="一定要跑一次 setup">
+pstack 的默认模型名是按 Cursor 写的。你的工具里没有这个名字，它会换成最接近的；实在没有，就用你当前对话的模型，并说一声。跑一次 setup，每个角色都会换成你真有的模型。
+</Callout>
+
+## 第一个任务
+
+Codex 里用 `$` 加技能名来点名，比如 `$poteto-mode`。网站上的命令默认按 Claude Code 写（`/pstack:poteto-mode`），在这里选 Codex，全站的命令都会换成 `$` 的写法：
+
+<ToolPick />
+
+第一个任务这样发：
+
+<Copy id="codex-first" title="Codex 里用 $ 点名技能" code="$poteto-mode 给这个命令加一个 --json 参数。原来的文字输出要和现在逐字一样。两种输出都验证一下。" />
+
+也可以说「用 poteto-mode 技能做这件事」。其他工具换成它们的写法就行。怎么写好这句话，看[第一个任务](/guide/3-first-task/)。
+
+## 你的工具缺的，它会自己补
+
+技能里写的是 Cursor 的叫法，AI 会自己换算。你会注意到的几处：
+
+- **没有派帮手的功能**（<Term k="子代理" />）：本该分头做的步骤，它一件一件排队做，慢一些。
+- **没有提问工具**：它在聊天里列出带编号的选项。
+- **没有 `/loop`**：它用一个定时等待的命令，隔一会儿再检查。
+- **没有 Custom Mode**：那是 Cursor 才有的。每个新任务开头都写上 `poteto-mode`。
+
+`deslop`、`control-cli`、`control-ui` 是 Cursor 另一个插件里的。没有它们，AI 会改用你手上的工具，比如 Playwright、tmux。
+
+## 卡住了？
+
+<Q q="npx skills 报错，跑不起来。">
+先跑 `node -v`。低于 22.20 就升级 Node.js 再试。
+</Q>
+<Q q="在另一个项目里找不到 pstack 的技能。">
+<u>默认只装进当时所在的那个项目</u>。在新项目里再跑一次，或者加 `-g` 装到所有项目。
+</Q>
+<Q q="改了模型设置，好像没生效。">
+打开 `~/.agents/pstack-models.md`，看那一行是不是你选的模型。再看这个名字在你的工具里有没有：没有的话，它会换成最接近的，并在回复里说一声。
+</Q>

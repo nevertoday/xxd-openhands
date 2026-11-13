@@ -1,0 +1,230 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: claude-code
+time: 5 minutes to install, 10 to read
+for: You use Claude Code and want pstack in it
+step: 1
+tldr: "Install with two commands, add pstack: before commands, use the Balanced model plan, then start a new session."
+description: "Installing pstack in Claude Code, the pstack: prefix before commands, which of three ready-made model setups to pick, plus skipped Cursor features and auto-update."
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Cmd from "../../../components/Cmd.astro";
+import ToolPick from "../../../components/ToolPick.astro";
+
+## Install it
+
+In the Claude Code chat box, type these two lines one after the other:
+
+<Copy id="cc-plugin" title="Install from the plugin marketplace" code={`/plugin marketplace add cursor/plugins
+/plugin install pstack@cursor-plugins`} />
+
+This installs the full set, so `/poteto-mode` has everything it needs. If you're not sure, use this.
+
+**To pick skills yourself**, type this in your terminal (not the chat box):
+
+<Cmd c="npx skills add backnotprop/pstack" />
+
+Check the skills you want and choose Claude Code as the tool. The skills go into `.claude/skills/`. For what to pick, see [Install only a few skills](/en/howto/pick-skills/).
+
+## Add pstack: before commands
+
+If you installed from the marketplace, every command lives under the plugin name. Plain `!/poteto-mode` isn't recognized; you type:
+
+<Cmd c="!/pstack:poteto-mode" />
+
+The same goes for other commands, like `!/pstack:how`. That's Claude Code's rule for plugins, so two plugins can't clash over a name. If you used `npx skills`, there's no prefix.
+
+Commands on this site are written for the plugin by default, so copying works. If you installed with `npx skills`, pick "Installed with npx" here:
+
+<ToolPick />
+
+<Callout type="warn" title="Skills don't start on their own">
+Except for `setup-pstack`, every skill runs only when you type it yourself. Saying "help me fix a bug" won't switch on `/pstack:poteto-mode`.
+</Callout>
+
+## Pick models, then start a new session
+
+After installing, run this once:
+
+<Cmd c="/pstack:setup-pstack" />
+
+It asks about your <Term k="推理预算" /> (how long models think), then assigns a model to each <Term k="模型角色" />. Finally it writes one file: `~/.claude/rules/pstack-models.md`.
+
+Claude Code reads the `.md` files in that folder each time a new session starts. So <mark>after setup, quit and open a new session before you start working</mark>. The current session still has the old settings.
+
+A model is written as "name + level," like `opus xhigh`. The only names are `opus`, `sonnet`, `haiku`, and `fable`. Keep these lines in this one file. Don't copy them into `CLAUDE.md`.
+
+## How to set it up well
+
+**Most people should pick Balanced**: the session runs on opus, and sonnet writes the code.
+
+Why? Two things decide which models get used:
+
+- **The session model**: the one you pick with `/model`, the AI you talk to directly. It picks the approach, hands out work, and reviews every change.
+- **Each line in the settings file**: which model each helper AI (<Term k="子代理" text="subagent" />) runs on.
+
+By default, pstack has grok write the code. Claude Code can't use grok, so those lines become `inherit-parent`. That means "follow the session model."
+
+So if you change nothing and run the session on opus, opus does all the work. It costs the most, and both review seats are the same model. Balanced moves the coding to sonnet. That halves the price and puts two different models on reviews.
+
+Prices are API list prices as of October 2026, per million <Term k="token" text="tokens" />. On a subscription, pricier models use up your limits faster:
+
+| Model | Input / output | Good for |
+| --- | --- | --- |
+| fable | $10 / $50 | Strongest, when cost is no object |
+| opus | $4 / $20 | Session, judgment, hardest changes |
+| sonnet | $2 / $10 | Writing code, second review seat |
+| haiku | $0.1 / $0.5 | Not recommended |
+
+Why not haiku: checking the results uses the same model as the coding line. Make that the cheapest model, and the checks get weaker too.
+
+### Three plans
+
+<Tabs id="cc-plans" label="Pick a plan" items={[["balanced", "Balanced (recommended)"], ["cheap", "Save money"], ["max", "Cost no object"]]}>
+<div slot="balanced">
+
+**Run the session on opus, and change every `inherit-parent` in the settings file to `sonnet xhigh`.**
+
+The session has to understand you and review changes, so it gets opus. Coding helpers get clearly scoped work, which sonnet can handle. The hardest changes go through `hardest tasks`, still on opus.
+
+<Copy id="cc-plan-balanced" title="~/.claude/rules/pstack-models.md (balanced)" code={`# pstack model configuration. One line per role. Delete a line to fall back to the skill default.
+# budget: large (xhigh)
+feature, refactoring: sonnet xhigh
+bug-fix: sonnet xhigh
+perf-issue: sonnet xhigh
+hillclimb: sonnet xhigh
+judgment and prose: opus xhigh
+hardest tasks: opus xhigh
+how explorer: sonnet xhigh
+how explainer: opus xhigh
+why investigators: sonnet xhigh
+why synthesizer: opus xhigh
+reflect tooling: sonnet xhigh
+reflect judgment, divergent, synthesizer: opus xhigh
+arena runners: opus xhigh, sonnet xhigh
+arena cross-judge pool: opus xhigh, sonnet xhigh
+swarm workers: sonnet xhigh
+architect runners: opus xhigh, sonnet xhigh
+interrogate reviewers: opus xhigh, sonnet xhigh`} />
+
+</div>
+<div slot="cheap">
+
+**Run the session on sonnet, keep the default settings file, and pick the medium budget.**
+
+You don't change a line. `inherit-parent` follows the session to sonnet, and opus still makes the judgment calls. Medium lowers every level from xhigh to high. For complex work, switch back to opus with `/model` before you start.
+
+<Copy id="cc-plan-cheap" title="~/.claude/rules/pstack-models.md (save money)" code={`# pstack model configuration. One line per role. Delete a line to fall back to the skill default.
+# budget: medium (high)
+feature, refactoring: inherit-parent
+bug-fix: inherit-parent
+perf-issue: inherit-parent
+hillclimb: inherit-parent
+judgment and prose: opus high
+hardest tasks: opus high
+how explorer: inherit-parent
+how explainer: opus high
+why investigators: inherit-parent
+why synthesizer: opus high
+reflect tooling: inherit-parent
+reflect judgment, divergent, synthesizer: opus high
+arena runners: opus high, inherit-parent
+arena cross-judge pool: opus high, inherit-parent
+swarm workers: inherit-parent
+architect runners: opus high, inherit-parent
+interrogate reviewers: opus high, inherit-parent`} />
+
+</div>
+<div slot="max">
+
+**Run the session on opus, give judgment to fable, the code to opus, and seat three models on each review.**
+
+fable goes where judgment matters most: explaining, summarizing, the hardest changes. A review lists three models, so it sends three helpers. fable's list price is 2.5 times opus. If your account can't use fable, setup won't offer it.
+
+<Copy id="cc-plan-max" title="~/.claude/rules/pstack-models.md (cost no object)" code={`# pstack model configuration. One line per role. Delete a line to fall back to the skill default.
+# budget: large (xhigh)
+feature, refactoring: opus xhigh
+bug-fix: opus xhigh
+perf-issue: opus xhigh
+hillclimb: opus xhigh
+judgment and prose: fable xhigh
+hardest tasks: fable xhigh
+how explorer: sonnet xhigh
+how explainer: fable xhigh
+why investigators: opus xhigh
+why synthesizer: fable xhigh
+reflect tooling: opus xhigh
+reflect judgment, divergent, synthesizer: fable xhigh
+arena runners: fable xhigh, opus xhigh, sonnet xhigh
+arena cross-judge pool: fable xhigh, opus xhigh
+swarm workers: opus xhigh
+architect runners: fable xhigh, opus xhigh, sonnet xhigh
+interrogate reviewers: fable xhigh, opus xhigh, sonnet xhigh`} />
+
+</div>
+</Tabs>
+
+None of the plans use the unlimited budget. pstack already raises the level one step for the hardest step on its own.
+
+### How to write it in
+
+1. Pick the session model with `/model`.
+2. Run `/pstack:setup-pstack` and pick the budget for your plan.
+3. When it asks whether to change any roles, paste it the file above and have it write that.
+4. Quit and start a new session.
+
+## You see "Skipped in Claude Code"
+
+Cursor's scheduled tasks, its Bugbot review bot, and its cloud agents don't exist in Claude Code. Steps that use them get skipped. The reply gets one line, and it moves on:
+
+<Copy id="cc-skip" title="You'll see a line like this" code="Skipped in Claude Code: <which step>. <why it was skipped>." />
+
+Opening a <Term k="PR" /> still works, using `gh pr create` instead. `/loop` exists here too. If it says it left a placeholder (like a missing link), check what's missing and fill it in if needed.
+
+## Turn on auto-update
+
+Claude Code doesn't update third-party plugins by default. To turn on auto-update:
+
+1. Type `/plugin` in the chat box.
+2. Open the **marketplaces** tab.
+3. Select `cursor-plugins`.
+4. Choose **enable auto-update**.
+
+To update by hand, run this in your terminal:
+
+<Cmd c="claude plugin update pstack@cursor-plugins" />
+
+If an update changes the default models, your old settings file keeps the old ones. For the fix, see [Update, inspect, uninstall](/en/howto/update-remove/).
+
+## Uninstall or pause
+
+Type this in the chat box:
+
+<Cmd c="/plugin uninstall pstack@cursor-plugins" />
+
+Then type `/reload-plugins`, or restart Claude Code. To pause it for a while, use `disable` in place of `uninstall`, and `enable` to turn it back on. If you ran setup, also delete `~/.claude/rules/pstack-models.md` after uninstalling, or every new session keeps reading it.
+
+## Stuck?
+
+<Q q="I typed a command and nothing happened. It's not in the menu either.">
+If you installed from the marketplace, type `!/pstack:poteto-mode`; without `pstack:` it isn't recognized. Type `/pstack:` first, and the menu lists only pstack's commands.
+</Q>
+<Q q="I ran setup, but the models I chose didn't take effect.">
+The settings file is only read when a new session starts. Quit and open a new one. If that doesn't help, open `~/.claude/rules/pstack-models.md` and check the line shows the model you chose.
+</Q>
+<Q q="A reply says /arena skipped its judge, or found no reviewer from another family.">
+A few steps want a model from "another family" to review, like the `/arena` judge. All Claude models count as one family. So it skips the judge, picks itself, and says so. The `arena cross-judge pool` line does almost nothing here. For another vendor's eyes, take the review that matters to Codex or Cursor and run `/interrogate` there.
+</Q>
+<Q q="The skills use Cursor's names. Do I translate them?">
+No. The plugin includes a mapping guide (`docs/harness/claude-code.md`), and the AI translates on its own. For example, `.cursor/rules/` becomes `CLAUDE.md` (or `AGENTS.md` if there isn't one), and cloud agents become a local <Term k="worktree" />.
+</Q>
+<Q q="The AI says the Skill tool can't call pstack's skills. Is it broken?">
+No. In Claude Code, most pstack skills can't be called that way. The AI reads that skill's `SKILL.md` directly and follows it. Keep typing commands as usual.
+</Q>
+<Q q="I let it run overnight and found it stuck on a permission prompt.">
+Before you let it run alone, allow the common commands: git, gh, your test and build commands. Claude Code's built-in `/fewer-permission-prompts` finds the look-only commands you use often and writes them into the project's `.claude/settings.json`. Whether to allow commands that change things is your call.
+</Q>
