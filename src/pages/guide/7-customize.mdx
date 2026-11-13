@@ -1,0 +1,155 @@
+---
+layout: ../../layouts/Guide.astro
+step: 7
+need: 跑通过第 3 步；一个你常用的项目
+tldr: 用 AGENTS.md 写下项目规矩，按需加技能、接外部工具、装插件。
+description: AGENTS.md、技能、MCP、插件、hooks 各管什么，怎么写一份 AGENTS.md，怎么加技能、接 MCP 服务器、装插件，以及让它收工前先过检查。
+---
+import Callout from "../../components/Callout.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+import Term from "../../components/Term.astro";
+import Copy from "../../components/Copy.astro";
+import Q from "../../components/Q.astro";
+
+## 先挑对办法
+
+想让它按你的规矩干活，有五种办法：
+
+- **<Term k="AGENTS.md" />**：每次都要知道的项目规矩。放在项目根目录。
+- **<Term k="技能" />**：只有某类事才用得上的做法，比如怎么发版。
+- **<Term k="MCP" />**：接上外部工具，比如 GitHub、Slack、Notion。
+- **<Term k="插件" />**：把技能、MCP、命令打成一包，一次装好。
+- **hooks**：到了某个时刻自动跑一段脚本，比如收工前跑测试。
+
+<mark><strong>每次都要的写进 AGENTS.md，偶尔才要的做成技能。</strong></mark>AGENTS.md 每个对话一开始就整份读进去，越长越占地方。
+
+## 写一份 AGENTS.md
+
+最省事的办法是让它自己写。打开你的项目，开一个新对话：
+
+<Copy id="agents" title="让它写 AGENTS.md" code="请浏览这个仓库，看看文档和相关代码，弄清楚这个仓库是做什么的。然后在仓库根目录创建一个 AGENTS.md 文件，简要写清楚：1. 这个仓库的用途；2. 怎么装、怎么跑；3. 目录结构的简要说明。如果有 .github/ 文件夹，读一下里面所有的 GitHub workflow，弄清楚 CI 会检查什么（比如 linter、pre-commit），也写进 AGENTS.md。" />
+
+写完自己读一遍，删掉不准的，补上它不知道的规矩，比如「提交前一定要跑测试」。
+
+OpenHands 也认 `CLAUDE.md` 和 `GEMINI.md`。
+
+## 加一个技能
+
+技能是一个文件夹，里面有一个 `SKILL.md`。放在项目的 `.agents/skills/` 下面：
+
+```text
+my-repository/
+├── AGENTS.md
+└── .agents/
+    └── skills/
+        └── release-checklist/
+            └── SKILL.md
+```
+
+`SKILL.md` 开头写名字和一句说明，下面写做法：
+
+```markdown
+---
+name: release-checklist
+description: Prepare and verify a release checklist. Use when creating release notes or publishing a release.
+---
+
+Check the version, changelog, validation commands, and release notes before publishing.
+```
+
+它一开始只看名字和说明。碰到对得上的事，才读整份做法。所以说明要写清楚两件事：它做什么，什么时候用。`name` 要和文件夹名一样，只用小写字母、数字和连字符。
+
+改完技能，要开**新对话**才生效。
+
+想所有项目都能用，放到 `~/.agents/skills/` 下面。
+
+### 装别人写好的技能
+
+官方的技能库在 [OpenHands/extensions](https://github.com/OpenHands/extensions/tree/main/skills)。在对话里用 `/add-skill` 加上它的地址：
+
+<Copy id="add-skill" title="示例：装代码审查技能" code="/add-skill https://github.com/OpenHands/extensions/tree/main/skills/code-review" />
+
+装好后会出现一个横幅，点 **Start new conversation with this skill**，新对话里才有它。
+
+已经装了哪些、开了哪些，在 `Customize > Skills` 里看。默认只开标着 **Recommended** 的几个，别的要你自己打开。
+
+<Callout type="warn" title="装之前先看一遍">
+技能能让代理运行脚本、读文件、用密钥、调用你接好的工具。装之前先读一遍它和它带的文件，只装你信得过的来源。
+</Callout>
+
+## 接上外部工具（MCP）
+
+打开 `Customize > MCP Servers`。
+
+- **Marketplace 里有的**：直接装。用 OAuth 登录的（比如 Notion），装的时候会让你授权。
+- **Marketplace 里没有的**：点 `Add custom server`，选类型，填地址或启动命令，点 `Test connection`。
+
+<Callout type="ok">
+测试通过时，会显示这个服务器提供了几个工具。保存以后，新对话就能用它们了。
+</Callout>
+
+已装的服务器卡片会显示状态：`Reachable` 是连上了，`Credential check failed` 是密钥不对，`Connection failure` 是连不上。
+
+本地后端把 MCP 设置存在 `~/.openhands/settings.json` 里，密钥加了密。在界面里改，别直接改这个文件。
+
+## 装插件
+
+插件把技能、MCP 配置、hooks、命令打成一包。在侧边栏打开 `Plugins`：
+
+- **搜索和查看。** 点开能看到它带了哪些技能和文件。
+- **安装、开关。** 打开的插件会自动给新对话用；关掉的还装着，但不加载。
+- **只给这一次用。** 开新对话时，在输入框的 `Plugins` 选择器里挑。
+
+`~/.agents/plugins` 和 `~/.openhands/plugins` 里的插件会显示成 `Local`，只能看，要改就直接改文件。插件管理页目前只在本地后端上能用。
+
+插件能加指令、工具、hooks 和外部接入。和技能一样，只装信得过的。
+
+## 让它收工前先过检查
+
+在项目里建 `.openhands/hooks.json`，可以在某些时刻自动跑脚本。最有用的是 `Stop`：它要收工时先跑检查，不过就不让收工。
+
+先写一个检查脚本 `.openhands/hooks/quality_gate.sh`：
+
+<Copy id="gate" lang="bash" title=".openhands/hooks/quality_gate.sh" code={`#!/bin/bash
+cd "\${OPENHANDS_PROJECT_DIR:-$PWD}"
+# Replace this with your repo's checks, such as npm run lint, pytest, or make test.
+if ! make test 2>&1; then
+  echo '{"decision":"deny","reason":"Quality checks failed. Fix them before finishing."}'
+  exit 2
+fi
+exit 0`} />
+
+再在 `.openhands/hooks.json` 里登记它：
+
+<Copy id="hooks" lang="json" title=".openhands/hooks.json" code={`{
+  "stop": [
+    {
+      "matcher": "*",
+      "hooks": [
+        { "command": ".openhands/hooks/quality_gate.sh", "timeout": 120 }
+      ]
+    }
+  ]
+}`} />
+
+把 `make test` 换成你项目的检查命令。这套格式和 Claude Code 的 hooks 兼容。
+
+## 记住：这些都跟着后端走
+
+技能、MCP、密钥都存在当前后端上。换一个后端，要重新配一遍。用 OpenHands Cloud 当后端时，`Customize > Skills` 会变成 **Skills and Plugins**，在新标签页里打开 Cloud 的设置。
+
+## 卡住了？
+
+<Q q="加了技能，它好像没用上。">
+<p>先开一个新对话。还不行，看技能的 <code>description</code> 有没有写清楚什么时候用。它靠这句话决定要不要读整份技能。</p>
+</Q>
+<Q q="接了 MCP，对话里没有那些工具。">
+<p>MCP 设置只对新对话生效。开一个新对话，再看 <code>Customize &gt; MCP Servers</code> 里它的状态是不是 <code>Reachable</code>。</p>
+</Q>
+<Q q="每次开工前都要先装依赖。">
+<p>在项目里放一个 <code>.openhands/setup.sh</code>。OpenHands 每次开始处理这个仓库时都会先运行它，适合装依赖、设环境变量。</p>
+</Q>
+
+细节见官方的 [Skills Overview](https://docs.openhands.dev/overview/skills)、[Model Context Protocol](https://docs.openhands.dev/openhands/usage/settings/mcp-settings)、[Plugins in Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/plugins) 和 [Hooks](https://docs.openhands.dev/openhands/usage/customization/hooks)。
+
+<Checkpoint id="s7" items={["我的项目根目录有一份自己读过的 AGENTS.md", "我知道技能放在 .agents/skills/ 下面，改完要开新对话", "我在 Customize > MCP Servers 里看过怎么接一个外部工具"]} />

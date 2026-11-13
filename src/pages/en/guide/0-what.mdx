@@ -1,0 +1,91 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 0
+need: Nothing yet, just read
+tldr: Learn the parts of OpenHands, where the agent actually works, and the three things to have ready.
+description: What OpenHands and Agent Canvas are, what the UI, backend, workspace and model each do, how running on your machine differs from Docker, and what to prepare.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+
+<Callout type="tip" title="Don't code?">
+This full guide assumes you can code a little. It uses words like terminal, Git and PR. If you've never written code, start with the [three beginner lessons](/en/start/1-why/).
+</Callout>
+
+## Meet it first
+
+<Term k="OpenHands" /> is an open-source project for AI that acts on its own: a coding <Term k="代理" />.
+
+Today, the OpenHands you use is mostly <Term k="Agent Canvas" />. It's a control center you open in your browser.
+
+In Agent Canvas you can:
+
+- **Start conversations.** Hand it a task and watch it run commands and edit files.
+- **Create automations.** Have it work on a schedule or when something happens, like posting a report to Slack.
+- **Switch backends.** Move between your computer, Docker and a server without leaving the UI.
+- **Switch agents.** It runs the OpenHands agent by default. Claude Code, Codex, Gemini CLI, Pi and OpenCode work too.
+
+## Know the four parts
+
+Every conversation passes through these four:
+
+| Part | What it does |
+| --- | --- |
+| Browser UI | Where you read and type |
+| <Term k="后端" /> | The machine running the agent |
+| <Term k="工作区" /> | The folder it can change |
+| Agent and <Term k="模型" /> | Who thinks, who acts |
+
+Agent Canvas is only the screen. <mark><strong>The backend does the work, and the files live on the backend's machine.</strong></mark>
+
+The backend runs the <Term k="Agent Server" />. It handles conversations, tools, settings and secrets. An Automation Server often runs next to it for scheduled and event-triggered work.
+
+## What happens when you send a message
+
+1. You send a message in the UI.
+2. Agent Canvas passes it to the backend you picked.
+3. The Agent Server starts or resumes the <Term k="对话" /> and lets the agent use its tools.
+4. Each step streams back to the UI as it happens.
+
+Conversation history, model settings and secrets are stored on the backend. Switch backends and you see a different set of conversations and settings.
+
+## Decide where it works
+
+Before you install, decide one thing: which files it can reach.
+
+| Install | What it can reach |
+| --- | --- |
+| Desktop app, npm, npx | Everything your account can |
+| <Term k="Docker" /> | Only mounted folders |
+| Server or spare machine | That machine |
+| <Term k="OpenHands Cloud" /> | A managed <Term k="沙盒" /> |
+
+<Callout type="warn" title="It runs commands and edits files">
+The agent runs commands, reads and writes files, and uses connected tools with whatever access you give it. Only connect it to files, secrets and networks you're willing to let it use. On your own machine, start by giving it one dedicated folder. For isolation, use Docker ([step 1](/en/guide/1-install/) shows how).
+</Callout>
+
+## Have three things ready
+
+- **Somewhere to run it.** A Mac, Windows or Linux computer. The desktop app bundles its tools. The npm install needs Node.js 24 or later and `uv`. Isolation needs Docker.
+- **A model.** A provider <Term k="API key" />, an OpenHands Cloud key, a signed-in subscription like Claude Code, or a local model. [Step 2](/en/guide/2-model/) connects it.
+- **A folder for it to work in.** A new empty folder, or a project you're happy to let it change.
+
+<Callout type="warn" title="Models cost money">
+OpenHands sends your model a lot of requests. Most models charge per use, so set a spending limit with your provider. See [Controlling cost](/en/howto/cost/).
+</Callout>
+
+## Don't install the wrong thing
+
+<Q q="An older tutorial says to run openhands serve. Does that still work?">
+<p><code>openhands serve</code> starts the old local GUI, which is deprecated. If you only installed Agent Canvas, the command won't run. The OpenHands CLI is no longer maintained either. Install Agent Canvas as in step 1.</p>
+</Q>
+<Q q="Is OpenHands Cloud something else?">
+<p>It's the paid hosted service, so you don't run a backend or sandbox yourself. You can add it to Agent Canvas as one of your backends. See <a href="/en/guide/5-backends/">step 5</a>.</p>
+</Q>
+<Q q="And what's the SDK?">
+<p>The <Term k="SDK" /> is a Python toolkit for building agents in code. The Agent Server is built on it. If you only want the UI, skip it for now. <a href="/en/guide/8-beyond/">Step 8</a> covers it.</p>
+</Q>
+
+<Checkpoint id="s0" items={["I know Agent Canvas is only the screen and the backend does the work", "I've decided where it works first: one dedicated folder on my machine, or Docker", "I have a model I can use, or I know where to get one"]} />

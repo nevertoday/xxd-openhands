@@ -1,0 +1,155 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 7
+need: Step 3 done; a project you work on often
+tldr: Write your project's rules in AGENTS.md, then add skills, outside tools and plugins as you need them.
+description: What AGENTS.md, skills, MCP, plugins and hooks each do, how to write an AGENTS.md, add skills, connect MCP servers and install plugins, and make it pass checks before it finishes.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+
+## Pick the right tool
+
+There are five ways to teach it your rules:
+
+- **<Term k="AGENTS.md" />**: project rules it needs every time. Lives in the project root.
+- **<Term k="技能" text="Skills" />**: know-how for one kind of task, like cutting a release.
+- **<Term k="MCP" />**: connects outside tools, like GitHub, Slack or Notion.
+- **<Term k="插件" text="Plugins" />**: skills, MCP settings and commands bundled to install in one go.
+- **Hooks**: scripts that run at set moments, like running tests before it finishes.
+
+<mark><strong>Put what it always needs in AGENTS.md. Turn what it sometimes needs into a skill.</strong></mark> AGENTS.md loads in full at the start of every conversation, so every line takes up room.
+
+## Write an AGENTS.md
+
+The easy way is to have it write one. Open your project and start a new conversation:
+
+<Copy id="agents" title="Have it write AGENTS.md" code="Please browse the repository, look at the documentation and relevant code, and understand the purpose of this repository. Specifically, I want you to create an `AGENTS.md` file at the repository root. This file should contain succinct information that summarizes: 1. The purpose of this repository 2. The general setup of this repo 3. A brief description of the structure of this repo. Read all the GitHub workflows under .github/ of the repository (if this folder exists) to understand the CI checks (e.g., linter, pre-commit), and include those in the `AGENTS.md` file." />
+
+Then read it yourself. Delete what's wrong, and add rules it can't know, like "always run the tests before committing."
+
+OpenHands also reads `CLAUDE.md` and `GEMINI.md`.
+
+## Add a skill
+
+A skill is a folder with a `SKILL.md` inside. Put it under `.agents/skills/` in your project:
+
+```text
+my-repository/
+├── AGENTS.md
+└── .agents/
+    └── skills/
+        └── release-checklist/
+            └── SKILL.md
+```
+
+`SKILL.md` starts with a name and a one-line description, then the instructions:
+
+```markdown
+---
+name: release-checklist
+description: Prepare and verify a release checklist. Use when creating release notes or publishing a release.
+---
+
+Check the version, changelog, validation commands, and release notes before publishing.
+```
+
+At first it only sees the name and description. It reads the full skill when a task matches. So the description should say two things: what the skill does, and when to use it. The `name` must match the folder name and use only lowercase letters, numbers and hyphens.
+
+After changing a skill, start a **new conversation** for it to take effect.
+
+To use a skill in every project, put it under `~/.agents/skills/`.
+
+### Install someone else's skill
+
+The official skill library is [OpenHands/extensions](https://github.com/OpenHands/extensions/tree/main/skills). In a conversation, run `/add-skill` with its address:
+
+<Copy id="add-skill" title="Example: install the code review skill" code="/add-skill https://github.com/OpenHands/extensions/tree/main/skills/code-review" />
+
+A banner appears afterwards. Select **Start new conversation with this skill**. Only the new conversation has it.
+
+To see which skills are installed and turned on, open `Customize > Skills`. Only the ones marked **Recommended** are on by default. Turn on others yourself.
+
+<Callout type="warn" title="Read it before you install it">
+A skill can tell the agent to run scripts, read files, use secrets and call your connected tools. Read it and its bundled files first, and only install from sources you trust.
+</Callout>
+
+## Connect outside tools (MCP)
+
+Open `Customize > MCP Servers`.
+
+- **In the Marketplace**: install it directly. Servers that use OAuth, like Notion, ask you to authorize during install.
+- **Not in the Marketplace**: select `Add custom server`, pick a type, fill in the URL or launch command, and select `Test connection`.
+
+<Callout type="ok">
+A passing test shows how many tools the server provides. Save it, and new conversations can use them.
+</Callout>
+
+Installed server cards show a status: `Reachable` means connected, `Credential check failed` means the key was rejected, and `Connection failure` means it couldn't connect.
+
+A local backend stores MCP settings in `~/.openhands/settings.json`, with credentials encrypted. Change them in the UI, not in that file.
+
+## Install plugins
+
+A plugin bundles skills, MCP settings, hooks and commands. Open `Plugins` in the sidebar:
+
+- **Search and inspect.** Open one to see the skills and files it contains.
+- **Install and toggle.** Enabled plugins load into new conversations. Disabled ones stay installed but don't load.
+- **Use one just this once.** When starting a conversation, pick it in the `Plugins` picker in the chat box.
+
+Plugins in `~/.agents/plugins` and `~/.openhands/plugins` show as `Local` and are read-only. Edit their files to change them. The Plugins page currently works on local backends only.
+
+Plugins can add instructions, tools, hooks and outside connections. As with skills, only install ones you trust.
+
+## Make it pass checks before it finishes
+
+Create `.openhands/hooks.json` in your project to run scripts at set moments. The most useful is `Stop`: when it tries to finish, it runs your checks first and can't finish until they pass.
+
+First, write a check script at `.openhands/hooks/quality_gate.sh`:
+
+<Copy id="gate" lang="bash" title=".openhands/hooks/quality_gate.sh" code={`#!/bin/bash
+cd "\${OPENHANDS_PROJECT_DIR:-$PWD}"
+# Replace this with your repo's checks, such as npm run lint, pytest, or make test.
+if ! make test 2>&1; then
+  echo '{"decision":"deny","reason":"Quality checks failed. Fix them before finishing."}'
+  exit 2
+fi
+exit 0`} />
+
+Then register it in `.openhands/hooks.json`:
+
+<Copy id="hooks" lang="json" title=".openhands/hooks.json" code={`{
+  "stop": [
+    {
+      "matcher": "*",
+      "hooks": [
+        { "command": ".openhands/hooks/quality_gate.sh", "timeout": 120 }
+      ]
+    }
+  ]
+}`} />
+
+Swap `make test` for your project's checks. The format is compatible with Claude Code hooks.
+
+## Remember: all of this follows the backend
+
+Skills, MCP servers and secrets are stored on the active backend. Switch backends and you set them up again. With OpenHands Cloud as the backend, `Customize > Skills` becomes **Skills and Plugins** and opens Cloud's settings in a new tab.
+
+## Stuck?
+
+<Q q="I added a skill, but it doesn't seem to use it.">
+<p>Start a new conversation first. If that doesn't help, check that the skill's <code>description</code> says when to use it. That line is how it decides whether to read the full skill.</p>
+</Q>
+<Q q="I connected an MCP server, but its tools aren't in the conversation.">
+<p>MCP settings only apply to new conversations. Start one, then check that the server shows <code>Reachable</code> in <code>Customize &gt; MCP Servers</code>.</p>
+</Q>
+<Q q="It has to install dependencies every time it starts.">
+<p>Add a <code>.openhands/setup.sh</code> to your project. OpenHands runs it every time it starts working with the repository, which makes it the place to install dependencies and set environment variables.</p>
+</Q>
+
+For details, see the official [Skills Overview](https://docs.openhands.dev/overview/skills), [Model Context Protocol](https://docs.openhands.dev/openhands/usage/settings/mcp-settings), [Plugins in Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/plugins) and [Hooks](https://docs.openhands.dev/openhands/usage/customization/hooks).
+
+<Checkpoint id="s7" items={["My project root has an AGENTS.md I've read myself", "I know skills go under .agents/skills/ and need a new conversation after changes", "I've seen how to connect an outside tool in Customize > MCP Servers"]} />

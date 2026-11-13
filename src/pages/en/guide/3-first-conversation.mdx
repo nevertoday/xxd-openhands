@@ -1,0 +1,104 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 3
+need: Agent Canvas with a model connected; a dedicated folder for it to work in
+tldr: Open a folder, hand it one small task, watch it work, then check what it changed.
+description: Open a workspace before the conversation, say clearly what you want, know where to look while it works, check the result, and decide when to keep going or start fresh.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+
+## Open a folder first
+
+Before you start a conversation, select `Open Workspace` and pick a folder. That folder is its <Term k="工作区" />. It reads and writes files there.
+
+For your first try, make a new empty folder. With Docker, pick a folder under `/projects`.
+
+## Copy a small task
+
+Go back home, start a new <Term k="对话" />, and send:
+
+<Copy id="first" title="Your first task" code="In this folder, create index.html: a button in the middle of the page, and a number under it that goes up by 1 on each click. Use only this one file and install nothing. When you're done, tell me which files you changed and how to open it in a browser." />
+
+That message has three parts:
+
+1. **What you want.** A button that counts.
+2. **Where and how big.** One file, no dependencies.
+3. **What done looks like.** It tells you what changed and how to open it.
+
+The official advice for good prompts comes down to three things: be concrete, say where to change things, and keep it small. Small means one feature, usually no more than 100 lines of code.
+
+## Say what you want, clearly
+
+For a task in a real project, add these in order:
+
+- **Exactly what you want.** "Fix the TypeError on line 45 of `src/api/users.py`," not "fix the bug."
+- **Clues.** File paths, line numbers, the full error message, relevant logs.
+- **What done looks like.** Which tests should pass, what the user should see.
+- **What it must not touch.** For example, "keep the public API unchanged" or "only change this one file."
+
+Split a big job into small ones and hand them over one at a time.
+
+<mark><strong>If you can't tell when it's done, neither can the agent.</strong></mark> For requests like "make it look better" or "figure out what's wrong," decide what you want first.
+
+For more, see [Instructions that keep it on track](/en/howto/good-instructions/). For prompts to copy, see [Copy-paste prompts](/en/howto/recipes/).
+
+## Watch it work
+
+While it works, a group of live steps sits at the bottom of the chat. The header shows the step that's running, or `Thinking` between steps.
+
+When a group finishes, its header turns into a one-line summary, like `Ran a command` or `Read a file`. Open it to see each step.
+
+To stop it, select `Stop` in the chat box. Send a new message afterwards and it can carry on.
+
+## Check what it did
+
+<Callout type="ok">
+You should see a new `index.html` in the folder. Open it in a browser and click the button. The number goes up by 1.
+</Callout>
+
+In a real project, check a few more things:
+
+- **Which files changed.** Select the info control in the conversation header to open the overview panel. It shows the workspace, Git state and changes. The `Files` tab lets you read each file.
+- **Understand every change.** Look for edits you didn't ask for.
+- **Run it.** Run the tests, build once, then try it yourself.
+- **Look for hard-coded passwords or keys.**
+
+## Keep going, or start fresh?
+
+- **Same task, not done yet**: keep talking in this conversation.
+- **A different task**: start a new conversation. Each one has its own history and settings.
+- **Try another approach**: select `Branch from here` on a message. It starts a new conversation from that point and leaves the original alone.
+- **Keep working until it's done**: use `/goal`.
+
+`/goal` makes it work in rounds. After each round, a judge model checks whether the goal is met. It stops when the goal is done or it hits the round limit:
+
+<Copy id="goal" title="Example: at most 3 rounds" code="/goal --max 3 add unit tests for the parser and verify they pass" />
+
+It makes extra model calls. Send a normal message to interrupt it.
+
+<Callout type="tip" title="See what it's using">
+The chat box has a meter showing how much of the model's context the conversation uses (some models don't show one). Open it to see <Term k="token" text="token" /> usage. When a conversation gets long, select `Compact context` there to shrink the earlier part.
+</Callout>
+
+## Stuck?
+
+<Q q="My message says Failed to send.">
+<p>That can happen while the connection is slow or reconnecting. Once the message shows up in the conversation, the warning clears itself. Select <code>Retry</code> only if it never arrives.</p>
+</Q>
+<Q q="In a new conversation, it doesn't remember the last one.">
+<p>Each conversation is separate. To have it know your project's rules every time, write them in <Term k="AGENTS.md" />. See <a href="/en/guide/7-customize/">step 7</a>.</p>
+</Q>
+<Q q="I want to save this conversation to show someone.">
+<p>Open the ⋮ menu next to the conversation title and select <strong>Export transcript</strong>. You can download it as Markdown or HTML. The file is built in your browser.</p>
+</Q>
+<Q q="What kind of work suits it?">
+<p>Adding a function, writing tests for existing code, fixing bugs with clear error messages, config changes and small refactors all fit well. Vague requirements and pure taste calls need thinking through first. Code where no mistake is acceptable always needs a person to review it.</p>
+</Q>
+
+For everything conversations can do, see the official [Conversations](https://docs.openhands.dev/openhands/usage/agent-canvas/conversations) page.
+
+<Checkpoint id="s3" items={["I opened a dedicated folder before starting the conversation", "It finished the first small task, and I tried it in a browser", "I know a new task means a new conversation"]} />

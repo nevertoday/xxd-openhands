@@ -1,0 +1,108 @@
+---
+layout: ../../layouts/Guide.astro
+step: 5
+need: 跑起来的 Agent Canvas；想隔离的话要 Docker；想用云就要一个 OpenHands Cloud 账号
+tldr: 弄清后端是什么，让每个对话跑在自己的容器里，再学会添加和切换后端。
+description: 后端是什么、换后端会换掉哪些东西，怎么让每个对话在单独的 Docker 容器里跑，怎么添加另一台机器或 OpenHands Cloud 并在它们之间切换。
+---
+import Callout from "../../components/Callout.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+import Term from "../../components/Term.astro";
+import Copy from "../../components/Copy.astro";
+import Q from "../../components/Q.astro";
+
+## 先弄懂后端
+
+<Term k="后端" />就是跑着 <Term k="Agent Server" /> 的那个地方，开了自动化的话还有 Automation Server。代理在它的<Term k="工作区" />里读写文件。
+
+设置、模型、MCP、自动化，全都跟着当前后端走。<mark><strong>换一个后端，这些就全换成那个后端的。</strong></mark>
+
+「远程后端」说的是 Agent Canvas 怎么连它，不是它在哪。它可以是你电脑上的另一个进程，也可以是一台云服务器。
+
+## 挑一个地方跑
+
+- **默认的本地后端。** 第 1 步装好就有。直接跑在你电脑上，用你账号的权限。
+- **整个装进 Docker。** 第 1 步的 Docker 装法。界面和后端都在一个容器里，只看得到挂进去的文件夹。
+- **每个对话一个容器。** 界面留在你电脑上，每个对话单独开一个 Docker 容器。下面细讲。
+- **另一台机器。** 一直开着的服务器或者一台闲置电脑。见[第 8 步](/guide/8-beyond/)。
+- **<Term k="OpenHands Cloud" />。** 官方托管，每个对话一个云端<Term k="沙盒" />。
+
+Kubernetes、Modal、DigitalOcean 这些，见官方的 [Backends](https://docs.openhands.dev/openhands/usage/agent-canvas/backends)。
+
+## 让每个对话跑在自己的容器里
+
+适合同时跑好几个代理。每个新对话都有自己的容器、自己的 Agent Server 和工具。
+
+要准备：Node.js 24 以上、`uv`，还有正在运行的 <Term k="Docker" />。启动它的用户要能运行 `docker` 命令。在 macOS 或 Linux 上：
+
+<Copy id="multi" lang="bash" title="安装并以多容器模式启动" code={`npm install -g @openhands/agent-canvas
+OH_CONVERSATION_RUNTIME=docker agent-canvas`} />
+
+然后打开 `http://localhost:8000`，开一个新对话。
+
+Windows 要在 WSL 2 里的 Linux 系统中跑这两条，并且打开 Docker Desktop 的 WSL 集成。原生 Windows 不支持这种模式。
+
+几件要知道的事：
+
+- **旧对话不会搬进容器。** 以前在本机开的对话保持原样。
+- **文件和记录都留得住。** 工作区和对话记录挂载在你电脑上，容器换掉也不丢。
+- **同一个文件夹会互相影响。** 两个对话用同一个工作区，改的就是同一份文件。各用各的文件夹，或者各用一个 Git worktree。
+- **只隔离对话。** Agent Canvas 本身和自动化服务还在你电脑上跑。
+- **闲置会自动停。** 对话 20 分钟没动静，容器会停掉。下次用时再启动，对话不丢。
+
+每个容器都用你的用户身份跑，不用 root，去掉了所有 Linux 特权，接口只开在本机。
+
+<Callout type="warn" title="这个模式会监听所有网卡">
+为了让容器能连回你的电脑，启动器会监听所有网卡（`0.0.0.0`）。页面也不再自动带上后端密钥，要你手动输入。只在你信任的网络里这样用。可以在启动前把 `LOCAL_BACKEND_API_KEY` 设成一个够长的随机密钥，再把它填进页面。这个密钥别给别人。
+</Callout>
+
+## 确认它真的在容器里
+
+在新对话里让它跑这两条：
+
+<Copy id="verify" lang="bash" title="让代理运行" code={`id
+printf 'PWD=%s\\nHOME=%s\\n' "$PWD" "$HOME"`} />
+
+<Callout type="ok">
+输出里 `PWD` 是 `/workspace`，`HOME` 是 `/var/openhands/.openhands`，不是你电脑上的用户目录。
+</Callout>
+
+## 添加和切换后端
+
+1. 点顶栏的后端切换按钮，选 `Manage Backends`。
+2. 点 `Add Backend`。
+3. 填一个名字、地址（`Host / Base URL`），需要的话再填 API key。
+4. 保存，再选中它。
+
+之后新开的对话就在这个后端上跑。每个后端的工作区、设置、配置、密钥、MCP、自动化都是分开的。
+
+<Callout type="no" title="别把后端随手开到网上">
+谁能连上 Agent Server、手里有它的 API key，谁就能让代理在那个后端的工作区里执行命令。让它离开可信网络之前，先配好 TLS、访问控制和足够长的随机 key。具体做法见[第 8 步](/guide/8-beyond/)。
+</Callout>
+
+## 接上 OpenHands Cloud
+
+1. 在 `Manage Backends` 里点 `Add Backend`。
+2. 点 **Login with OpenHands Cloud**，用你的账号登录。
+3. 连上以后，选它作为当前后端。
+
+之后对话和自动化都在云端沙盒里跑，不碰你电脑上的文件。Cloud 后端的模型、密钥、MCP 和本地后端是分开的，要单独配。更多见[用 OpenHands Cloud](/howto/cloud/)。
+
+## 卡住了？
+
+<Q q="我想每次开对话时自己选：本机跑还是容器里跑。">
+<p>启动时加上 <code>OH_CONVERSATION_RUNTIME_SELECTABLE=1</code>。首页的运行方式里就会多一个 <strong>Docker</strong> 选项，默认值在 <code>Settings → Runtime</code> 里改。</p>
+</Q>
+<Q q="代理在 Docker 里运行 docker 命令失败。">
+<p>默认的容器里起不了 Docker。加 <code>--privileged</code> 能解决，但它会让容器拿到很大的主机权限，隔离会弱很多。只在确实需要、而且你愿意承担风险的机器上用。</p>
+</Q>
+<Q q="关掉终端以后，后端还在跑吗？">
+<p>npm 或 npx 启动的本地后端会停。Docker 容器、服务器、云后端会一直跑，直到你把它停掉。</p>
+</Q>
+<Q q="想在一台电脑上开好几个本地后端。">
+<p>用 <code>agent-canvas --backend-only --port 8001</code> 这样的命令，每个用不同的端口。再在 <code>Manage Backends</code> 里逐个添加，比如 <code>http://localhost:8001</code>。</p>
+</Q>
+
+同时开好几个对话的做法见[同时开好几个对话](/howto/parallel/)，Docker 的更多用法见[把它关进 Docker 里跑](/howto/docker-sandbox/)。
+
+<Checkpoint id="s5" items={["我知道换后端会把设置、模型、自动化一起换掉", "我知道哪种后端能碰到我电脑上的文件，哪种碰不到", "我在 Manage Backends 里看过怎么添加一个后端"]} />

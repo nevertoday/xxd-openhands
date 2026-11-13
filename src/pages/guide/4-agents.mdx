@@ -1,0 +1,107 @@
+---
+layout: ../../layouts/Guide.astro
+step: 4
+need: 跑起来的 Agent Canvas；已登录的 Claude Code、Codex 或 Gemini CLI，或者它们的 API key
+tldr: 把 Claude Code、Codex 接进来，用你已有的订阅，存成配置随时换。
+description: 什么是 ACP 代理，能接哪几个，怎么用本机已登录的订阅或 API key，怎么用 Agent Profile 在 OpenHands 和其他代理之间切换。
+---
+import Callout from "../../components/Callout.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+
+## 先弄懂换的是什么
+
+Agent Canvas 默认用 OpenHands 自己的代理。它也能驱动别家的代理，比如 Claude Code、Codex。它们靠一种通用接口接进来，叫 <Term k="ACP" />。
+
+换成 ACP 代理以后，Agent Server 会在后端启动那个代理自己的命令行程序。<mark><strong>模型、工具、怎么干活，都由那个代理自己管。</strong></mark>Agent Canvas 只负责传话和显示。
+
+所以，你在 Claude Code 里已经付费的订阅，可以直接在这里用。
+
+## 看看能接哪几个
+
+- **Claude Code**
+- **Codex**
+- **Gemini CLI**
+- **Pi**
+- **OpenCode**
+
+Pi 和 OpenCode 只能在本地后端上用：你的电脑，或者你自己架的 Agent Server（包括 Docker）。OpenHands Cloud 上只有前三个。
+
+Pi 和 OpenCode 第一次用时，会通过 `npx` 下载它们的程序。
+
+## 先在本机登录好
+
+代理和 Agent Server 在同一台电脑上时，它会自动找到你已经登录的账号，不用填 key。
+
+| 代理 | 怎么登录 |
+| --- | --- |
+| Claude Code | 登录 Pro 或 Max 账号 |
+| Codex | 运行 `codex login` |
+| Gemini CLI | 运行 `gemini` 登录 |
+| Pi | 在 `pi` 里用 `/login` |
+| OpenCode | 运行 `opencode auth login` |
+
+只要登录了，就优先用登录的账号。这时候再设 API key，也不会被用上。
+
+OpenCode 不登录也能跑，用的是它的免费模型。Pi 一定要有某种登录或 key。
+
+## 选它
+
+第一次打开时，在向导第一步「Choose your agent」里选它就行。
+
+以后想换，打开 `Settings > Agent`：
+
+1. **Agent** 选 `ACP`。
+2. **Preset** 选你要的代理。
+3. **Credentials** 里登录或填 key。已在本机登录的话，可以留空。
+4. **Model** 先选 `Agent default`，让代理自己挑。
+5. 保存。
+
+开着的对话会继续用原来的代理。换了以后，**新开的对话**才用新的。
+
+## 没登录，就用 API key
+
+没有订阅，或者后端跑在 Docker、云上，就要给它 key。key 存在 `Settings > Secrets` 里，名字就是代理要读的环境变量：
+
+- Claude Code：`ANTHROPIC_API_KEY`
+- Codex：`OPENAI_API_KEY`
+- Gemini CLI：`GEMINI_API_KEY`
+
+后端在 Docker 或云上时，这一步是必须的。新容器里没有你电脑上的登录。向导会额外问你要登录凭证，比如 Claude Code 的 `CLAUDE_CODE_OAUTH_TOKEN`、Codex 的 `CODEX_AUTH_JSON`。
+
+## 存成 Agent Profile，随时换
+
+每种代理设置可以存成一个 <Term k="Agent Profile" />：用哪个代理、配什么。它和[第 2 步](/guide/2-model/)的 <Term k="LLM Profile" /> 管的不是一层：
+
+- **Agent Profile**：谁来干活。在 `Settings > Agent` 里管。
+- **LLM Profile**：OpenHands 代理用哪个模型。在 `Settings > LLM` 里管。
+
+ACP 代理用它自己的模型，不用 LLM Profile。
+
+在 `Settings > Agent` 里可以新建、改名、删除，或者设成当前生效（active）的那个。新对话默认用它。
+
+开新对话之前想临时换：在首页输入框点 `+` 菜单，选 `Switch agent profile`。<u>对话开始以后就不能再换代理了</u>，要换就开新对话。
+
+<Callout type="warn" title="别家代理一样能动你的文件">
+把代理和 ACP 程序当成不可信的。它们能用你账号的权限运行命令、读写文件。Agent Canvas 只是界面，不会替你隔离。想收紧，用 Docker 或虚拟机跑后端（见[第 5 步](/guide/5-backends/)）。后端支持的话，还能在 Agent Profile 里限定它能用哪些密钥。可以全给、全不给，或者只给选中的几个。
+</Callout>
+
+## 卡住了？
+
+<Q q="选了 Pi，对话报 Authentication required。">
+<p>Pi 必须有某种凭证。先在 <code>pi</code> 里用 <code>/login</code> 登录，或者设一个 <code>ANTHROPIC_API_KEY</code>。注意 Claude Code 也读这个 key，设了以后它会用 key，不用你的 Claude 登录。</p>
+</Q>
+<Q q="后端在 Docker 里，Claude Code 一直登不上。">
+<p>容器里没有你电脑上的登录。在 <code>Settings &gt; Secrets</code> 里加 <code>CLAUDE_CODE_OAUTH_TOKEN</code>（Pro 或 Max 的 OAuth 令牌），或者 <code>ANTHROPIC_API_KEY</code>。</p>
+</Q>
+<Q q="模型列表是空的，或者一直在加载。">
+<p>本地后端第一次查模型时，要先启动那个代理，可能要几秒。云后端在对话开始前查不到，只能选 <code>Agent default</code> 或手填模型 ID。</p>
+</Q>
+<Q q="我想接一个不在列表里的代理。">
+<p>只要它支持 ACP，在 <code>Settings &gt; Agent</code> 的 Preset 里选 <code>Custom</code>，填它的启动命令就行。它要读的 key 加到 <code>Settings &gt; Secrets</code>。</p>
+</Q>
+
+每个代理的细节见官方的 [ACP Agents](https://docs.openhands.dev/openhands/usage/agent-canvas/acp-agents) 和 [Agent Profiles](https://docs.openhands.dev/openhands/usage/agent-canvas/agent-profiles)。
+
+<Checkpoint id="s4" items={["我知道换成 ACP 代理后，模型和工具都归那个代理管", "我选好了一个代理，在新对话里试过", "我知道对话开始后不能换代理，要换就开新对话"]} />

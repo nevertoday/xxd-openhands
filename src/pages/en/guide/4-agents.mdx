@@ -1,0 +1,107 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 4
+need: A running Agent Canvas; a signed-in Claude Code, Codex or Gemini CLI, or their API key
+tldr: Bring in Claude Code or Codex on the subscription you already pay for, and save it as a profile you can switch to.
+description: What an ACP agent is, which ones you can use, how to reuse a signed-in subscription or an API key, and how agent profiles switch between OpenHands and other agents.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+
+## Know what you're switching
+
+Agent Canvas runs the OpenHands agent by default. It can also drive other agents, like Claude Code and Codex. They plug in through a shared interface called <Term k="ACP" />.
+
+With an ACP agent, the Agent Server starts that agent's own command-line program on the backend. <mark><strong>The model, the tools and how it works all belong to that agent.</strong></mark> Agent Canvas only passes messages and shows the results.
+
+So a Claude Code subscription you already pay for works here as is.
+
+## See which ones you can use
+
+- **Claude Code**
+- **Codex**
+- **Gemini CLI**
+- **Pi**
+- **OpenCode**
+
+Pi and OpenCode only run on local backends: your computer, or an Agent Server you host yourself (Docker included). OpenHands Cloud offers only the first three.
+
+The first time you use Pi or OpenCode, its program downloads through `npx`.
+
+## Sign in on your machine first
+
+When the agent and the Agent Server are on the same computer, it finds your existing login on its own. No key needed.
+
+| Agent | How to sign in |
+| --- | --- |
+| Claude Code | A Pro or Max login |
+| Codex | Run `codex login` |
+| Gemini CLI | Run `gemini` and sign in |
+| Pi | Use `/login` in `pi` |
+| OpenCode | Run `opencode auth login` |
+
+A login always wins. While you're signed in, an API key you set won't be used.
+
+OpenCode runs without any login, on its free models. Pi needs some login or key.
+
+## Pick it
+
+The first time you open Canvas, pick it in the wizard's first step, "Choose your agent."
+
+To switch later, open `Settings > Agent`:
+
+1. Set **Agent** to `ACP`.
+2. Pick your agent under **Preset**.
+3. Sign in or add a key under **Credentials**. Leave it blank if you're signed in on this machine.
+4. Set **Model** to `Agent default` for now, so the agent picks.
+5. Save.
+
+A conversation that's already open keeps its agent. Only **new conversations** use the new one.
+
+## No login? Use an API key
+
+Without a subscription, or with a backend in Docker or the cloud, give it a key. Keys live in `Settings > Secrets`, named after the environment variable the agent reads:
+
+- Claude Code: `ANTHROPIC_API_KEY`
+- Codex: `OPENAI_API_KEY`
+- Gemini CLI: `GEMINI_API_KEY`
+
+With a Docker or cloud backend, this step is required, because a fresh container has none of your logins. The wizard also asks for login credentials, such as `CLAUDE_CODE_OAUTH_TOKEN` for Claude Code or `CODEX_AUTH_JSON` for Codex.
+
+## Save agent profiles and switch
+
+Each agent setup can be saved as an <Term k="Agent Profile" />: which agent, and how it's configured. It works at a different layer from the <Term k="LLM Profile" /> in [step 2](/en/guide/2-model/):
+
+- **Agent profile**: who does the work. Managed in `Settings > Agent`.
+- **LLM profile**: which model the OpenHands agent uses. Managed in `Settings > LLM`.
+
+ACP agents bring their own model, so they don't use an LLM profile.
+
+In `Settings > Agent` you can create, rename and delete profiles, or set one as active. New conversations use the active one.
+
+To pick a different one for a new conversation, open the `+` menu in the home chat box and select `Switch agent profile`. <u>Once a conversation starts, you can't switch its agent</u>. Start a new conversation instead.
+
+<Callout type="warn" title="Other agents can touch your files too">
+Treat agents and ACP processes as untrusted. They can run commands and read and write files with your account's permissions. Agent Canvas is only the UI and doesn't isolate them. To tighten this, run the backend in Docker or a VM (see [step 5](/en/guide/5-backends/)). If your backend supports it, an agent profile can also limit its secrets. Give it all, none, or only the ones you select.
+</Callout>
+
+## Stuck?
+
+<Q q="I picked Pi, and the conversation says Authentication required.">
+<p>Pi needs some credential. Sign in with <code>/login</code> in <code>pi</code>, or set <code>ANTHROPIC_API_KEY</code>. Note that Claude Code reads the same key. Once it's set, Claude Code uses the key instead of your Claude login.</p>
+</Q>
+<Q q="My backend is in Docker and Claude Code never signs in.">
+<p>The container doesn't have your computer's login. Add <code>CLAUDE_CODE_OAUTH_TOKEN</code> (a Pro or Max OAuth token) or <code>ANTHROPIC_API_KEY</code> in <code>Settings &gt; Secrets</code>.</p>
+</Q>
+<Q q="The model list is empty or keeps loading.">
+<p>On a local backend, the first lookup starts the agent, so it can take a few seconds. A cloud backend can't look up models before a conversation starts, so you can only pick <code>Agent default</code> or type a model ID.</p>
+</Q>
+<Q q="I want an agent that isn't on the list.">
+<p>If it speaks ACP, pick <code>Custom</code> under Preset in <code>Settings &gt; Agent</code> and enter its launch command. Add any keys it reads in <code>Settings &gt; Secrets</code>.</p>
+</Q>
+
+For each agent's details, see the official [ACP Agents](https://docs.openhands.dev/openhands/usage/agent-canvas/acp-agents) and [Agent Profiles](https://docs.openhands.dev/openhands/usage/agent-canvas/agent-profiles) pages.
+
+<Checkpoint id="s4" items={["I know that with an ACP agent, the model and tools belong to that agent", "I picked an agent and tried it in a new conversation", "I know I can't switch agents mid-conversation, so I start a new one"]} />

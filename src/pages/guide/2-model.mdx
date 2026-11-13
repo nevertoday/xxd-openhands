@@ -1,0 +1,108 @@
+---
+layout: ../../layouts/Guide.astro
+step: 2
+need: 跑起来的 Agent Canvas；一个模型 key，或者已登录的 Claude Code、Codex、Gemini CLI
+tldr: 走完首次设置向导，存好一套模型设置，再发一句话确认它会回答。
+description: 首次设置向导的四步怎么选，怎么拿 OpenHands 的 key 或用自己的服务商 key，怎么存多套模型设置并在对话里切换。
+---
+import Callout from "../../components/Callout.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+import Term from "../../components/Term.astro";
+import Copy from "../../components/Copy.astro";
+import Q from "../../components/Q.astro";
+
+## 走一遍首次设置向导
+
+第一次打开 Agent Canvas，会出现四步向导。每一步都能跳过，以后在 `Settings` 里再改。
+
+1. **选代理。** 默认是 OpenHands，先用它。想用 Claude Code、Codex 这些，见[第 4 步](/guide/4-agents/)。
+2. **检查后端。** 默认连你自己的电脑，地址是 `http://127.0.0.1:8000`。看到 **You're connected!** 就对了。
+3. **设置模型。** 选服务商、选模型、贴 key。下面细讲。
+4. **从现成的流程开始。** 它会推荐几个现成的<Term k="自动化" />模板。现在可以先跳过，[第 6 步](/guide/6-automations/)再说。
+
+向导做完，侧边栏会出现一个 **Getting Started** 清单，带你走完头几件事。
+
+## 挑一条接模型的路
+
+看你手上有什么：
+
+- **OpenHands 的 key。** 用一个 key 就能用官方验证过的模型，不用自己去各家开账号。新手先走这条。
+- **服务商的 key。** Anthropic、OpenAI、Google 等，自己付费。
+- **已登录的订阅。** Claude Code、Codex、Gemini CLI 用它们自己的登录和模型，不在这里配。见[第 4 步](/guide/4-agents/)。
+- **本地模型。** LM Studio、Ollama 这类。见[用本地模型](/howto/local-llm/)。
+
+## 用 OpenHands 的 key
+
+**1. 拿 key。** 登录 [OpenHands Cloud](https://app.all-hands.dev)，进 Settings，打开 `API Keys` 标签，复制 **LLM API Key**（页面上也叫 `OpenHands LLM Key`）。要先在 `Billing` 里充至少 10 美元，才能拿到这个 key。
+
+**2. 填进去。** 在向导的第三步，或者 `Settings > LLM` 的 `Basic` 标签里：
+
+- `LLM Provider` 选 `OpenHands`（向导里默认就是它）。
+- 选一个模型。默认是 **OpenAI GPT-5.6 Sol**。
+- 贴上刚才的 key，保存。
+
+模型列表里标着 `Free` 的，是不另收 <Term k="token" /> 费用的模型，目前是 **DeepSeek V4 Flash**。这是促销，哪些免费会变。
+
+<Callout type="tip" title="两种 key 别弄混">
+OpenHands Cloud 的 `API Keys` 页里，**LLM API Key** 才是给模型用的。另一种 Cloud API key 是调 Cloud 接口用的，填到这里不管用。
+</Callout>
+
+## 用自己服务商的 key
+
+在 `Settings > LLM` 的 `Basic` 标签里，选服务商和模型，贴上 key，保存。
+
+同一个 key 要给好几个模型用？先建一个 **Provider Connection**。服务商、key 和可选的地址只存一次，每套模型设置都引用它。以后换 key 只改一处。
+
+保存时它会先拿你的设置去后端试一下。key 不对或者模型用不了，会直接报错、不保存。
+
+## 发一句话试试
+
+回到首页，开一个新对话，发一句短的：
+
+<Copy id="hello" title="试一下模型" code="你好，用一句话介绍一下你自己。" />
+
+<Callout type="ok">
+它回了一句话，就说明模型接好了。
+</Callout>
+
+改了模型设置，要开**新对话**才生效。已经开着的对话，会继续用它开始时的模型。
+
+## 存几套，随时换
+
+每一次保存，存下的就是一个 <Term k="LLM Profile" />：哪家、哪个模型、用哪个 key。你可以存好几套：
+
+- 一套快的，日常小改。
+- 一套强的，做规划和审查。
+- 一套本地的，离线试验。
+
+对话里想换，用输入框里的模型选择器，或者打命令：
+
+- `/model`：列出能用的几套。
+- `/model` 后面跟一个设置的名字：换成那一套。
+
+换完之前聊的、改过的文件都还在，只有后面的请求换了模型。
+
+官方的建议是：<u>长任务、要紧的事，用你付得起的最强模型</u>。日常小改用便宜的，规划、调试、审查再换回强的。
+
+<Callout type="warn" title="记得设花费上限">
+OpenHands 会向模型发很多次请求。大部分模型按用量收费，到服务商那边设上限，并且常看用量。见[控制花费](/howto/cost/)。
+</Callout>
+
+## 卡住了？
+
+<Q q="保存的时候报错。">
+<p>看报错内容。最常见的是 key 填错了，或者模型名不对。重新复制一遍 key，再确认选的模型你的账号能用。</p>
+</Q>
+<Q q="它能回话，但做事老是做不完。">
+<p>可能是模型能记住的内容太短，或者不太会用工具。换一个更强的模型试试。</p>
+</Q>
+<Q q="我在 Docker 里跑，连不上电脑上的本地模型。">
+<p>在 Docker 里，<code>127.0.0.1</code> 指的是容器自己。地址要换成能从后端访问到的，比如 <code>http://host.docker.internal:1234/v1</code>（端口按你的模型服务改）。详细步骤见<a href="/howto/local-llm/">用本地模型</a>。</p>
+</Q>
+<Q q="输入框里没有 /model。">
+<p>先在 <code>Settings &gt; LLM</code> 里存一套模型设置，再确认你的后端支持切换。</p>
+</Q>
+
+各家模型怎么配，见官方的 [LLM Configuration](https://docs.openhands.dev/openhands/usage/llms/llms) 和 [Configure a Model](https://docs.openhands.dev/openhands/usage/agent-canvas/model-configuration)。
+
+<Checkpoint id="s2" items={["我走完了首次设置向导", "我存好了一套模型设置", "新对话里发了一句话，它回答了"]} />

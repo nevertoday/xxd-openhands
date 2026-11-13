@@ -1,0 +1,102 @@
+---
+layout: ../../layouts/Guide.astro
+step: 6
+need: 接好模型的 Agent Canvas；要发到 Slack、GitHub 的话，先把它们接好
+tldr: 用现成模板或一句话建一个定时任务，手动跑一次看结果，再学会开关它。
+description: 自动化是什么、为什么后端要一直开着，怎么从现成模板或一句话建一个，怎么手动试跑、看结果、开关和修改，以及用外部事件触发要注意什么。
+---
+import Callout from "../../components/Callout.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+import Term from "../../components/Term.astro";
+import Copy from "../../components/Copy.astro";
+import Q from "../../components/Q.astro";
+
+## 先弄懂自动化
+
+<Term k="自动化" />是一条规则：到了某个时间，或者发生了某件事，就自动开一个对话去干活。比如每天早上汇总 Slack，有新 PR 就审一遍。
+
+每跑一次，就是一个完整的对话。它能用终端、改文件，用你配好的模型、`Settings > Secrets` 里的密钥和接好的 <Term k="MCP" /> 工具。跑出来的对话会出现在对话列表里，可以点开看，也可以接着聊。
+
+## 让后端一直开着
+
+自动化存在当前的<Term k="后端" />上，由后端里的 Automation Server 按时触发。用 `agent-canvas` 启动的后端都自带它。
+
+<mark><strong>后端停了，定时任务也就不会跑。</strong></mark>用 npm 或 npx 在自己电脑上跑时，关掉终端后端就停了。
+
+想让它一直跑，放到一台一直开着的机器上（见[第 8 步](/guide/8-beyond/)），或者用 OpenHands Cloud 当后端（见[第 5 步](/guide/5-backends/)）。
+
+## 从现成模板开始
+
+打开侧边栏的 **Automate**，进 Templates。上面是推荐的几个，下面是更多模板。
+
+官方现成的有这几类：
+
+- **Issue to Pull Request**：照着 issue 写代码，开 <Term k="PR" />。
+- **GitHub PR Review Assistant**：审 PR，把意见写成评论。
+- **GitHub Repository Monitor**：盯着一个仓库，有事件就让代理处理。
+- **Slack Channel Monitor**：盯着一个 Slack 频道，消息对上了就让代理处理。
+
+选一个，按表单填好要的信息，检查一遍，再创建。每个模板要先接好哪些服务、具体做什么，见本站的[现成自动化](/automations/)。
+
+## 用一句话建一个
+
+也可以在对话里直接说：
+
+<Copy id="create" title="换成你自己的事" code="帮我建一个自动化：每周一早上 9 点，汇总我们仓库里还开着的 GitHub issue，把汇总发到 Slack 的 #engineering 频道。" />
+
+它会带你定好名字、时间、时区和要做的事。这个例子要先接好 GitHub 和 Slack。
+
+在 Automate 里新建时，会打开一个左右分开的页面：一边是表单，一边是和 OpenHands 的对话。你描述，它帮你填表。它只提建议，不会自己创建或打开这个自动化，最后由你点创建。
+
+写自动化要做的事时，说清楚三样：
+
+- **具体做什么。** 「查 X，如果 Y，就 Z」。
+- **出错了怎么办。** 「如果有备份缺了，就提醒大家」。
+- **结果发到哪。** 「发到 Slack 的某个频道」「建一个 GitHub issue」。
+
+时间可以用大白话说，比如「每个工作日早上 9 点」「每小时」。每次运行默认最多 10 分钟，最长可以要 30 分钟。
+
+## 先手动跑一次
+
+建好以后，在它那一行的 ⋮ 菜单里选 **Run now**，马上跑一次，不用等到点。
+
+<Callout type="ok">
+运行记录里出现一条新的，状态从 `PENDING`、`RUNNING` 变成 `COMPLETED`。点开能看到它这次开的对话。
+</Callout>
+
+点进一个自动化，能看到它的完整提示词、触发条件、用哪套模型和最近的运行记录。Activity Log 里还会显示每次运行花了多少钱（后端报告了的话）。
+
+## 开关、修改、导出
+
+- **开关。** 在 ⋮ 菜单或详情页里打开、关上。关掉以后不会再触发，设置都还在。
+- **修改。** 名字、提示词、模型、超时时间、时间表，都能直接改。换模型只影响以后的运行。
+- **导出。** ⋮ 菜单里选 **Export**，下载成一个 JSON 文件。可以给同事，或者搬到另一个后端。
+
+新建的自动化默认是打开的，到点就跑。
+
+## 想让外部事件触发它
+
+在 **Automate → Events** 里可以登记一个事件来源，比如 CI 系统。它会给你一个 webhook 地址和一个签名密钥。
+
+<Callout type="no" title="本机的后端收不到外面的事件">
+webhook 地址必须能从互联网访问。`localhost` 上的后端收不到。把它暴露到网上，等于把整个后端交给了互联网。先照[第 8 步](/guide/8-beyond/)做好加固。做不到的话，改用定时任务，定时去查那个服务的接口。
+</Callout>
+
+## 卡住了？
+
+<Q q="自动化跑完了，但没发到 Slack。">
+<p>它只能用你接好的服务。发 Slack 要先接好 Slack 的 MCP，见<a href="/guide/7-customize/">第 7 步</a>。</p>
+</Q>
+<Q q="运行状态是 SKIPPED。">
+<p>后端同时在跑的任务到了上限时，会跳过这一次。</p>
+</Q>
+<Q q="自动化被关掉了，我没动过。">
+<p>打开详情页，上面的横幅会写原因和时间。比如后端报告了无法恢复的运行失败。修好以后，在 ⋮ 菜单里重新打开。</p>
+</Q>
+<Q q="到点了它没跑。">
+<p>先看后端还开着没有。本机的 npm、npx 后端，关掉终端就停了。</p>
+</Q>
+
+更多例子见[每天自动汇总 Slack](/howto/slack-digest/)和[自己写一个自动化](/howto/custom-automation/)，完整说明见官方的 [Managing automations](https://docs.openhands.dev/openhands/usage/agent-canvas/managing-automations)。
+
+<Checkpoint id="s6" items={["我知道后端停了，定时任务就不会跑", "我建了一个自动化，用 Run now 跑过一次", "我在运行记录里点开看过它开的对话"]} />

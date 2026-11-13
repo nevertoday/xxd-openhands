@@ -1,0 +1,145 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 8
+need: An always-on machine you control; basic SSH; uv if you want to build agents in code
+tldr: Move the backend to an always-on machine and lock it down, then look at phone access, teams, the critic and the SDK.
+description: Why self-host, the harden-then-start steps, connecting from your computer and phone, sharing with a team, turning on the critic, and building your own agent with the SDK.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+
+## Know why you'd move it to a server
+
+An always-on machine gives you two things:
+
+- **It keeps working when your laptop is shut.** The automations from [step 6](/en/guide/6-automations/) run on time.
+- **Outside services can wake it more easily.** Slack or GitHub events, for example.
+
+The machine can be a cloud VM or a spare computer like a Mac Mini. For one person, Ubuntu 24.04 LTS with 2 vCPUs and 4 GB of RAM is plenty.
+
+<Callout type="no" title="Treat it like a machine holding production credentials">
+The agent can read and write files on this machine, run commands and reach the network. Anyone who can reach the Agent Server can do the same. <mark><strong>Lock it down first, then start the service.</strong></mark>
+</Callout>
+
+## Set the firewall before you start anything
+
+Before the first start, set your cloud provider's firewall:
+
+- **SSH (port 22)**: allow only your own IP or VPN range.
+- **Every other port**: drop. `8000`, `18000`, `18001` and `3001` must not be reachable from outside.
+
+After that, only SSH gets in. An SSH tunnel is enough to run it and open the UI.
+
+## Start it on the server
+
+Install Node.js 24 and `uv`. On Ubuntu:
+
+<Copy id="prereq" lang="bash" title="Install prerequisites (Ubuntu)" code={`apt-get update
+apt-get install -y curl git
+# Node.js 24.x (use nvm, asdf, or NodeSource — whatever you prefer)
+# uv (for the agent-server uvx runtime):
+curl -LsSf https://astral.sh/uv/install.sh | sh`} />
+
+On macOS, install Node and `uv` with `brew`.
+
+Then start it in public mode:
+
+<Copy id="public" lang="bash" title="Generate a key and start" code={`export LOCAL_BACKEND_API_KEY=$(openssl rand -base64 32)   # generate once; store securely
+npx @openhands/agent-canvas --public`} />
+
+The first line generates a random key. <u>Print it and store it somewhere safe.</u> You need it every time you connect.
+
+`--public` stops the page from carrying the key, so anyone opening the UI has to enter it. Without `--public`, the key is built into the page, which is only fine on your own computer.
+
+To keep it running after SSH disconnects, use tmux:
+
+<Copy id="tmux" lang="bash" title="Keep it running in tmux" code={`export LOCAL_BACKEND_API_KEY=<your-saved-key>
+tmux new-session -d -s canvas 'npx @openhands/agent-canvas --public'
+# Reconnect later with: tmux attach -t canvas`} />
+
+Replace `<your-saved-key>` with the key you stored. For a long-term setup, the official guide recommends systemd. See the guides below.
+
+## Connect from your computer
+
+The simplest way is an SSH tunnel. On your own computer:
+
+<Copy id="tunnel" lang="bash" title="Open an SSH tunnel" code="ssh -L 8000:127.0.0.1:8000 user@your-vm" />
+
+Replace `user@your-vm` with your username and server address. Then in your local Agent Canvas:
+
+1. Open `Manage Backends` and select `Add Backend`.
+2. Give it any name, like `my-vm`.
+3. Set the address to `http://localhost:8000`.
+4. Enter the key you stored as the API key.
+5. Save it, then select it.
+
+<Callout type="ok">
+The backend shows as connected. Conversations you start on it run on the server.
+</Callout>
+
+To skip the tunnel, give the server a domain and put nginx with Let's Encrypt in front for HTTPS. That means opening ports 80 and 443, and 443 should ideally still allow only your IP. See the official [Self-Hosting Guide](https://github.com/OpenHands/OpenHands/blob/main/docs/SELF_HOSTING.md) and [VM / Self-Hosted Installation](https://docs.openhands.dev/openhands/usage/agent-canvas/backend-setup/vm).
+
+Before you open it up beyond an SSH tunnel, go through this checklist:
+
+- **Run with `--public`** and a strong `LOCAL_BACKEND_API_KEY`.
+- **Limit who can connect**: a firewall, a VPN, or a proxy with a login.
+- **Use HTTPS** for any address reachable from the internet.
+- **Limit who can SSH in**, and keep the OS patched.
+- **Protect the machine's files**: settings, secrets, conversations and code all live there.
+- **Rotate keys** if one got shared too widely.
+
+## Watch it from your phone
+
+Tailscale can put your phone and computer on one private network, so nothing goes on the public internet. If you must use a public URL, such as ngrok, use public mode and a strong key first. <u>Without authentication, anyone with the URL can use your instance and the model keys in it.</u> For the steps, see [Watch it from your phone](/en/howto/phone/).
+
+## Share it with a team
+
+You can share one Agent Server with your team for work like code review and dependency updates. Your personal agents keep running on your laptop. Add both in `Manage Backends` and switch any time.
+
+If you don't want to run servers, use <Term k="OpenHands Cloud" />. It adds collaboration, access controls, usage reporting and budgets. Organizations that need licensed self-hosting with commercial support have OpenHands Enterprise. See [Use OpenHands Cloud](/en/howto/cloud/).
+
+## Have a critic score its work
+
+The critic reviews the agent's work afterwards, predicts how likely the task is to succeed, and labels issues it finds. It's experimental, so options and defaults may change.
+
+1. Open `Settings > Verification`.
+2. Turn on `Enable Critic`.
+3. If your model uses the `OpenHands` provider, leave `Critic API Key` empty. Otherwise, paste an OpenHands LLM key there.
+4. Save, then start a new conversation.
+
+Turn on `Enable Iterative Refinement` too, and a low score sends the agent back to improve its work. The hosted critic is free for now. It applies to the OpenHands agent. ACP agents may not support it.
+
+## Build your own agent in code (SDK)
+
+The <Term k="SDK" /> is a set of Python and REST APIs for building agents that work with code. It powers Agent Canvas and OpenHands Cloud.
+
+Install `uv` first:
+
+<Copy id="uv" lang="bash" title="Install uv" code="curl -LsSf https://astral.sh/uv/install.sh | sh" />
+
+Then the SDK. Always install these two packages in **one** command so their versions match:
+
+<Copy id="sdk" lang="bash" title="Install the SDK" code="pip install -U openhands-sdk openhands-tools" />
+
+Set your model key:
+
+<Copy id="sdk-key" lang="bash" title="Set the key" code="export LLM_API_KEY=your-api-key-here" />
+
+With an OpenHands key, use the **LLM API Key**, not a Cloud API key, and a model name starting with `openhands/`. The first example has the agent write three facts about the current project into `FACTS.txt`. The code is in the official [Getting Started](https://docs.openhands.dev/sdk/getting-started).
+
+## Stuck?
+
+<Q q="My domain shows 502 Bad Gateway.">
+<p>The app on <code>127.0.0.1:8000</code> on the server is down. Check whether the <code>npx</code> process is still running.</p>
+</Q>
+<Q q="I only want the backend on the server and the UI on my computer.">
+<p>Run <code>agent-canvas --backend-only --public</code> on the server and <code>agent-canvas --frontend-only</code> on your computer, then add the server in <code>Manage Backends</code>.</p>
+</Q>
+<Q q="The SDK says Unable to find token in cache.">
+<p>You probably used an OpenHands Cloud API key. The SDK needs the LLM API Key from the <code>API Keys</code> page.</p>
+</Q>
+
+<Checkpoint id="s8" items={["I know to set the firewall first, then start with --public and a strong key", "I can add the server as a backend over an SSH tunnel", "I know what the critic and the SDK are for, and where to look when I need them"]} />

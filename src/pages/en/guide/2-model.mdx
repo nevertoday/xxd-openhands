@@ -1,0 +1,108 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 2
+need: A running Agent Canvas; a model key, or a signed-in Claude Code, Codex or Gemini CLI
+tldr: Finish the setup wizard, save a model setup, and send one message to confirm it answers.
+description: What to pick in each of the four setup wizard steps, how to get an OpenHands key or use your own provider key, and how to save several model setups and switch in a conversation.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+
+## Walk through the setup wizard
+
+The first time you open Agent Canvas, a four-step wizard appears. You can skip any step and change it later in `Settings`.
+
+1. **Choose your agent.** OpenHands is the default. Start with it. For Claude Code, Codex and the rest, see [step 4](/en/guide/4-agents/).
+2. **Check your backend.** By default it connects to your own computer at `http://127.0.0.1:8000`. You want to see **You're connected!**
+3. **Set up your LLM.** Pick a provider and a model, then paste a key. Details below.
+4. **Start from a proven workflow.** It offers a few ready-made <Term k="自动化" text="automation" /> templates. Skip this for now. [Step 6](/en/guide/6-automations/) covers it.
+
+After the wizard, a **Getting Started** checklist appears in the sidebar to walk you through the first few things.
+
+## Pick a way to reach a model
+
+It depends on what you have:
+
+- **An OpenHands key.** One key gets you verified models without opening accounts with each provider. Start here if you're new.
+- **A provider key.** Anthropic, OpenAI, Google and others. You pay them directly.
+- **A signed-in subscription.** Claude Code, Codex and Gemini CLI use their own login and models, so you don't set them up here. See [step 4](/en/guide/4-agents/).
+- **A local model.** LM Studio, Ollama and similar. See [Use a local model](/en/howto/local-llm/).
+
+## Use an OpenHands key
+
+**1. Get the key.** Sign in to [OpenHands Cloud](https://app.all-hands.dev), open Settings, go to the `API Keys` tab, and copy your **LLM API Key** (the page also calls it `OpenHands LLM Key`). You need to buy at least $10 of credits under `Billing` before this key is available.
+
+**2. Enter it.** In step three of the wizard, or on the `Basic` tab of `Settings > LLM`:
+
+- Set `LLM Provider` to `OpenHands` (the wizard's default).
+- Pick a model. The default is **OpenAI GPT-5.6 Sol**.
+- Paste the key and save.
+
+Models marked `Free` in the list cost no extra <Term k="token" text="token" /> fees. Right now that's **DeepSeek V4 Flash**. These are promotions, so which models are free changes.
+
+<Callout type="tip" title="Don't mix up the two keys">
+On the OpenHands Cloud `API Keys` page, the **LLM API Key** is the one for models. The other kind, a Cloud API key, is for calling the Cloud API and won't work here.
+</Callout>
+
+## Use your own provider key
+
+On the `Basic` tab of `Settings > LLM`, pick the provider and model, paste the key, and save.
+
+Using one key for several models? Create a **Provider Connection** first. It stores the provider, key and optional base URL once, and each model setup points to it. To rotate the key later, you change one place.
+
+When you save, it tests your setup against the backend first. If the key is wrong or the model isn't available, you get the error and nothing is saved.
+
+## Send one message to test it
+
+Go back home, start a new conversation, and send something short:
+
+<Copy id="hello" title="Test the model" code="Hi, introduce yourself in one sentence." />
+
+<Callout type="ok">
+It replies with a sentence. Your model is connected.
+</Callout>
+
+Model changes apply to **new conversations**. A conversation that's already open keeps the model it started with.
+
+## Save several and switch
+
+Each save stores an <Term k="LLM Profile" />: which provider, which model, which key. You can keep several:
+
+- A fast one for small edits.
+- A strong one for planning and review.
+- A local one for offline experiments.
+
+To switch inside a conversation, use the model picker in the chat box or type a command:
+
+- `/model` lists the profiles you can use.
+- `/model` followed by a profile name switches to it.
+
+The history and the files it changed stay put. Only later requests use the new model.
+
+The official advice: <u>use the strongest model you can afford for long or high-stakes tasks</u>. Use cheaper ones for routine edits, then switch back for planning, debugging and review.
+
+<Callout type="warn" title="Set a spending limit">
+OpenHands sends your model a lot of requests. Most models charge per use, so set a limit with your provider and check usage often. See [Controlling cost](/en/howto/cost/).
+</Callout>
+
+## Stuck?
+
+<Q q="Saving fails with an error.">
+<p>Read the error. Usually the key was pasted wrong or the model name doesn't match. Copy the key again and check your account can use that model.</p>
+</Q>
+<Q q="It replies, but it can't finish real tasks.">
+<p>The model may have too short a context window, or weak tool use. Try a stronger model.</p>
+</Q>
+<Q q="I run it in Docker and it can't reach the local model on my computer.">
+<p>Inside Docker, <code>127.0.0.1</code> means the container itself. Use an address the backend can reach, such as <code>http://host.docker.internal:1234/v1</code> with your model server's port. See <a href="/en/howto/local-llm/">Use a local model</a> for the full steps.</p>
+</Q>
+<Q q="There's no /model in the chat box.">
+<p>Save a model setup in <code>Settings &gt; LLM</code> first, then check that your backend supports switching.</p>
+</Q>
+
+For each provider's details, see the official [LLM Configuration](https://docs.openhands.dev/openhands/usage/llms/llms) and [Configure a Model](https://docs.openhands.dev/openhands/usage/agent-canvas/model-configuration).
+
+<Checkpoint id="s2" items={["I finished the setup wizard", "I saved a model setup", "I sent a message in a new conversation and it answered"]} />

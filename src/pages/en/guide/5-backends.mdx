@@ -1,0 +1,108 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 5
+need: A running Agent Canvas; Docker for isolation; an OpenHands Cloud account for the cloud
+tldr: Learn what a backend is, run each conversation in its own container, and add and switch backends.
+description: What a backend is and what switching it changes, how to run each conversation in its own Docker container, and how to add another machine or OpenHands Cloud and switch between them.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+
+## Know what a backend is
+
+A <Term k="后端" /> is wherever the <Term k="Agent Server" /> runs, plus the Automation Server if automations are on. The agent reads and writes files in its <Term k="工作区" />.
+
+Settings, models, MCP servers and automations all belong to the active backend. <mark><strong>Switch backends and all of them switch with it.</strong></mark>
+
+"Remote backend" describes how Agent Canvas connects, not where the backend runs. It can be another process on your computer, or a server in the cloud.
+
+## Pick where it runs
+
+- **The default local backend.** You got it in step 1. It runs directly on your computer with your account's permissions.
+- **Everything in Docker.** The Docker install from step 1. The UI and backend share one container and only see mounted folders.
+- **One container per conversation.** The UI stays on your computer, and each conversation gets its own Docker container. Details below.
+- **Another machine.** An always-on server or a spare computer. See [step 8](/en/guide/8-beyond/).
+- **<Term k="OpenHands Cloud" />.** Hosted by the OpenHands team, with a cloud <Term k="沙盒" /> per conversation.
+
+For Kubernetes, Modal, DigitalOcean and more, see the official [Backends](https://docs.openhands.dev/openhands/usage/agent-canvas/backends) page.
+
+## Run each conversation in its own container
+
+This suits running several agents at once. Each new conversation gets its own container, Agent Server and tools.
+
+You need Node.js 24 or later, `uv`, and <Term k="Docker" /> running. The user starting it must be able to run `docker`. On macOS or Linux:
+
+<Copy id="multi" lang="bash" title="Install and start in multi-container mode" code={`npm install -g @openhands/agent-canvas
+OH_CONVERSATION_RUNTIME=docker agent-canvas`} />
+
+Then open `http://localhost:8000` and start a new conversation.
+
+On Windows, run these inside a Linux distribution under WSL 2, with Docker Desktop's WSL integration turned on. Native Windows doesn't support this mode.
+
+A few things to know:
+
+- **Old conversations stay as they were.** Existing local conversations aren't moved into containers.
+- **Files and history survive.** The workspace and conversation history are mounted from your computer, so replacing a container loses nothing.
+- **Shared folders mean shared files.** Two conversations in the same workspace edit the same files. Give each its own folder or Git worktree.
+- **Only conversations are isolated.** Agent Canvas itself and the automation service still run on your computer.
+- **Idle containers stop.** After 20 idle minutes a container stops. It starts again next time, and the conversation is kept.
+
+Each container runs as your user, not root, with all Linux capabilities dropped, and its API open only on the local machine.
+
+<Callout type="warn" title="This mode listens on every network interface">
+So containers can reach your computer, the launcher listens on all interfaces (`0.0.0.0`). The page also stops carrying the backend key, so you'll be asked to enter it. Only do this on a network you trust. Before starting, you can set `LOCAL_BACKEND_API_KEY` to a long random secret and enter that in the page. Keep it to yourself.
+</Callout>
+
+## Confirm it's really in a container
+
+In a new conversation, ask it to run these two:
+
+<Copy id="verify" lang="bash" title="Ask the agent to run" code={`id
+printf 'PWD=%s\\nHOME=%s\\n' "$PWD" "$HOME"`} />
+
+<Callout type="ok">
+The output shows `PWD` as `/workspace` and `HOME` as `/var/openhands/.openhands`, not your home folder.
+</Callout>
+
+## Add and switch backends
+
+1. Select the backend switcher in the top bar, then `Manage Backends`.
+2. Select `Add Backend`.
+3. Enter a name, the address (`Host / Base URL`), and an API key if needed.
+4. Save it, then select it.
+
+New conversations now run on that backend. Each backend keeps its own workspace, settings, profiles, secrets, MCP servers and automations.
+
+<Callout type="no" title="Don't casually put a backend online">
+Anyone who can reach the Agent Server and has its API key can make the agent run commands in that backend's workspace. Before it leaves a trusted network, set up TLS, access controls and a long random key. [Step 8](/en/guide/8-beyond/) shows how.
+</Callout>
+
+## Connect OpenHands Cloud
+
+1. In `Manage Backends`, select `Add Backend`.
+2. Select **Login with OpenHands Cloud** and sign in.
+3. Once connected, make it the active backend.
+
+Conversations and automations then run in cloud sandboxes and don't touch files on your computer. A Cloud backend has its own models, secrets and MCP servers, separate from your local backend. See [Use OpenHands Cloud](/en/howto/cloud/).
+
+## Stuck?
+
+<Q q="I want to choose per conversation: on my machine or in a container.">
+<p>Start it with <code>OH_CONVERSATION_RUNTIME_SELECTABLE=1</code>. The runtime picker on Home then offers <strong>Docker</strong> too. Set the default in <code>Settings → Runtime</code>.</p>
+</Q>
+<Q q="The agent can't run docker inside its container.">
+<p>The default container can't start Docker. <code>--privileged</code> fixes that, but it hands the container broad access to the host and weakens isolation a lot. Only use it when you really need it, on a machine you're willing to risk.</p>
+</Q>
+<Q q="When I close the terminal, does the backend keep running?">
+<p>A local backend started with npm or npx stops. A Docker container, a server or a cloud backend keeps running until you stop it.</p>
+</Q>
+<Q q="I want several local backends on one computer.">
+<p>Run commands like <code>agent-canvas --backend-only --port 8001</code>, each on a different port. Then add each one in <code>Manage Backends</code>, for example <code>http://localhost:8001</code>.</p>
+</Q>
+
+To run several conversations at once, see [Run several conversations](/en/howto/parallel/). For more on Docker, see [Box it in with Docker](/en/howto/docker-sandbox/).
+
+<Checkpoint id="s5" items={["I know switching backends switches settings, models and automations too", "I know which backends can reach files on my computer and which can't", "I've seen how to add a backend in Manage Backends"]} />

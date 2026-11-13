@@ -1,0 +1,177 @@
+---
+layout: ../../layouts/Guide.astro
+step: 1
+need: macOS、Windows 或 Linux；npm 装法要 Node.js 24+ 和 uv；Docker 装法要 Docker
+tldr: 挑一种装法把 Agent Canvas 跑起来，在浏览器里看到本地后端已连接。
+description: 用桌面版、npm、npx 或 Docker 安装并启动 Agent Canvas，确认它连上了后端，再学会停止和重新打开。
+---
+import Callout from "../../components/Callout.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+import Term from "../../components/Term.astro";
+import Tabs from "../../components/Tabs.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+import Q from "../../components/Q.astro";
+
+## 先挑一种装法
+
+四种装法装的是同一个东西：<Term k="Agent Canvas" /> 加上它的本地<Term k="后端" />。区别在于 AI 能碰到什么。
+
+- **桌面版（预览）。** 下载安装包，双击打开。自带 Node.js 和 `uv`，不用开<Term k="终端" />。
+- **npm。** 一条命令装好，以后打 `agent-canvas` 就能启动。
+- **npx。** 不装，直接跑一次。适合先试试。
+- **Docker。** 在容器里跑，AI 只看得到你挂进去的文件夹。
+
+前三种都直接跑在你的电脑上。<mark><strong>AI 能用你账号的权限运行命令、读写文件。</strong></mark>想隔离，选 Docker。
+
+## 装桌面版
+
+到 [OpenHands 最新版本](https://github.com/OpenHands/OpenHands/releases/latest) 页面，在 **Assets** 里下载你系统的文件。文件名里的 `<version>` 是版本号。
+
+<Tabs id="desktop" label="选择你的系统" items={[["mac", "macOS"], ["win", "Windows"], ["linux", "Linux"]]}>
+<div slot="mac">
+
+1. 下载 `OpenHands-Agent-Canvas-<version>-universal.dmg`。
+2. 打开它，把 **OpenHands Agent Canvas** 拖进「应用程序」。
+3. 从「应用程序」里打开。
+
+这个安装包同时支持 Apple 芯片和 Intel 芯片的 Mac。
+
+</div>
+<div slot="win">
+
+1. 下载 `OpenHands-Agent-Canvas-Setup-<version>.exe`。
+2. 运行安装程序。弹出 SmartScreen 提示时，先确认文件来自 OpenHands 官方发布页，再继续。
+3. 从开始菜单打开 **OpenHands Agent Canvas**。
+
+</div>
+<div slot="linux">
+
+二选一：
+
+- **AppImage**：下载 `OpenHands.Agent.Canvas-<version>.AppImage`，用 `chmod +x` 或文件管理器给它执行权限，再运行。
+- **Debian / Ubuntu**：下载 `agent-canvas_<version>_amd64.deb`，用包管理器装，比如 `sudo apt install ./agent-canvas_<version>_amd64.deb`。再从应用菜单打开。
+
+</div>
+</Tabs>
+
+启动时间比较长，或者启动失败，点 **Show details** 看实时日志。桌面版还是预览版，可能有些小毛病。
+
+## 用 npm 装
+
+先确认三样工具都在。Node.js 要 24 以上：
+
+<Copy id="pre" lang="bash" title="检查版本" code={`node --version
+npm --version
+uv --version`} />
+
+缺 `uv` 的话先装上，本地的 <Term k="Agent Server" /> 要用它。然后：
+
+<Copy id="npm" lang="bash" title="安装并启动" code={`npm install -g @openhands/agent-canvas
+agent-canvas`} />
+
+只想试一次、不想全局安装，就用 <Cmd c="npx @openhands/agent-canvas" />。
+
+## 用 Docker 装（带沙盒）
+
+先装好 Docker：macOS 和 Windows 装 Docker Desktop，Linux 装 Docker Engine 或 Docker Desktop。Docker Desktop 要先打开。
+
+<Tabs id="docker" label="选择你的系统" items={[["unix", "macOS / Linux"], ["win", "Windows"]]}>
+<div slot="unix">
+
+**1. 建一个放项目的文件夹。** AI 只能看到这里面的东西：
+
+<Copy id="d-ws" lang="bash" title="准备工作区" code={`export PROJECTS_PATH="$HOME/projects"  # directory containing your project folders
+mkdir -p "$PROJECTS_PATH"`} />
+
+**Linux 用 Docker Engine 的话**，容器里的用户（uid 10001）要能读写这个文件夹。下面两条会让本机所有用户都能读写它。只对一个专门的文件夹这样做，并且和 `~/.openhands` 分开：
+
+<Copy id="d-chmod" lang="bash" title="仅 Linux Docker Engine" code={`find "$PROJECTS_PATH" -type d -exec chmod a+rwX {} +
+find "$PROJECTS_PATH" -type f -exec chmod a+rw {} +`} />
+
+macOS 上的 Docker Desktop 会自己处理权限，不用这一步。
+
+**2. 启动：**
+
+<Copy id="d-run" lang="bash" title="启动 Agent Canvas" code={`docker run -it --rm \\
+  -p 127.0.0.1:8000:8000 \\
+  -e AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true \\
+  -v openhands-state:/home/openhands/.openhands \\
+  -v "\${PROJECTS_PATH}:/projects" \\
+  ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+</div>
+<div slot="win">
+
+在 PowerShell 里依次运行。Docker Desktop 会自己处理文件夹权限。
+
+<Copy id="w-pull" lang="powershell" title="1. 下载镜像" code="docker pull ghcr.io/openhands/agent-canvas:1.40.0" />
+
+<Copy id="w-ws" lang="powershell" title="2. 准备文件夹" code={`$env:PROJECTS_PATH = Join-Path $HOME "projects"  # directory containing your project folders
+New-Item -ItemType Directory -Force -Path $env:PROJECTS_PATH, (Join-Path $env:USERPROFILE ".openhands") | Out-Null`} />
+
+<Copy id="w-run" lang="powershell" title="3. 启动" code={`docker run -it --rm \`
+  -p 127.0.0.1:8000:8000 \`
+  -e AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true \`
+  -v "$($env:USERPROFILE)\\.openhands:/home/openhands/.openhands" \`
+  -v "$($env:PROJECTS_PATH):/projects" \`
+  ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+PowerShell 用反引号换行，别删。
+
+</div>
+</Tabs>
+
+项目在容器里的 `/projects` 下面。设置、密钥和对话存在 Docker 卷 `openhands-state` 里，Windows 版存在你用户目录下的 `.openhands` 里。下次用同样的命令启动，它们都还在。
+
+<Callout type="no" title="这两处要一起留着">
+`-p 127.0.0.1:8000:8000` 让只有你这台电脑能打开它。`AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true` 让页面自动带上登录密钥。只有前者在，后者才安全。想让别的设备访问，先看[第 8 步](/guide/8-beyond/)的自托管加固，别直接改成对外开放。
+</Callout>
+
+## 看它起来了没有
+
+打开地址：
+
+- **桌面版**：会自己打开窗口。
+- **npm、npx**：浏览器打开 `http://localhost:8000`。没自动弹出就手动打开。
+- **Docker**：打开 `http://localhost:8000/canvas`。
+
+<Callout type="ok">
+第一次打开会出现四步的首次设置向导。第二步「Check your backend」里显示 **You're connected!**，就说明界面连上了本地后端。
+</Callout>
+
+向导剩下的部分在[第 2 步](/guide/2-model/)讲。
+
+## 学会关掉和再打开
+
+- **npm、npx**：回到运行它的终端，按 `Ctrl+C`。关掉终端也会停。再用就重新运行同一条命令。
+- **Docker**：在运行它的终端按 `Ctrl+C`。再用就运行同一条 `docker run`。
+- **桌面版**：从菜单退出。再用就重新打开。
+
+用 npm 或 npx 时，设置和对话存在 `~/.openhands` 里，重装也不会丢。更新和卸载见[更新、停止、卸载](/howto/update-remove/)。
+
+## 卡住了？
+
+<Q q="提示 8000 端口被占用了。">
+<p>换一个端口启动，比如 <code>agent-canvas --port 3000</code>，再打开对应的地址。</p>
+</Q>
+<Q q="Docker 打开以后让我输入一个 API key。">
+<p>这是连后端用的密钥，不是模型的 key。另开一个终端，用 <code>docker ps</code> 找到容器名。再运行 <code>docker exec CONTAINER cat /home/openhands/.openhands/agent-canvas/api-key.txt</code>。把 <code>CONTAINER</code> 换成容器名。把打印出来的密钥填进去，别发给别人。</p>
+</Q>
+<Q q="macOS 说应用已损坏，打不开。">
+<p>预览版还没有经过苹果签名。先确认安装包来自官方发布页。拖进「应用程序」以后，在终端运行下面这条，再打开：</p>
+<p><code>xattr -dr com.apple.quarantine "/Applications/OpenHands Agent Canvas.app"</code></p>
+</Q>
+<Q q="Linux 上 Docker 报 Permission denied。">
+<p>看报错里提到的路径，确认 uid 10001 能读写它。SELinux 系统还要看挂载要不要加 <code>:z</code> 或 <code>:Z</code> 标签。别给存密钥的目录开所有人可写。</p>
+</Q>
+<Q q="我想改 Agent Canvas 本身的代码。">
+<p>那就从源码跑。要 Node.js 24 以上、npm 11.12.1 和 <code>uv</code>，然后依次运行 <code>git clone https://github.com/OpenHands/OpenHands.git</code>、<code>cd OpenHands</code>、<code>npm ci</code>、<code>npm run dev</code>。它和 npm 装法一样直接跑在你的电脑上。</p>
+</Q>
+<Q q="每个对话想要一个独立的容器。">
+<p>可以，见<a href="/guide/5-backends/">第 5 步</a>。</p>
+</Q>
+
+完整的装法、启动选项和环境变量，见官方的 [Install Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/setup)。
+
+<Checkpoint id="s1" items={["我选好了一种装法，知道它能碰到哪些文件", "首次设置向导里显示 You're connected!", "我知道怎么停掉它、下次怎么再打开"]} />

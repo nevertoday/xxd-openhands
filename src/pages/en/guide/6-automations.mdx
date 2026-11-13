@@ -1,0 +1,102 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 6
+need: Agent Canvas with a model connected; Slack or GitHub connected first if results go there
+tldr: Build a scheduled task from a template or one sentence, run it once by hand, and learn to switch it on and off.
+description: What automations are and why the backend has to stay up, how to create one from a template or a sentence, and how to test-run, check, toggle and edit it, plus what event triggers need.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
+import Q from "../../../components/Q.astro";
+
+## Know what an automation is
+
+An <Term k="自动化" /> is a rule: at a set time, or when something happens, it starts a conversation and does the work. For example, a Slack digest every morning, or a review for every new PR.
+
+Each run is a full conversation. It can use the terminal and edit files, with your configured model, the secrets in `Settings > Secrets`, and your connected <Term k="MCP" /> tools. Run conversations show up in your conversation list, where you can open them or keep talking.
+
+## Keep the backend running
+
+Automations live on the active <Term k="后端" />, and its Automation Server fires them. Backends started by `agent-canvas` include one.
+
+<mark><strong>When the backend stops, scheduled runs stop too.</strong></mark> With npm or npx on your own computer, closing the terminal stops the backend.
+
+To keep it running, put it on an always-on machine (see [step 8](/en/guide/8-beyond/)), or use OpenHands Cloud as the backend (see [step 5](/en/guide/5-backends/)).
+
+## Start from a template
+
+Open **Automate** in the sidebar and go to Templates. Suggested ones sit at the top, more below.
+
+The official ready-made ones:
+
+- **Issue to Pull Request**: implements an issue and opens a <Term k="PR" />.
+- **GitHub PR Review Assistant**: reviews PRs and posts feedback as a comment.
+- **GitHub Repository Monitor**: watches a repository and has the agent respond to events.
+- **Slack Channel Monitor**: watches a Slack channel and starts the agent when a message matches.
+
+Pick one, fill in the form, review it, then create it. For what each template needs connected and what it does, see this site's [ready-made automations](/en/automations/).
+
+## Create one with a sentence
+
+You can also just ask in a conversation:
+
+<Copy id="create" title="Swap in your own task" code="Create an automation that runs every Monday at 9 AM and summarizes our open GitHub issues, then posts the summary to #engineering on Slack." />
+
+It walks you through the name, schedule, timezone and task. This example needs GitHub and Slack connected first.
+
+Creating one from Automate opens a split view: a form on one side, a conversation with OpenHands on the other. You describe it and it fills in the form. It only proposes settings. It doesn't create or enable the automation itself. You select create.
+
+When you write the task, cover three things:
+
+- **Exactly what to do.** "Check X, and if Y, then Z."
+- **What to do when things fail.** "If any backup is missing, alert the team."
+- **Where results go.** "Post to this Slack channel," "Create a GitHub issue."
+
+Say the schedule in plain words, like "every weekday at 9 AM" or "hourly." Each run stops after 10 minutes by default. You can ask for up to 30.
+
+## Run it once by hand
+
+Once it's created, open the ⋮ menu on its row and select **Run now**. It runs right away instead of waiting for its time.
+
+<Callout type="ok">
+A new entry appears in the run history. Its status goes from `PENDING` and `RUNNING` to `COMPLETED`. Open it to see the conversation it started.
+</Callout>
+
+Open an automation to see its full prompt, trigger, which model it uses and its recent runs. The Activity Log also shows what each run cost, when the backend reports it.
+
+## Toggle, edit, export
+
+- **Toggle.** Turn it on or off from the ⋮ menu or its detail page. While it's off, it doesn't fire, and its settings are kept.
+- **Edit.** Change the name, prompt, model, timeout and schedule directly. A model change only affects future runs.
+- **Export.** Select **Export** in the ⋮ menu to download a JSON file. Share it with a teammate or move it to another backend.
+
+New automations start enabled and run at their next scheduled time.
+
+## Trigger it from outside events
+
+In **Automate → Events** you can register an event source, such as a CI system. It gives you a webhook URL and a signing secret.
+
+<Callout type="no" title="A local backend can't receive outside events">
+The webhook URL must be reachable from the internet, so a backend on `localhost` won't receive anything. Exposing it puts the whole backend on the internet. Harden it first as in [step 8](/en/guide/8-beyond/). If you can't, use a scheduled automation that polls the service's API instead.
+</Callout>
+
+## Stuck?
+
+<Q q="The automation finished, but nothing reached Slack.">
+<p>It can only use services you've connected. Posting to Slack needs the Slack MCP connected first. See <a href="/en/guide/7-customize/">step 7</a>.</p>
+</Q>
+<Q q="The run status is SKIPPED.">
+<p>The backend skips a run when it has hit its limit of runs at the same time.</p>
+</Q>
+<Q q="The automation got turned off, and I didn't do it.">
+<p>Open its detail page. The banner at the top gives the reason and the time, for example a permanent failure the backend reported. Fix that, then turn it back on from the ⋮ menu.</p>
+</Q>
+<Q q="It didn't run at its time.">
+<p>Check that the backend is still up first. A local npm or npx backend stops when you close its terminal.</p>
+</Q>
+
+For more examples, see [A daily Slack digest](/en/howto/slack-digest/) and [Write your own automation](/en/howto/custom-automation/). For everything else, see the official [Managing automations](https://docs.openhands.dev/openhands/usage/agent-canvas/managing-automations).
+
+<Checkpoint id="s6" items={["I know scheduled runs stop when the backend stops", "I created an automation and ran it once with Run now", "I opened the conversation one run started"]} />

@@ -1,0 +1,91 @@
+---
+layout: ../../layouts/Guide.astro
+step: 0
+need: 什么都不用，先读
+tldr: 弄清 OpenHands 由哪几块组成、AI 在哪台机器上干活，开始前备好三样东西。
+description: OpenHands 和 Agent Canvas 是什么，界面、后端、工作区、模型各管什么，本机跑和 Docker 跑有什么区别，开始前要准备什么。
+---
+import Callout from "../../components/Callout.astro";
+import Checkpoint from "../../components/Checkpoint.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+
+<Callout type="tip" title="没写过代码？">
+这套完整教程默认你会一点代码，会用到终端、Git、PR 这些词。从没写过代码的话，先看[新手入门的三课](/start/1-why/)。
+</Callout>
+
+## 先认识它
+
+<Term k="OpenHands" /> 是一个开源项目，做的是会自己动手的 AI，也就是<Term k="代理" />。
+
+你现在用到的 OpenHands，主要是 <Term k="Agent Canvas" />。它是一个在浏览器里打开的控制台。
+
+在 Agent Canvas 里，你可以：
+
+- **开对话。** 交代一件事，看它运行命令、改文件。
+- **建自动化。** 让它定时或在某件事发生时自己干活，比如把报告发到 Slack。
+- **换后端。** 在你的电脑、Docker、服务器之间切换，界面不变。
+- **换代理。** 默认是 OpenHands 自己的代理，也能用 Claude Code、Codex、Gemini CLI、Pi、OpenCode。
+
+## 认清四个部分
+
+一次对话会经过这四样东西：
+
+| 部分 | 管什么 |
+| --- | --- |
+| 浏览器界面 | 你看、你打字的地方 |
+| <Term k="后端" /> | 真正跑代理的机器 |
+| <Term k="工作区" /> | 它能读写的文件夹 |
+| 代理和<Term k="模型" /> | 谁来想、谁来做 |
+
+Agent Canvas 只是界面。<mark><strong>活是后端干的，文件也在后端那台机器上。</strong></mark>
+
+后端里跑着 <Term k="Agent Server" />。它负责对话、工具、设置和密钥。旁边还常有一个 Automation Server，管定时和事件触发的任务。
+
+## 发一句话以后会发生什么
+
+1. 你在界面里发消息。
+2. Agent Canvas 把它交给你选的后端。
+3. Agent Server 开始或接着这个<Term k="对话" />，让代理调用工具。
+4. 每一步做了什么，实时传回界面给你看。
+
+对话记录、模型设置、密钥都存在后端。换一个后端，看到的就是另一批对话和设置。
+
+## 想好让它在哪干活
+
+装之前先定一件事：它能碰到哪些文件。
+
+| 装法 | 它能碰到什么 |
+| --- | --- |
+| 桌面版、npm、npx | 你账号能碰的一切 |
+| <Term k="Docker" /> | 只有挂进去的文件夹 |
+| 服务器或专用电脑 | 那台机器上的东西 |
+| <Term k="OpenHands Cloud" /> | 官方托管的<Term k="沙盒" /> |
+
+<Callout type="warn" title="它能运行命令、读写文件">
+代理会用你给它的权限执行命令、读写文件、用你接好的工具。只让它碰你愿意交给它的文件、密钥和网络。在自己电脑上直接跑时，先只开一个专门的文件夹给它。想要隔离，用 Docker（[第 1 步](/guide/1-install/)讲怎么装）。
+</Callout>
+
+## 开始前准备三样
+
+- **一个能装它的地方。** macOS、Windows 或 Linux 电脑。桌面版自带要用的工具。用 npm 装，要 Node.js 24 以上和 `uv`。想隔离，要 Docker。
+- **一个模型。** 服务商的 <Term k="API key" />、OpenHands Cloud 的 key、Claude Code 这类已登录的订阅，或者本地模型都行。[第 2 步](/guide/2-model/)讲怎么接。
+- **一个给它干活的文件夹。** 新建的空文件夹，或者一个你愿意让它改的项目。
+
+<Callout type="warn" title="模型要花钱">
+OpenHands 会向模型发很多次请求。大部分模型按用量收费，记得在服务商那边设花费上限。见[控制花费](/howto/cost/)。
+</Callout>
+
+## 别装错东西
+
+<Q q="网上教程让我运行 openhands serve，还能用吗？">
+<p><code>openhands serve</code> 启动的是旧版本地界面，已经不推荐用了。只装了 Agent Canvas 的话，这个命令也跑不起来。OpenHands CLI 也已经不再维护。照第 1 步装 Agent Canvas 就行。</p>
+</Q>
+<Q q="OpenHands Cloud 是另一个东西吗？">
+<p>它是官方托管的付费服务，不用自己管后端和沙盒。你可以把它当成 Agent Canvas 的一个后端接进来，见<a href="/guide/5-backends/">第 5 步</a>。</p>
+</Q>
+<Q q="SDK 又是什么？">
+<p><Term k="SDK" /> 是一个 Python 工具包，用代码自己搭代理。Agent Server 就是用它做的。只想用界面的话，先不用管，<a href="/guide/8-beyond/">第 8 步</a>再讲。</p>
+</Q>
+
+<Checkpoint id="s0" items={["我知道 Agent Canvas 只是界面，活是后端干的", "我想好了先让它在哪干活：本机的一个专门文件夹，或者 Docker", "我手上有一个能用的模型，或者知道去哪拿"]} />

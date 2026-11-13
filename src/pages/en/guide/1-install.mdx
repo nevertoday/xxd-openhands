@@ -1,0 +1,177 @@
+---
+layout: ../../../layouts/Guide.astro
+step: 1
+need: macOS, Windows or Linux; Node.js 24+ and uv for npm; Docker for the Docker install
+tldr: Pick one install, start Agent Canvas, and see the local backend connected in your browser.
+description: Install and start Agent Canvas with the desktop app, npm, npx or Docker, confirm it reaches its backend, and learn to stop and restart it.
+---
+import Callout from "../../../components/Callout.astro";
+import Checkpoint from "../../../components/Checkpoint.astro";
+import Term from "../../../components/Term.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+import Q from "../../../components/Q.astro";
+
+## Pick one way to install
+
+All four installs give you the same thing: <Term k="Agent Canvas" /> plus its local <Term k="后端" />. They differ in what the AI can reach.
+
+- **Desktop app (preview).** Download an installer and open it. It bundles Node.js and `uv`, so no <Term k="终端" /> needed.
+- **npm.** One command installs it. After that, `agent-canvas` starts it.
+- **npx.** Runs it once without installing. Good for a first try.
+- **Docker.** Runs in a container. The AI only sees the folders you mount.
+
+The first three run directly on your computer. <mark><strong>The AI can run commands and read and write files with your account's permissions.</strong></mark> For isolation, pick Docker.
+
+## Install the desktop app
+
+Go to the [latest OpenHands release](https://github.com/OpenHands/OpenHands/releases/latest) and download your system's file from **Assets**. `<version>` in the file names is the release number.
+
+<Tabs id="desktop" label="Choose your system" items={[["mac", "macOS"], ["win", "Windows"], ["linux", "Linux"]]}>
+<div slot="mac">
+
+1. Download `OpenHands-Agent-Canvas-<version>-universal.dmg`.
+2. Open it and drag **OpenHands Agent Canvas** to **Applications**.
+3. Launch it from Applications.
+
+The disk image works on both Apple silicon and Intel Macs.
+
+</div>
+<div slot="win">
+
+1. Download `OpenHands-Agent-Canvas-Setup-<version>.exe`.
+2. Run the installer. If SmartScreen prompts you, confirm the file came from the official OpenHands release first.
+3. Launch **OpenHands Agent Canvas** from the Start menu.
+
+</div>
+<div slot="linux">
+
+Pick one:
+
+- **AppImage**: download `OpenHands.Agent.Canvas-<version>.AppImage`, make it executable with `chmod +x` or your file manager, then run it.
+- **Debian / Ubuntu**: download `agent-canvas_<version>_amd64.deb` and install it with your package manager, for example `sudo apt install ./agent-canvas_<version>_amd64.deb`. Then launch it from your applications menu.
+
+</div>
+</Tabs>
+
+If startup is slow or fails, select **Show details** to see the live log. The desktop app is an early preview, so expect rough edges.
+
+## Install with npm
+
+Check that all three tools are there. Node.js must be 24 or later:
+
+<Copy id="pre" lang="bash" title="Check versions" code={`node --version
+npm --version
+uv --version`} />
+
+If `uv` is missing, install it first. The local <Term k="Agent Server" /> needs it. Then:
+
+<Copy id="npm" lang="bash" title="Install and start" code={`npm install -g @openhands/agent-canvas
+agent-canvas`} />
+
+To try it once without a global install, run <Cmd c="npx @openhands/agent-canvas" />.
+
+## Install with Docker (sandboxed)
+
+Install Docker first: Docker Desktop on macOS and Windows, Docker Engine or Docker Desktop on Linux. Open Docker Desktop before you start.
+
+<Tabs id="docker" label="Choose your system" items={[["unix", "macOS / Linux"], ["win", "Windows"]]}>
+<div slot="unix">
+
+**1. Make a folder for your projects.** The AI can only see what's inside:
+
+<Copy id="d-ws" lang="bash" title="Prepare a workspace" code={`export PROJECTS_PATH="$HOME/projects"  # directory containing your project folders
+mkdir -p "$PROJECTS_PATH"`} />
+
+**On Linux with Docker Engine**, the container user (uid 10001) must be able to read and write this folder. These two commands let every local user read and write it. Only use them on a dedicated folder, kept apart from `~/.openhands`:
+
+<Copy id="d-chmod" lang="bash" title="Linux Docker Engine only" code={`find "$PROJECTS_PATH" -type d -exec chmod a+rwX {} +
+find "$PROJECTS_PATH" -type f -exec chmod a+rw {} +`} />
+
+Docker Desktop on macOS handles permissions for you, so skip this.
+
+**2. Start it:**
+
+<Copy id="d-run" lang="bash" title="Start Agent Canvas" code={`docker run -it --rm \\
+  -p 127.0.0.1:8000:8000 \\
+  -e AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true \\
+  -v openhands-state:/home/openhands/.openhands \\
+  -v "\${PROJECTS_PATH}:/projects" \\
+  ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+</div>
+<div slot="win">
+
+Run these in PowerShell, in order. Docker Desktop handles folder permissions.
+
+<Copy id="w-pull" lang="powershell" title="1. Pull the image" code="docker pull ghcr.io/openhands/agent-canvas:1.40.0" />
+
+<Copy id="w-ws" lang="powershell" title="2. Prepare the folders" code={`$env:PROJECTS_PATH = Join-Path $HOME "projects"  # directory containing your project folders
+New-Item -ItemType Directory -Force -Path $env:PROJECTS_PATH, (Join-Path $env:USERPROFILE ".openhands") | Out-Null`} />
+
+<Copy id="w-run" lang="powershell" title="3. Start it" code={`docker run -it --rm \`
+  -p 127.0.0.1:8000:8000 \`
+  -e AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true \`
+  -v "$($env:USERPROFILE)\\.openhands:/home/openhands/.openhands" \`
+  -v "$($env:PROJECTS_PATH):/projects" \`
+  ghcr.io/openhands/agent-canvas:1.40.0`} />
+
+PowerShell continues lines with backticks. Keep them.
+
+</div>
+</Tabs>
+
+Your projects appear under `/projects` inside the container. Settings, secrets and conversations live in the `openhands-state` Docker volume, or in `.openhands` in your user folder on Windows. Start with the same command next time and they're all still there.
+
+<Callout type="no" title="Keep these two together">
+`-p 127.0.0.1:8000:8000` means only this computer can open it. `AGENT_CANVAS_ALLOW_LAN_SESSION_KEY=true` makes the page carry its login key automatically. The second is only safe with the first. If other devices need access, read the self-hosting hardening in [step 8](/en/guide/8-beyond/) first. Don't just open the port.
+</Callout>
+
+## Check that it's up
+
+Open it:
+
+- **Desktop app**: its window opens on its own.
+- **npm, npx**: open `http://localhost:8000` if the browser doesn't open by itself.
+- **Docker**: open `http://localhost:8000/canvas`.
+
+<Callout type="ok">
+The first time, a four-step setup wizard appears. On step two, "Check your backend", you see **You're connected!** That means the UI reached the local backend.
+</Callout>
+
+[Step 2](/en/guide/2-model/) walks through the rest of the wizard.
+
+## Stop it and start it again
+
+- **npm, npx**: press `Ctrl+C` in the terminal running it. Closing the terminal stops it too. Run the same command to start again.
+- **Docker**: press `Ctrl+C` in its terminal. Run the same `docker run` to start again.
+- **Desktop app**: quit it from the menu. Open the app to start again.
+
+With npm or npx, settings and conversations live in `~/.openhands`, so a reinstall keeps them. To update or uninstall, see [Update, stop, uninstall](/en/howto/update-remove/).
+
+## Stuck?
+
+<Q q="It says port 8000 is already in use.">
+<p>Start on another port, for example <code>agent-canvas --port 3000</code>, and open that address.</p>
+</Q>
+<Q q="Docker opened, and now it asks me for an API key.">
+<p>This key unlocks the backend. It isn't your model key. In another terminal, run <code>docker ps</code> to find the container name, then run <code>docker exec CONTAINER cat /home/openhands/.openhands/agent-canvas/api-key.txt</code> with <code>CONTAINER</code> replaced by that name. Paste the printed key in, and keep it private.</p>
+</Q>
+<Q q="macOS says the app is damaged and can't be opened.">
+<p>The preview isn't signed by Apple yet. First confirm you downloaded it from the official release. After moving it to Applications, run this in Terminal, then open it again:</p>
+<p><code>xattr -dr com.apple.quarantine "/Applications/OpenHands Agent Canvas.app"</code></p>
+</Q>
+<Q q="Docker on Linux says Permission denied.">
+<p>Check the path named in the error and make sure uid 10001 can read and write it. On SELinux hosts, check whether the mount needs a <code>:z</code> or <code>:Z</code> label. Never make the folder holding your keys writable by everyone.</p>
+</Q>
+<Q q="I want to change Agent Canvas itself.">
+<p>Run it from source. You need Node.js 24 or later, npm 11.12.1 and <code>uv</code>. Then run <code>git clone https://github.com/OpenHands/OpenHands.git</code>, <code>cd OpenHands</code>, <code>npm ci</code> and <code>npm run dev</code>. Like npm, it runs directly on your computer.</p>
+</Q>
+<Q q="I want a separate container for each conversation.">
+<p>You can. See <a href="/en/guide/5-backends/">step 5</a>.</p>
+</Q>
+
+For every install method, startup option and environment variable, see the official [Install Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/setup).
+
+<Checkpoint id="s1" items={["I picked one install and know which files it can reach", "The setup wizard shows You're connected!", "I know how to stop it and start it again"]} />
