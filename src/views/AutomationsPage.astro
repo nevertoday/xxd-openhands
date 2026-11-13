@@ -1,0 +1,100 @@
+---
+// 现成自动化速查：按用途分组，每个一张卡（名字、怎么触发、一句话、要先接好什么），整张卡点进去是详情页。
+// 上面一条筛选：按名字或想做的事搜，按分组、按触发方式过滤。锚点就是 slug（搜索直接跳过来）。没有 JS 时卡片照常全显示。
+import Site from "../layouts/Site.astro";
+import { automationsFor, AUTOMATION_GROUPS, TRIGGERS, triggersOf, groupTitle } from "../lib/automations.js";
+import { automationHref, stepHref, wikiHref, STEPS, langOf, t } from "../data/nav.js";
+const lang = langOf(Astro.url.pathname);
+const en = lang === "en";
+const items = automationsFor(lang);
+const groups = AUTOMATION_GROUPS.map((g) => ({ ...g, name: groupTitle(g, lang), items: items.filter((a) => a.group === g.id) })).filter((g) => g.items.length);
+const headings = groups.map((g) => ({ slug: `g-${g.id}`, text: g.name, depth: 2 }));
+const step = STEPS.find((s) => s.slug === "6-automations");
+const T = en
+  ? { h: "Prebuilt automations", desc: `${items.length} ready-made automations from OpenHands, each in one plain sentence: what it does and what it needs.`,
+      p: [`OpenHands ships ${items.length} ready-made `, "automations", ". Pick one, connect the services it needs, and it starts conversations on its own, on a schedule or when something happens. Open a card to see what it does each run and how to turn it on. New to automations? Read ", "first."],
+      all: "All", search: "Filter by name or task, e.g. review, Slack, issue", groupLabel: "Group", trigLabel: "How it starts",
+      needs: "Needs", none: "Nothing extra", empty: "No automation matches. Try fewer words, or pick “All”.", shown: (n) => `${n} shown` }
+  : { h: "现成自动化", desc: `OpenHands 自带的 ${items.length} 个现成自动化，每个一句人话：替你做什么、要先接好什么。`,
+      p: [`OpenHands 官方准备了 ${items.length} 个现成的`, "自动化", "：选一个，接好它要用的服务，它就按时间、或者等某件事发生时，自己开对话干活。点开一张卡，看它每一轮做什么、怎么开起来。第一次接触自动化，先看", "。"],
+      all: "全部", search: "按名字或想做的事筛选，比如：审、Slack、issue", groupLabel: "分组", trigLabel: "怎么触发",
+      needs: "要先接好", none: "不用另外接", empty: "没有对得上的自动化。少打几个字，或者选「全部」。", shown: (n) => `显示 ${n} 个` };
+const trigName = (k) => TRIGGERS[k]?.[lang] ?? k;
+const trigKeys = Object.keys(TRIGGERS).filter((k) => items.some((a) => triggersOf(a).includes(k)));
+const count = (f) => items.filter(f).length;
+const plain = (x) => String(x ?? "").replace(/\*\*|==|\+\+|`/g, "");
+---
+<Site title={T.h} description={T.desc} headings={headings}>
+  <article class="xxd-prose autos">
+    <h1>{T.h}</h1>
+    <p>{T.p[0]}<a href={wikiHref("automation", lang)}>{T.p[1]}</a>{T.p[2]}{step && <a href={stepHref(step, lang)}>{en ? `full guide step ${step.n}, “${t(step, "title", lang)},” ` : `完整教程第 ${step.n} 步「${t(step, "title", lang)}」`}</a>}{T.p[3]}</p>
+
+    <div class="autos__filter" data-autos-filter hidden>
+      <div class="xxd-input-wrap autos__search">
+        <i data-xxd-icon="Search" data-size="16" aria-hidden="true"></i>
+        <input class="xxd-input" type="search" id="autos-q" placeholder={T.search} aria-label={T.search} autocomplete="off" />
+      </div>
+      <div class="xxd-segmented autos__seg" data-xxd-segmented role="radiogroup" aria-label={T.groupLabel} id="autos-group">
+        <button type="button" role="radio" data-value="all" aria-checked="true" tabindex="0">{T.all}<span class="autos__n">{items.length}</span></button>
+        {groups.map((g) => <button type="button" role="radio" data-value={g.id} aria-checked="false" tabindex="-1">{g.name}<span class="autos__n">{g.items.length}</span></button>)}
+      </div>
+      <div class="xxd-segmented autos__seg" data-xxd-segmented role="radiogroup" aria-label={T.trigLabel} id="autos-trig">
+        <button type="button" role="radio" data-value="all" aria-checked="true" tabindex="0">{T.all}<span class="autos__n">{items.length}</span></button>
+        {trigKeys.map((k) => <button type="button" role="radio" data-value={k} aria-checked="false" tabindex="-1"><span class="trig"><i data-xxd-icon={TRIGGERS[k].icon} data-size="14" aria-hidden="true"></i>{trigName(k)}</span><span class="autos__n">{count((a) => triggersOf(a).includes(k))}</span></button>)}
+      </div>
+      <p class="autos__hint" id="autos-hint" aria-live="polite"></p>
+    </div>
+
+    {groups.map((g) => (
+      <section class="autos__group" data-group={g.id}>
+        <h2 id={`g-${g.id}`}>{g.name}</h2>
+        <ul class="acards">
+          {g.items.map((a) => (
+            <li class="acard" id={a.slug} data-group={a.group} data-trig={triggersOf(a).join(" ")} data-text={plain(`${a.slug} ${a.name} ${a.one} ${a.when} ${(a.needs || []).join(" ")} ${(a.does || []).join(" ")}`).toLowerCase()}>
+              <a class="acard__link" href={automationHref(a.slug, lang)}>
+                <span class="acard__head">
+                  <span class="acard__name">{a.name}</span>
+                  {triggersOf(a).map((k) => <span class="xxd-badge trig" data-size="sm" data-tone={k === "event" ? "warning" : k === "schedule" ? "success" : undefined}><i data-xxd-icon={TRIGGERS[k]?.icon ?? "Zap"} data-size="12" aria-hidden="true"></i>{trigName(k)}</span>)}
+                </span>
+                <span class="acard__one">{plain(a.one)}</span>
+                <span class="acard__needs"><span>{T.needs}</span>{a.needs?.length ? a.needs.join(en ? ", " : "、") : T.none}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+    <p class="autos__empty" id="autos-empty" hidden>{T.empty}</p>
+  </article>
+  <script is:inline define:vars={{ shown: T.shown("#") }}>
+    (() => {
+      const box = document.querySelector("[data-autos-filter]");
+      if (!box) return;
+      box.hidden = false;
+      const q = document.getElementById("autos-q");
+      const hint = document.getElementById("autos-hint");
+      const empty = document.getElementById("autos-empty");
+      const cards = [...document.querySelectorAll(".acard")];
+      const groups = [...document.querySelectorAll("[data-group].autos__group")];
+      const sel = { group: "all", trig: "all" };
+      const apply = () => {
+        const words = q.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        let n = 0;
+        for (const c of cards) {
+          const ok = (sel.group === "all" || c.dataset.group === sel.group)
+            && (sel.trig === "all" || c.dataset.trig.split(" ").includes(sel.trig))
+            && words.every((w) => c.dataset.text.includes(w));
+          c.hidden = !ok;
+          if (ok) n++;
+        }
+        for (const g of groups) g.hidden = !g.querySelector(".acard:not([hidden])");
+        const filtered = words.length || sel.group !== "all" || sel.trig !== "all";
+        hint.textContent = filtered ? shown.replace("#", n) : "";
+        empty.hidden = n > 0;
+      };
+      q.addEventListener("input", apply);
+      document.getElementById("autos-group").addEventListener("xxd:change", (e) => { sel.group = e.detail.value; apply(); });
+      document.getElementById("autos-trig").addEventListener("xxd:change", (e) => { sel.trig = e.detail.value; apply(); });
+    })();
+  </script>
+</Site>

@@ -2,46 +2,37 @@
 <defs><clipPath id="sw"><rect x="700" y="150" width="500" height="340" rx="14"/></clipPath><filter id="ssh" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="22" stdDeviation="26" flood-color="#111111" flood-opacity=".10"/></filter></defs>
 <rect width="1280" height="640" fill="#FAFAF8"/>
 <rect x="84" y="92" width="64" height="64" rx="8" fill="#2B2A27" />
-<rect x="96.8" y="104.8" width="28.8" height="9.600000000000001" fill="#FFFFFF" opacity="1"/>
-<rect x="101.6" y="119.2" width="28.8" height="9.600000000000001" fill="#FFFFFF" opacity="0.62"/>
-<rect x="106.4" y="133.6" width="28.8" height="9.600000000000001" fill="#FFFFFF" opacity="0.32"/>
-<text x="170" y="139" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="54" font-weight="700" fill="#2B2A27" text-anchor="start" letter-spacing="-1">pstack</text>
-<text x="84" y="262" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="64" font-weight="700" fill="#2B2A27" text-anchor="start" >新手教程</text>
-<text x="84" y="338" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="34" font-weight="600" fill="#2B2A27" text-anchor="start" >AI 说「修好了」，</text>
-<text x="84" y="386" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="34" font-weight="600" fill="#2B2A27" text-anchor="start" >你一打开，还是坏的。</text>
-<rect x="80" y="422" width="418.2" height="24" rx="0" fill="#F2C46B" opacity=".55"/>
-<text x="84" y="440" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="34" font-weight="700" fill="#2B2A27" text-anchor="start" >pstack 让它先自己试一遍。</text>
-<text x="84" y="512" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="400" fill="#6D6B67" text-anchor="start" >新手入门 3 课 · 完整教程 9 步 · 34 个技能 · 10 种语言</text>
-<text x="84" y="560" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="24" font-weight="600" fill="#2B2A27" text-anchor="start" >pstack.xiaoxiaodong.ai</text>
+<path d="M100.0,111.2 l12.8,12.8 l-12.8,12.8" fill="none" stroke="#FFFFFF" stroke-width="6.4" stroke-linecap="square"/>
+<rect x="117.6" y="132.0" width="16.0" height="6.4" rx="0" fill="#FFFFFF" />
+<text x="170" y="139" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="50" font-weight="700" fill="#2B2A27" text-anchor="start">OpenHands</text>
+<text x="84" y="262" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="64" font-weight="700" fill="#2B2A27" text-anchor="start">新手教程</text>
+<text x="84" y="338" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="34" font-weight="600" fill="#2B2A27" text-anchor="start">一个会自己动手的 AI：</text>
+<text x="84" y="386" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="34" font-weight="600" fill="#2B2A27" text-anchor="start">敲命令、改文件、开 PR。</text>
+<rect x="80" y="422" width="350" height="24" rx="0" fill="#F2C46B" opacity=".55"/>
+<text x="84" y="440" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="34" font-weight="700" fill="#2B2A27" text-anchor="start">不会写代码也能用上。</text>
+<text x="84" y="512" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="400" fill="#6D6B67" text-anchor="start">新手入门 3 课 · 完整教程 9 步 · 现成自动化速查 · 中英双语</text>
+<text x="84" y="560" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="24" font-weight="600" fill="#2B2A27" text-anchor="start">openhands.xiaoxiaodong.ai</text>
 <rect x="700" y="150" width="500" height="340" rx="14" fill="#000" opacity=".9" filter="url(#ssh)"/>
 <g clip-path="url(#sw)"><rect x="700" y="150" width="500" height="340" rx="0" fill="#1A1A1A" /><rect x="700" y="150" width="500" height="36" rx="0" fill="#2A2926" />
 <circle cx="722" cy="168" r="6" fill="#FF5F57"/>
 <circle cx="742" cy="168" r="6" fill="#FEBC2E"/>
 <circle cx="762" cy="168" r="6" fill="#28C840"/>
-<text x="722" y="226" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="18" font-weight="700" fill="#D7B9C8" text-anchor="start" >›</text>
-<text x="742" y="226" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="16" font-weight="600" fill="#E6E4DC" text-anchor="start" >/poteto-mode 收藏会重复。</text>
-<text x="742" y="250" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="16" font-weight="600" fill="#E6E4DC" text-anchor="start" >先复现，再修，再验证。</text>
-<rect x="742" y="280" width="22" height="22" rx="5" fill="none" stroke="#55524B" stroke-width="1.5"/>
-<path d="M747,291 l5,5 l8,-10" fill="none" stroke="#FBE3E0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="778" y="298" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#FBE3E0" text-anchor="start" >复现</text>
-<rect x="742" y="318" width="22" height="22" rx="5" fill="none" stroke="#55524B" stroke-width="1.5"/>
-<path d="M747,329 l5,5 l8,-10" fill="none" stroke="#FCEAD2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="778" y="336" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#FCEAD2" text-anchor="start" >找根因</text>
-<rect x="742" y="356" width="22" height="22" rx="5" fill="none" stroke="#55524B" stroke-width="1.5"/>
-<path d="M747,367 l5,5 l8,-10" fill="none" stroke="#E2F1DC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="778" y="374" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#E2F1DC" text-anchor="start" >修</text>
-<rect x="742" y="394" width="22" height="22" rx="5" fill="none" stroke="#55524B" stroke-width="1.5"/>
-<path d="M747,405 l5,5 l8,-10" fill="none" stroke="#DCF4EA" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="778" y="412" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#DCF4EA" text-anchor="start" >验证</text>
-<rect x="742" y="432" width="22" height="22" rx="5" fill="none" stroke="#55524B" stroke-width="1.5"/>
-<path d="M747,443 l5,5 l8,-10" fill="none" stroke="#ECE6F8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-<text x="778" y="450" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#ECE6F8" text-anchor="start" >开 PR</text>
-<rect x="950" y="290" width="214" height="150" rx="10" fill="#24231F" stroke="#3A3833" />
-<text x="968" y="320" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="700" fill="#D7B9C8" text-anchor="start" >修之前 / 修之后</text>
-<text x="968" y="356" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="400" fill="#8A867D" text-anchor="start" >修之前</text>
-<text x="1146" y="356" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="22" font-weight="700" fill="#B5655B" text-anchor="end" >2 条</text>
-<text x="968" y="392" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="14" font-weight="400" fill="#8A867D" text-anchor="start" >修之后</text>
-<text x="1146" y="392" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="22" font-weight="700" fill="#9CC59E" text-anchor="end" >1 条</text>
-<text x="968" y="424" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="13" font-weight="500" fill="#E6E4DC" text-anchor="start" >prove it works ✓</text>
+<text x="792" y="173" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="13" font-weight="500" fill="#8A867D" text-anchor="start">Agent Canvas</text>
+<text x="722" y="226" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="18" font-weight="700" fill="#D7B9C8" text-anchor="start">›</text>
+<text x="742" y="226" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#E6E4DC" text-anchor="start">在 my-page 文件夹里</text>
+<text x="742" y="250" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="600" fill="#E6E4DC" text-anchor="start">做一个介绍我的小网页。</text>
+<rect x="742" y="284" width="22" height="22" rx="5" fill="none" stroke="#55524B" stroke-width="1.5"/>
+<path d="M747,295 l5,5 l8,-10" fill="none" stroke="#E0ECF9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="778" y="302" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#E0ECF9" text-anchor="start">读文件夹</text>
+<rect x="742" y="326" width="22" height="22" rx="5" fill="none" stroke="#55524B" stroke-width="1.5"/>
+<path d="M747,337 l5,5 l8,-10" fill="none" stroke="#FCEAD2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="778" y="344" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#FCEAD2" text-anchor="start">写 index.html</text>
+<rect x="742" y="368" width="22" height="22" rx="5" fill="none" stroke="#55524B" stroke-width="1.5"/>
+<path d="M747,379 l5,5 l8,-10" fill="none" stroke="#ECE6F8" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="778" y="386" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#ECE6F8" text-anchor="start">运行命令预览</text>
+<rect x="742" y="410" width="22" height="22" rx="5" fill="none" stroke="#55524B" stroke-width="1.5"/>
+<path d="M747,421 l5,5 l8,-10" fill="none" stroke="#E2F1DC" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="778" y="428" font-family="-apple-system,BlinkMacSystemFont,'PingFang SC','Hiragino Sans GB','Noto Sans CJK SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#E2F1DC" text-anchor="start">检查结果</text>
+<text x="742" y="472" font-family="ui-monospace,'SF Mono',Menlo,Consolas,'Liberation Mono',monospace" font-size="15" font-weight="600" fill="#9CC59E" text-anchor="start">✓ 做好了：my-page/index.html</text>
 </g>
 </svg>

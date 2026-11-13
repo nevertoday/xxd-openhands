@@ -1,0 +1,51 @@
+---
+// 一个现成自动化：页头卡片（名字、一句话、怎么触发、要先接好什么、官方文档），下面是什么时候用、每一轮做什么、怎么开起来，最后是同组的其他自动化。
+import Site from "../layouts/Site.astro";
+import Feedback from "../components/Feedback.astro";
+import { automationsFor, AUTOMATION_GROUPS, TRIGGERS, triggersOf, groupTitle } from "../lib/automations.js";
+import { automationHref, langOf } from "../data/nav.js";
+import { inline } from "../lib/md.js";
+interface Props { slug: string }
+const lang = langOf(Astro.url.pathname);
+const en = lang === "en";
+const all = automationsFor(lang);
+const a = all.find((x) => x.slug === Astro.props.slug);
+const g = AUTOMATION_GROUPS.find((x) => x.id === a.group);
+const group = g ? groupTitle(g, lang) : a.group;
+const same = all.filter((x) => x.group === a.group && x.slug !== a.slug);
+const T = en
+  ? { home: "Prebuilt automations", trig: "How it starts", needs: "Needs", none: "Nothing extra", doc: "Official docs", noDoc: "No dedicated page yet", src: "Catalog entry", when: "When to use it", does: "What it does each run", setup: "How to turn it on", more: `More in “${group}”`, sep: ", " }
+  : { home: "现成自动化", trig: "怎么触发", needs: "要先接好", none: "不用另外接", doc: "官方文档", noDoc: "暂时没有单独的页面", src: "目录里的原文", when: "什么时候用", does: "它每一轮做什么", setup: "怎么开起来", more: `「${group}」的其他自动化`, sep: "、" };
+const list = (x) => [].concat(x ?? []);
+const headings = [["when", T.when], ["does", T.does], ["setup", T.setup]].map(([slug, text]) => ({ slug, text, depth: 2 }));
+const plain = (x) => String(x ?? "").replace(/\*\*|==|\+\+|`/g, "");
+const catalog = `https://github.com/OpenHands/extensions/tree/main/automations/catalog/${a.slug}`;
+---
+<Site title={`${a.name} · ${T.home}`} description={plain(a.one)} headings={headings}>
+  <article class="xxd-prose autodoc">
+    <ol class="xxd-breadcrumbs" data-size="sm"><li><a href={automationHref(null, lang)}>{T.home}</a></li><li>{group}</li><li aria-current="page">{a.name}</li></ol>
+    <h1>{a.name}</h1>
+    <p class="autodoc__lead" set:html={inline(a.one)} />
+    <div class="autodoc__card">
+      <dl class="autodoc__facts">
+        <div><dt>{T.trig}</dt><dd>{triggersOf(a).map((k, i) => <>{i > 0 && T.sep}<span class="trig"><i data-xxd-icon={TRIGGERS[k]?.icon ?? "Zap"} data-size="14" aria-hidden="true"></i>{TRIGGERS[k]?.[lang] ?? k}</span></>)}</dd></div>
+        <div><dt>{T.needs}</dt><dd>{a.needs?.length ? a.needs.join(T.sep) : T.none}</dd></div>
+        <div><dt>{T.doc}</dt><dd>{a.doc ? <a class="xxd-link" href={a.doc} rel="noopener">{a.doc.replace(/^https:\/\//, "")}</a> : T.noDoc}</dd></div>
+        <div><dt>{T.src}</dt><dd><a class="xxd-link" href={catalog} rel="noopener"><code>automations/catalog/{a.slug}</code></a></dd></div>
+      </dl>
+    </div>
+    <h2 id="when">{T.when}</h2>
+    {list(a.when).map((p) => <p set:html={inline(p)} />)}
+    <h2 id="does">{T.does}</h2>
+    <ul>{list(a.does).map((x) => <li set:html={inline(x)} />)}</ul>
+    <h2 id="setup">{T.setup}</h2>
+    <ol>{list(a.setup).map((x) => <li set:html={inline(x)} />)}</ol>
+    {same.length > 0 && (
+      <nav class="autodoc__more" aria-label={T.more}>
+        <p class="autodoc__more-h">{T.more}</p>
+        <ul class="autodoc__chips">{same.map((x) => <li><a href={automationHref(x.slug, lang)}>{x.name}</a></li>)}</ul>
+      </nav>
+    )}
+  </article>
+  <Feedback page={`${T.home}: ${a.name}`} />
+</Site>

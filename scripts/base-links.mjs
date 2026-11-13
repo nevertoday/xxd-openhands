@@ -1,4 +1,4 @@
-// 构建后处理：部署在子路径（BASE_PATH=/xxd-pstack/）时，给 dist 里所有以 / 开头的站内链接补上前缀。
+// 构建后处理：部署在子路径（BASE_PATH=/xxd-openhands/）时，给 dist 里所有以 / 开头的站内链接补上前缀。
 // 已经带前缀的（组件里 link() 生成的）不重复加。根路径部署时什么都不做。
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";

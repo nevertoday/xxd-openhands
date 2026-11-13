@@ -1,89 +1,82 @@
 ---
-// 首页：先对没写过代码的新人说话（遇到过的事 → 装上以后的不同 → 三课入门 → 适不适合），
-// 最后才是给会写代码的人的一张图和完整教程路线。
+// 首页：先对没写过代码的新人说话（遇到过的事 → 跟着教程有什么不同 → 三课入门 → 适不适合），
+// 最后才是给会写代码的人的一张图和完整教程路线。事实只取 docs/PLAN.md 列的来源。
 import Site from "../layouts/Site.astro";
 import Contact from "../components/Contact.astro";
-import { LESSONS, lessonHref, STEPS, stepHref, link, langOf, fullLang, t } from "../data/nav.js";
-import { X as dict, fmt } from "../i18n/index.js";
-import { inline } from "../lib/md.js";
+import { LESSONS, lessonHref, STEPS, stepHref, langOf, t } from "../data/nav.js";
 
 const lang = langOf(Astro.url.pathname);
 const ZH = {
-  brand: "pstack 新手教程",
-  h1: "AI 说「做好了」之前，先让它自己试一遍",
-  lead: ["pstack 是一份装进 AI 里的做事规矩，免费开源。装上以后，AI 会先弄清你要什么，只改该改的地方。", "不会写代码也能用", "。"],
+  brand: "OpenHands 新手教程",
+  h1: "有人推荐你用 OpenHands？从这里开始",
+  lead: ["OpenHands 是一个开源的 AI 编程代理：你交代一件事，它自己敲命令、改文件、开 PR，还能按时间自己开工。官方文档是写给工程师的，这份教程用大白话带你装上、用起来，", "不会写代码也能跟着做", "。"],
   cta: ["新手从这里开始", "我会写代码，看完整教程"],
-  ctaNote: "新手入门一共三课，20 分钟。",
-  painH: "你是不是遇到过这些",
+  ctaNote: "新手入门一共三课，大约 30 分钟。",
+  painH: "你是不是卡在这里",
   PAIN: [
-    "AI 说「做好了」，你一打开，按钮点了没反应。",
-    "你说「还是不行」，它说「抱歉，已修复」，结果还是一样，来回好几次。",
-    "你只想改一个地方，它顺手改了一堆你没让它动的东西。",
+    "打开官方文档，满屏是 npm、Docker、uv，还没开始就不知道该装哪个。",
+    "Agent Canvas、Agent Server、后端、ACP、Cloud、SDK，名字一大堆，分不清哪个是给你用的。",
+    "听说它会自己改文件、跑命令，又怕它把电脑上别的东西弄乱。",
   ],
-  diffH: "装上以后，有什么不一样",
-  diffW: "什么时候", diffA: "平常的 AI", diffB: "装了 pstack",
+  diffH: "跟着这份教程，有什么不一样",
+  diffW: "卡在哪", diffA: "自己啃官方文档", diffB: "跟着这份教程",
   DIFF: [
-    ["动手之前", "没弄清你要什么，直接就做", "先用自己的话复述一遍，你能马上纠正"],
-    ["改的时候", "在看起来差不多的地方乱改", "先把问题弄清楚再动手，改得越少越好"],
-    ["说做完的时候", "一句「应该没问题了」", "列出实际检查过什么、看到了什么；查不了的直说"],
+    ["怎么装", "好几种装法摆在一起，先得自己挑", "只走一条路：装桌面版，不用开终端"],
+    ["接哪个模型", "一长串服务商和模型名", "一个 OpenHands Cloud 的 key 就够，先充 10 美元"],
+    ["它能碰什么", "文档提醒：代理能访问你整个文件系统", "第一次只让它在一个新建的空文件夹里干活"],
   ],
-  lessonsH: "新手只要三课", lessonsP: "按顺序看，一共 20 分钟。学完这三课就会用了，网站上其他内容都是以后遇到了再查。",
+  lessonsH: "新手只要三课", lessonsP: "按顺序看，大约 30 分钟。学完这三课就能用起来，网站上其他内容都是以后遇到了再查。",
   lessonsLabel: "新手入门：共 3 课",
   fitH: "适不适合你", yesH: "适合", noH: "先不用",
-  YES: ["用 AI 做过小网页、小插件、小工具，被「已完成但其实没好」坑过", "已经装了 Claude Code（或 Cursor、Codex），能在里面和 AI 聊天", "想要做对，不在乎慢一点"],
-  NO: ["还没用过 Claude Code 这类工具：先照官方指南装好，能聊天了再来", "改个错别字、换个颜色这种小事：直接跟 AI 说就行", "只要最快、最省额度：pstack 会多检查，更慢，也更费额度"],
+  YES: ["有人推荐了 OpenHands，你想试试，可官方文档看得一头雾水", "用过 ChatGPT、Claude 这类聊天 AI，想让 AI 直接动手做事", "愿意花半小时，跟着一步步做一遍"],
+  NO: ["只想问问题、写写文字：普通的聊天 AI 就够了", "电脑不是你的、不能装软件：先问问管电脑的人", "想直接拿公司的重要项目开刀：先在空文件夹里练熟，再看完整教程"],
   devH: "会写代码的人看这里",
-  devP: "pstack 是 poteto（React 核心团队成员，在 Cursor 工作）每天自己写代码用的一包技能：34 个技能、23 套剧本、24 条工程原则。下面是它每接一件事走的四步，和 9 步的完整教程。",
+  devP: "OpenHands 现在的主角是 Agent Canvas（浏览器里的控制台）和 Agent Server（真正跑代理的后台，用 Python SDK 做的）。一个 Canvas 能连好几个后端：你的电脑、Docker、虚拟机，或 OpenHands Cloud。除了自带的 OpenHands 代理，也能通过 ACP 跑 Claude Code、Codex、Gemini CLI。下面是一次对话走过的路，和 9 步的完整教程。",
   FLOW: [
-    ["MessageCircle", "你说一句话", "目标，加上怎么算做完。比如「先复现，再修，再验证」。"],
-    ["Route", "/poteto-mode 挑剧本", "从 23 套剧本里选一套，把它的步骤原样抄进待办清单。"],
-    ["Layers", "按步骤调用技能", "读代码用 /how，定设计用 /architect，挑刺用 /interrogate；活多就派子代理。"],
-    ["ShieldCheck", "检查完再交回来", "真实的命令输出、截图、前后对比。验证不了的，直说「没法确定」。"],
+    ["MessageCircle", "你在 Agent Canvas 里交代一件事", "对话、文件、终端、模型设置、自动化，都在这一个界面里。"],
+    ["Server", "后端接下这件事", "Agent Server 跑对话和工具。它装在哪台机器上，代理就能碰到哪里的文件。"],
+    ["Bot", "代理配上模型开始想", "OpenHands 自带的代理，或者 Claude Code、Codex 这类 ACP 代理，用你接上的模型。"],
+    ["FolderOpen", "在工作区里动手", "读写文件、跑命令、开 PR。自动化还能按时间或事件自己开对话。"],
   ],
-  CONN: ["匹配", "执行", "验证"],
+  CONN: ["交给", "启动", "动手"],
   stepsLabel: (n) => `完整教程：共 ${n} 步`,
 };
 const EN = {
-  brand: "pstack for beginners",
-  h1: "Before the AI says “done,” make it try the thing itself",
-  lead: ["pstack is a free, open-source set of work rules you install into your AI. With it, the AI first makes sure it knows what you want, then changes only what needs changing. ", "You don't need to know how to code", "."],
+  brand: "OpenHands for beginners",
+  h1: "Someone told you to try OpenHands? Start here",
+  lead: ["OpenHands is an open-source AI coding agent. You hand it a task, and it runs the commands, edits the files and opens the PR itself. It can even start work on a schedule. The official docs are written for engineers. This guide walks you through setting it up in plain words, ", "even if you don't code", "."],
   cta: ["Start here if you're new", "I code: the full guide"],
-  ctaNote: "The beginner track is three lessons, 20 minutes.",
-  painH: "Has this happened to you?",
+  ctaNote: "The beginner track is three lessons, about 30 minutes.",
+  painH: "Stuck here?",
   PAIN: [
-    "The AI says “done!” You open it, and the button does nothing.",
-    "You say “still broken.” It says “sorry, fixed now.” Same result, again and again.",
-    "You wanted one small change, and it changed a pile of things you never asked about.",
+    "You open the official docs and see npm, Docker and uv before you know which one to install.",
+    "Agent Canvas, Agent Server, backends, ACP, Cloud, SDK: so many names, and no clue which one is for you.",
+    "You've heard it edits files and runs commands on its own, and you worry it will mess up the rest of your computer.",
   ],
-  diffH: "What changes once it's installed",
-  diffW: "When", diffA: "AI as usual", diffB: "With pstack",
+  diffH: "What this guide does differently",
+  diffW: "Where you get stuck", diffA: "Reading the official docs alone", diffB: "With this guide",
   DIFF: [
-    ["Before it starts", "Starts without checking what you want", "Repeats your goal in its own words first, so you can correct it right away"],
-    ["While it changes things", "Changes things somewhere that looks about right", "Figures out the problem first, then changes as little as it can"],
-    ["When it says it's done", "“Should be fine now”", "Lists what it actually checked and what it saw, and says plainly what it couldn't check"],
+    ["Installing", "Several install options side by side; you pick", "One path: the desktop app, no terminal needed"],
+    ["Picking a model", "A long list of providers and model names", "One OpenHands Cloud key covers it, after a $10 top-up"],
+    ["What it can touch", "The docs warn the agent can access your whole filesystem", "The first time, it works only inside a new, empty folder"],
   ],
-  lessonsH: "Beginners need just three lessons", lessonsP: "Read them in order, 20 minutes in all. After these three you can use it. Everything else on the site is for looking up later.",
+  lessonsH: "Beginners need just three lessons", lessonsP: "Read them in order, about 30 minutes in all. After these three you can put it to work. Everything else on the site is for looking up later.",
   lessonsLabel: "Beginner track: 3 lessons",
   fitH: "Is it for you?", yesH: "Yes, if", noH: "Not yet, if",
-  YES: ["You've made small pages, plug-ins or tools with AI and been burned by “done” that wasn't", "You already have Claude Code (or Cursor or Codex) and can chat with the AI in it", "You'd rather get it right than get it fast"],
-  NO: ["You haven't used a tool like Claude Code yet: install it with the official guide first, and come back once you can chat", "It's a tiny change like a typo or a color: just ask the AI directly", "You only want fastest and cheapest: pstack checks more, so it's slower and uses more of your plan"],
+  YES: ["Someone recommended OpenHands and the official docs lost you", "You've used a chat AI like ChatGPT or Claude and want an AI that does the work", "You can spare half an hour to follow along step by step"],
+  NO: ["You only want to ask questions or write text: a regular chat AI is enough", "The computer isn't yours to install software on: ask whoever runs it first", "You want to start on an important work project: practice in an empty folder first, then read the full guide"],
   devH: "If you write code",
-  devP: "pstack is the pack of skills poteto (on the React core team, working at Cursor) uses for their own code every day: 34 skills, 23 playbooks and 24 engineering principles. Below are the four steps it takes for every task, and the 9-step full guide.",
+  devP: "Today OpenHands centers on Agent Canvas (the control center in your browser) and the Agent Server (the backend that runs agents, built on the Python SDK). One Canvas can connect to several backends: your machine, Docker, a VM or OpenHands Cloud. Besides the built-in OpenHands agent, it can run Claude Code, Codex or Gemini CLI through ACP. Below is the path one conversation takes, and the 9-step full guide.",
   FLOW: [
-    ["MessageCircle", "You say one sentence", "The goal, plus how you'll know it's done. For example: “reproduce it first, then fix, then verify.”"],
-    ["Route", "/poteto-mode picks a playbook", "It chooses one of 23 playbooks and copies its steps into the todo list as they are."],
-    ["Layers", "Skills run step by step", "/how to read code, /architect to settle a design, /interrogate to pick holes; subagents when there's a lot to do."],
-    ["ShieldCheck", "It checks before handing back", "Real command output, screenshots, before-and-after. If something can't be verified, it says so."],
+    ["MessageCircle", "You hand a task over in Agent Canvas", "Conversations, files, terminals, model settings and automations all live in this one screen."],
+    ["Server", "A backend takes the job", "The Agent Server runs the conversation and its tools. Whichever machine it runs on is whose files the agent can reach."],
+    ["Bot", "The agent thinks with your model", "The built-in OpenHands agent, or an ACP agent like Claude Code or Codex, using the model you connected."],
+    ["FolderOpen", "It works in the workspace", "It reads and writes files, runs commands and opens PRs. Automations can start conversations on a schedule or an event."],
   ],
-  CONN: ["match", "do", "verify"],
+  CONN: ["hands off", "starts", "acts"],
   stepsLabel: (n) => `Full guide: ${n} steps`,
 };
-// 其他语言：文字来自 src/i18n/<语言>.js；FLOW 的图标沿用英文版；完整教程链到英文版
-const x = dict(lang);
-const fl = fullLang(lang);
-const C = x
-  ? { ...EN, ...x.home, brand: x.ui.brand, FLOW: EN.FLOW.map(([icon], i) => [icon, ...(x.home.FLOW[i] ?? EN.FLOW[i].slice(1))]), stepsLabel: (n) => fmt(x.home.stepsLabel, { n }) }
-  : lang === "en" ? EN : ZH;
+const C = lang === "en" ? EN : ZH;
 const headings = [["h-pain", C.painH], ["h-diff", C.diffH], ["h-lessons", C.lessonsH], ["h-fit", C.fitH], ["h-dev", C.devH]].map(([slug, text]) => ({ slug, text, depth: 2 }));
 ---
 <Site title={C.brand} headings={headings}>
@@ -92,7 +85,7 @@ const headings = [["h-pain", C.painH], ["h-diff", C.diffH], ["h-lessons", C.less
     <p class="home__lead">{C.lead[0]}<mark>{C.lead[1]}</mark>{C.lead[2]}</p>
     <div class="home__cta">
       <a class="xxd-btn" data-variant="primary" href={lessonHref(LESSONS[0], lang)}>{C.cta[0]}<i data-xxd-icon="ArrowRight" data-size="16"></i></a>
-      <a class="xxd-btn" data-variant="ghost" href={stepHref(STEPS[0], fl)} hreflang={fl === lang ? undefined : fl}>{C.cta[1]}</a>
+      <a class="xxd-btn" data-variant="ghost" href={stepHref(STEPS[0], lang)}>{C.cta[1]}</a>
     </div>
     <p class="home__note">{C.ctaNote}</p>
 
@@ -138,7 +131,6 @@ const headings = [["h-pain", C.painH], ["h-diff", C.diffH], ["h-lessons", C.less
     <section aria-labelledby="h-dev">
       <h2 id="h-dev">{C.devH}</h2>
       <p>{C.devP}</p>
-      {x && <p class="home__note">{C.devNote}</p>}
       <div class="flow">
         {C.FLOW.map(([icon, h, p], i) => (
           <>
@@ -161,8 +153,8 @@ const headings = [["h-pain", C.painH], ["h-diff", C.diffH], ["h-lessons", C.less
           <li class="xxd-steps__item">
             <span class="xxd-steps__mark" aria-hidden="true">{s.n}</span>
             <span class="xxd-steps__text">
-              <a class="xxd-steps__title xxd-steps__link" href={stepHref(s, fl)}>{t(s, "title", fl)}</a>
-              <span class="xxd-steps__desc">{t(s, "minutes", fl)} · {t(s, "sum", fl)}</span>
+              <a class="xxd-steps__title xxd-steps__link" href={stepHref(s, lang)}>{t(s, "title", lang)}</a>
+              <span class="xxd-steps__desc">{t(s, "minutes", lang)} · {t(s, "sum", lang)}</span>
             </span>
           </li>
         ))}

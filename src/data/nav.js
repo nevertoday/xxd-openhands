@@ -1,102 +1,85 @@
-import { EXTRA } from "../i18n/index.js";
 // 站点结构的唯一来源：左侧导航、首页路线图、上一步 / 下一步、How-to 目录、搜索都从这里读。
 // ready: false 的页面还没写，导航里显示「编写中」，不给链接。
 // 中文在根路径，英文在 /en/ 下（同样的 slug）。英文文字放在各条目的 en: {} 里，用 t(x, key, lang) 取。
 
 const BASE = (import.meta.env?.BASE_URL || "/").replace(/\/$/, "");
-/** 网站的语言。zh、en 是全站；其他语言只有首页和新手入门三课，别的页面链到英文版（full: false）。 */
+/** 网站的语言：中文在根路径，英文在 /en/ 下 */
 export const LANGS = [
-  { code: "en", name: "English", html: "en", full: true },
-  { code: "zh", name: "中文", html: "zh-CN", full: true },
-  { code: "ja", name: "日本語", html: "ja" },
-  { code: "ko", name: "한국어", html: "ko" },
-  { code: "es", name: "Español", html: "es" },
-  { code: "pt", name: "Português", html: "pt-BR" },
-  { code: "fr", name: "Français", html: "fr" },
-  { code: "de", name: "Deutsch", html: "de" },
-  { code: "ru", name: "Русский", html: "ru" },
-  { code: "ar", name: "العربية", html: "ar", dir: "rtl" },
+  { code: "zh", name: "中文", html: "zh-CN" },
+  { code: "en", name: "English", html: "en" },
 ];
 export const langInfo = (lang) => LANGS.find((l) => l.code === lang) ?? LANGS[0];
-const PREFIXED = LANGS.filter((l) => l.code !== "zh").map((l) => l.code);
-const PREFIX_RE = new RegExp(`^/(${PREFIXED.join("|")})(?=/|$)`);
-/** 当前页面的语言：看路径前缀（/en/、/ja/……），没有前缀是中文 */
-export const langOf = (pathname = "") => pathname.slice(BASE.length).match(PREFIX_RE)?.[1] ?? "zh";
-/** 这种语言有没有全站（zh、en 有；其他语言只有首页和新手入门） */
-export const isFull = (lang) => langInfo(lang).full === true;
-/** 只在全站语言里存在的页面（完整教程、How-to、技能、Wiki、常见问题）：非全站语言链到英文版 */
-export const fullLang = (lang) => (isFull(lang) ? lang : "en");
-/** 站内链接：部署在子路径时自动加前缀；非中文加 /<语言> */
+const PREFIX_RE = /^\/en(?=\/|$)/;
+/** 当前页面的语言：路径以 /en 开头是英文，否则是中文 */
+export const langOf = (pathname = "") => (PREFIX_RE.test(pathname.slice(BASE.length)) ? "en" : "zh");
+/** 站内链接：部署在子路径时自动加前缀；英文加 /en */
 export const link = (path, lang = "zh") => `${BASE}${lang === "zh" ? "" : "/" + lang}${path}`;
-/** 同一页在另一种语言里的地址：那种语言没有这一页，就去它的首页 */
+/** 同一页在另一种语言里的地址（两种语言的页面一一对应；404 页去首页） */
 export const langHref = (pathname, target) => {
   const rel = (pathname.slice(BASE.length) || "/").replace(PREFIX_RE, "") || "/";
-  if (/\/404\/?$/.test(rel)) return link("/", target);
-  if (isFull(target) || rel === "/" || rel.startsWith("/start/")) return link(rel, target);
-  return link("/", target);
+  return link(/^\/404(\.html|\/)?$/.test(rel) ? "/" : rel, target);
 };
-/** 取某个对象在当前语言下的字段：先找 x[lang][key]，再找 x.en[key]（非中文的兜底），最后是中文 */
-export const t = (x, key, lang) => {
-  if (lang === "zh") return x[key];
-  return x[lang]?.[key] ?? x.en?.[key] ?? x[key];
-};
+/** 取某个对象在当前语言下的字段：英文找 x.en[key]，没有就用中文 */
+export const t = (x, key, lang) => (lang === "zh" ? x[key] : x.en?.[key] ?? x[key]);
 
-/** 这个教程站自己的仓库（反馈、源码）。还没建仓库前先放这里，建好后只改这一行。 */
-export const REPO = "https://github.com/nevertoday/xxd-pstack";
-/** pstack 本身 */
-export const PSTACK = "https://github.com/backnotprop/pstack";
-export const PSTACK_UPSTREAM = "https://github.com/cursor/plugins/tree/main/pstack";
+/** 这个教程站自己的仓库（反馈、源码） */
+export const REPO = "https://github.com/nevertoday/xxd-openhands";
+/** OpenHands 本身和官方文档 */
+export const OPENHANDS = "https://github.com/OpenHands/OpenHands";
+export const DOCS = "https://docs.openhands.dev";
+/** 本站骨架的来源 */
+export const SKELETON = "https://github.com/nevertoday/xxd-pstack";
 
-// 新手入门：给没写过代码、只和 AI 聊过天的人。三课，一条路走到底；做完这三课就够用了。
+// 新手入门：给没写过代码、只和 AI 聊过天的人。三课，一条路走到底：桌面版 → OpenHands Cloud 的 key → 在空文件夹里做一件小事。
 export const LESSONS = [
-  { n: 1, slug: "1-why", title: "它能帮你什么", minutes: "3 分钟", sum: "pstack 是什么，要准备什么，代价是什么", en: { title: "What it does for you", minutes: "3 minutes", sum: "What pstack is, what you need, what it costs" } },
-  { n: 2, slug: "2-install", title: "装上它", minutes: "5 分钟", sum: "在 Claude Code 里输入两行，选一个选项", en: { title: "Install it", minutes: "5 minutes", sum: "Type two lines in Claude Code and pick one option" } },
-  { n: 3, slug: "3-first-use", title: "第一次用", minutes: "10 分钟", sum: "发一段三部分的话，做出一个小网页", en: { title: "Use it for the first time", minutes: "10 minutes", sum: "Make a small web page with one three-part message" } },
+  { n: 1, slug: "1-why", title: "它能帮你什么", minutes: "5 分钟", sum: "会自己动手的 AI：要准备什么，花什么钱，有什么风险", en: { title: "What it does for you", minutes: "5 minutes", sum: "An AI that does the work: what you need, what it costs, what the risks are" } },
+  { n: 2, slug: "2-install", title: "装上它", minutes: "10 分钟", sum: "下载桌面版，第一次打开，拿一个 OpenHands Cloud 的 API key", en: { title: "Install it", minutes: "10 minutes", sum: "Download the desktop app, open it, get an OpenHands Cloud API key" } },
+  { n: 3, slug: "3-first-use", title: "第一次用", minutes: "15 分钟", sum: "走完首次设置，在空文件夹里让它做一个小网页", en: { title: "Use it for the first time", minutes: "15 minutes", sum: "Finish first-time setup, then have it build a small web page in an empty folder" } },
 ];
-// 其他语言的新手入门标题、时间、简介在 src/i18n/<语言>.js 的 lessons 里，按顺序叠到这里
-for (const [code, d] of Object.entries(EXTRA)) (d.lessons || []).forEach((l, i) => { if (LESSONS[i]) LESSONS[i][code] = l; });
 export const lessonHref = (s, lang = "zh") => link(`/start/${s.slug}/`, lang);
 
 export const STEPS = [
-  { n: 0, slug: "0-what", title: "pstack 是什么", minutes: "读 5 分钟", ready: true, sum: "它管什么用、代价是什么、要准备什么", en: { title: "What pstack is", minutes: "5-minute read", sum: "What it's for, what it costs, what you need" } },
-  { n: 1, slug: "1-install", title: "安装 pstack", minutes: "5 分钟", ready: true, sum: "Claude Code、Cursor、Codex 各一种装法", en: { title: "Install pstack", minutes: "5 minutes", sum: "One way each for Claude Code, Cursor and Codex" } },
-  { n: 2, slug: "2-setup", title: "选模型和预算（可跳过）", minutes: "10 分钟", ready: true, sum: "不设置也能用；想省钱或换模型再看", en: { title: "Pick models and budget (optional)", minutes: "10 minutes", sum: "Works without it; read this to save money or switch models" } },
-  { n: 3, slug: "3-first-task", title: "第一个任务", minutes: "15 分钟", ready: true, sum: "一句话交代清楚，再看它的复述和结果", en: { title: "Your first task", minutes: "15 minutes", sum: "Say it in one message, then check its restatement and results" } },
-  { n: 4, slug: "4-understand", title: "改之前先看懂", minutes: "15 分钟", ready: true, sum: "让 AI 先讲清楚代码怎么工作，再决定改不改", en: { title: "Understand before you change", minutes: "15 minutes", sum: "Have the AI explain how the code works before deciding to change it" } },
-  { n: 5, slug: "5-design-build", title: "设计、动手、收拾干净", minutes: "20 分钟", ready: true, sum: "大改动先定方案，写完让别的模型挑毛病，再删掉多余的", en: { title: "Design, build, clean up", minutes: "20 minutes", sum: "Settle the plan for big changes, have other models pick holes, cut what isn't needed" } },
-  { n: 6, slug: "6-verify-ship", title: "验证和交付", minutes: "20 分钟", ready: true, sum: "先确认真的能用，再交上去合并", en: { title: "Verify and ship", minutes: "20 minutes", sum: "Make sure it really works, then hand it in for merging" } },
-  { n: 7, slug: "7-overnight", title: "放手让它跑", minutes: "15 分钟", ready: true, sum: "睡前交代清楚，早上看它的记录", en: { title: "Let it run on its own", minutes: "15 minutes", sum: "Brief it before bed, read its log in the morning" } },
-  { n: 8, slug: "8-make-it-yours", title: "用熟以后", minutes: "随用随看", ready: true, sum: "一句话拉回跑偏，同样的错不犯第二次", en: { title: "Once you're comfortable", minutes: "As needed", sum: "Pull it back in one line; stop the same mistake from happening twice" } },
+  { n: 0, slug: "0-what", title: "OpenHands 是什么", minutes: "读 5 分钟", ready: true, sum: "Agent Canvas、Agent Server、后端、模型，各管什么", en: { title: "What OpenHands is", minutes: "5-minute read", sum: "Agent Canvas, Agent Server, backends and models: what each one does" } },
+  { n: 1, slug: "1-install", title: "安装 Agent Canvas", minutes: "10 分钟", ready: true, sum: "桌面版、npm、npx、Docker 几种装法，挑一种", en: { title: "Install Agent Canvas", minutes: "10 minutes", sum: "Desktop app, npm, npx or Docker: pick one" } },
+  { n: 2, slug: "2-model", title: "接上模型", minutes: "10 分钟", ready: true, sum: "首次设置、模型配置、存几套 LLM Profile", en: { title: "Connect a model", minutes: "10 minutes", sum: "First-time setup, model settings, saving LLM profiles" } },
+  { n: 3, slug: "3-first-conversation", title: "第一个对话", minutes: "15 分钟", ready: true, sum: "开一个对话，交代清楚，看它干活，检查结果", en: { title: "Your first conversation", minutes: "15 minutes", sum: "Start a conversation, brief it well, watch it work, check the result" } },
+  { n: 4, slug: "4-agents", title: "换一个代理：Claude Code、Codex 也能用", minutes: "10 分钟", ready: true, sum: "通过 ACP 接上别的代理，用 Agent Profile 存好设置", en: { title: "Switch agents: Claude Code and Codex work too", minutes: "10 minutes", sum: "Connect other agents through ACP and save them as agent profiles" } },
+  { n: 5, slug: "5-backends", title: "换个地方跑：后端和沙盒", minutes: "15 分钟", ready: true, sum: "本机、Docker、服务器、OpenHands Cloud，在哪跑、能碰到什么", en: { title: "Run it somewhere else: backends and sandboxes", minutes: "15 minutes", sum: "Your machine, Docker, a server or OpenHands Cloud: where it runs and what it can reach" } },
+  { n: 6, slug: "6-automations", title: "让它按时自己干活", minutes: "15 分钟", ready: true, sum: "定时或事件触发的自动化，从现成的开始", en: { title: "Let it work on a schedule", minutes: "15 minutes", sum: "Automations that run on a schedule or an event, starting from prebuilt ones" } },
+  { n: 7, slug: "7-customize", title: "教它你的规矩：技能、插件、MCP", minutes: "15 分钟", ready: true, sum: "AGENTS.md、技能、插件，再用 MCP 接上外部工具", en: { title: "Teach it your rules: skills, plugins, MCP", minutes: "15 minutes", sum: "AGENTS.md, skills and plugins, plus MCP for outside tools" } },
+  { n: 8, slug: "8-beyond", title: "再往前走：自托管、团队、SDK", minutes: "随用随看", ready: true, sum: "放到服务器上给团队用，在手机上看，用 SDK 自己搭", en: { title: "Going further: self-hosting, teams, the SDK", minutes: "As needed", sum: "Host it on a server for a team, check in from your phone, build your own with the SDK" } },
 ];
 export const stepHref = (s, lang = "zh") => link(`/guide/${s.slug}/`, lang);
 
 export const HOWTO = [
   { group: "在真实项目里", en: { group: "In real projects" }, items: [
-    { slug: "fix-bug", title: "修一个 bug：先复现，再修，再证明", en: { title: "Fix a bug: reproduce, fix, prove it" } },
-    { slug: "add-feature", title: "加一个新功能，不碰坏旧的", en: { title: "Add a feature without breaking old ones" } },
-    { slug: "refactor", title: "重构：换个写法，功能不变", en: { title: "Refactor: new code, same behavior" } },
-    { slug: "perf", title: "嫌它慢：用数字证明变快了", en: { title: "Too slow? Prove it got faster, with numbers" } },
     { slug: "new-codebase", title: "接手一个陌生项目", en: { title: "Take over an unfamiliar project" } },
-    { slug: "review-branch", title: "交之前，让几个 AI 挑毛病", en: { title: "Before you hand it in, let a few AIs pick holes" } },
-    { slug: "write-docs", title: "写 README、文档、PR 说明", en: { title: "Write READMEs, docs and PR descriptions" } },
-    { slug: "big-migration", title: "大改动：睡前交给它，早上看结果", en: { title: "Big changes: hand it over at night, check in the morning" } },
-  ]},
-  { group: "让 AI 自己证明", en: { group: "Let the AI prove it" }, items: [
-    { slug: "verify-app", title: "给项目配一个验证技能，让 AI 自己去点", en: { title: "Give your project a verification skill, so the AI checks its own work" } },
-    { slug: "formal-verify", title: "测试碰不到的 bug：形式化验证", en: { title: "Bugs tests can't reach: formal verification" } },
-  ] },
-  { group: "工具和环境", en: { group: "Tools and setup" }, items: [
-    { slug: "claude-code", title: "在 Claude Code 里用", en: { title: "Using it in Claude Code" } },
-    { slug: "cursor", title: "在 Cursor 里用", en: { title: "Using it in Cursor" } },
-    { slug: "codex", title: "在 Codex 和其他工具里用", en: { title: "Using it in Codex and other tools" } },
-    { slug: "pick-skills", title: "只装几个技能", en: { title: "Install only a few skills" } },
-    { slug: "cost", title: "控制花费", en: { title: "Keep costs down" } },
-    { slug: "update-remove", title: "更新、查看、卸载", en: { title: "Update, inspect, uninstall" } },
+    { slug: "issue-to-pr", title: "把一个 GitHub issue 交给它做成 PR", en: { title: "Turn a GitHub issue into a PR" } },
+    { slug: "code-review", title: "让它帮你审 PR", en: { title: "Have it review a PR" } },
+    { slug: "qa-changes", title: "改完让它像用户一样试一遍", en: { title: "Have it try your changes like a user" } },
+    { slug: "dependency-upgrades", title: "升级依赖", en: { title: "Upgrade dependencies" } },
+    { slug: "vulnerability-remediation", title: "修安全漏洞", en: { title: "Fix security vulnerabilities" } },
   ]},
   { group: "提示词", en: { group: "Prompts" }, items: [
     { slug: "recipes", title: "照抄就能用的提示词", en: { title: "Copy-paste prompts" } },
-    { slug: "steer", title: "它跑偏了，一句话拉回来", en: { title: "Pull it back on track in one sentence" } },
-    { slug: "which-skill", title: "不知道该用哪个技能", en: { title: "Not sure which skill to use" } },
+    { slug: "good-instructions", title: "怎么交代，它才不跑偏", en: { title: "How to brief it so it stays on track" } },
+  ]},
+  { group: "环境和部署", en: { group: "Setup and hosting" }, items: [
+    { slug: "docker-sandbox", title: "把它关进 Docker 里跑", en: { title: "Run it inside Docker" } },
+    { slug: "parallel", title: "同时开好几个对话", en: { title: "Run several conversations at once" } },
+    { slug: "server", title: "放到服务器上，一直开着", en: { title: "Keep it running on a server" } },
+    { slug: "phone", title: "在手机上看它干活", en: { title: "Watch it work from your phone" } },
+    { slug: "local-llm", title: "用本地模型", en: { title: "Use a local model" } },
+    { slug: "cloud", title: "用 OpenHands Cloud", en: { title: "Use OpenHands Cloud" } },
+  ]},
+  { group: "自动化", en: { group: "Automations" }, items: [
+    { slug: "slack-digest", title: "每天自动汇总 Slack", en: { title: "Get a daily Slack digest" } },
+    { slug: "custom-automation", title: "自己写一个自动化", en: { title: "Write your own automation" } },
+  ]},
+  { group: "日常维护", en: { group: "Upkeep" }, items: [
+    { slug: "cost", title: "控制花费", en: { title: "Keep costs down" } },
+    { slug: "update-remove", title: "更新、停止、卸载", en: { title: "Update, stop, uninstall" } },
+    { slug: "troubleshoot", title: "打不开、连不上怎么办", en: { title: "It won't open or connect" } },
   ]},
 ];
 export const howtoHref = (slug, lang = "zh") => link(`/howto/${slug}/`, lang);
@@ -104,25 +87,8 @@ export const HOWTO_FLAT = HOWTO.flatMap((g) => g.items.map((i) => ({ ...i, group
 
 export const wikiHref = (slug, lang = "zh") => link(`/wiki/${slug}/`, lang);
 
-// 正文里虚线标出的术语：悬停看一句话解释（Term 组件）。wiki: 对应的 Wiki 条目
-export const GLOSSARY = {
-  "Agent Skill": { tip: "一个文件夹里放一份 SKILL.md：教 AI 在某类任务上「按这个做法来」的说明书。", wiki: "agent-skill", en: { label: "Agent Skill", tip: "A folder holding a SKILL.md: instructions that teach the AI how to handle one kind of task." } },
-  技能: { tip: "Agent Skill 的中文叫法。pstack 就是一包技能。", wiki: "agent-skill", en: { label: "skill", tip: "Short for Agent Skill. pstack is a pack of skills." } },
-  "SKILL.md": { tip: "技能的正文：开头几行写名字和什么时候用，后面写具体步骤和规矩。", wiki: "skill-md", en: { label: "SKILL.md", tip: "The body of a skill: a few header lines with its name and when to use it, then the steps and rules." } },
-  宿主: { tip: "真正跑 AI 的那个工具：Claude Code、Cursor、Codex 等。pstack 装在它里面。", wiki: "harness", en: { label: "harness", tip: "The tool that actually runs the AI: Claude Code, Cursor, Codex and so on. pstack is installed inside it." } },
-  剧本: { tip: "一类事情的固定做法。比如修 bug：先让问题再出现一次，找到真正的原因，修，再检查一遍。", wiki: "playbook", en: { label: "playbook", tip: "The standard way to handle one kind of task. “Fix a bug” means reproduce, find the root cause, fix, verify." } },
-  "poteto-mode": { tip: "pstack 的总开关。你说要什么，它自己安排步骤。", wiki: "poteto-mode", en: { label: "poteto-mode", tip: "pstack's main switch. You say what you want; it plans the steps itself." } },
-  子代理: { tip: "主对话派出去干一小块活的帮手 AI，干完只把结果交回来。", wiki: "subagent", en: { label: "subagent", tip: "An AI helper the main conversation sends off to do one piece of work; it reports back only the conclusion." } },
-  worktree: { tip: "同一个项目的第二份副本。几个 AI 同时改代码，各改各的，互不打架。", wiki: "worktree", en: { label: "worktree", tip: "A second working folder for the same Git repo, so several AIs can change code at once without colliding." } },
-  待办清单: { tip: "它开工时列出的步骤。不做的那步会写明为什么。", wiki: "todo", en: { label: "todo list", tip: "The list of steps /poteto-mode writes out at the start. Skipped steps say why." } },
-  验证技能: { tip: "一份说明书，教 AI 怎么打开你的应用，像用户一样点一遍。", wiki: "verify-skill", en: { label: "verification skill", tip: "A guide that teaches the AI to open your app and click through it like a user." } },
-  形式化验证: { tip: "把一条规则在所有可能的情况下都检查一遍，比挑几个例子测试更彻底。", wiki: "formal-verification", en: { label: "formal verification", tip: "Instead of testing examples, checks that a rule holds in every possible case." } },
-  决策日志: { tip: "AI 每做一个决定就记一行：时间、决定、理由、证据。第二天早上你看这个。", wiki: "decision-log", en: { label: "decision log", tip: "One line per decision the AI makes: time, decision, reason, evidence. You read it in the morning." } },
-  原则: { tip: "pstack 的 24 条做事规矩。每条有个英文名字，打出名字它就知道你要什么。", wiki: "principles", en: { label: "principles", tip: "pstack's 24 engineering principles. Each has a name; say the name to correct the AI." } },
-  token: { tip: "AI 用量的计算单位，相当于「额度」。pstack 检查得多，用得也多。", wiki: "token-budget", en: { label: "tokens", tip: "The unit AI usage is measured and billed in. pstack sends more subagents and runs more checks, so it uses more." } },
-  推理预算: { tip: "让模型想多久。越高越仔细，也越贵。pstack 默认用 xhigh 这一档。", wiki: "token-budget", en: { label: "reasoning budget", tip: "How long the model is allowed to think. Higher is more careful and more expensive. pstack defaults to xhigh." } },
-  PR: { tip: "Pull Request：把一组改动交上去，请人看过以后再并进正式版本。", wiki: "pr", en: { label: "PR", tip: "Pull Request: a request to have a set of changes reviewed and merged into the main branch." } },
-  斜杠命令: { tip: "在对话框里打 / 开头的命令，比如 /poteto-mode，就是点名用某个技能。", wiki: "slash", en: { label: "slash command", tip: "A command typed in the chat starting with /, like /poteto-mode. It calls a skill by name." } },
-  模型角色: { tip: "pstack 把活分成写代码、做判断、挑毛病几种，每种可以用不同的模型。", wiki: "model-roles", en: { label: "model roles", tip: "pstack splits work into roles (writing code, judging, reviewing…); each role can use a different model." } },
-  "Custom Mode": { tip: "Cursor 的「常开模式」：打开一次，之后每句话都生效，不用每句都打 /poteto-mode。", wiki: "custom-mode", en: { label: "Custom Mode", tip: "Cursor's persistent mode: the skill stays on every turn, so you don't type /poteto-mode each time." } },
-};
+/** 现成自动化：速查页和每个自动化的详情页（数据在 automations.js） */
+export const AUTOMATIONS_NAV = { title: "现成自动化", en: { title: "Prebuilt automations" } };
+export const automationHref = (slug, lang = "zh") => link(slug ? `/automations/${slug}/` : "/automations/", lang);
+
+export { GLOSSARY } from "./glossary.js";

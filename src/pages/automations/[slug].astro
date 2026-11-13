@@ -1,0 +1,6 @@
+---
+import V from "../../views/AutomationDoc.astro";
+import { AUTOMATIONS } from "../../data/automations.js";
+export function getStaticPaths() { return AUTOMATIONS.map((a) => ({ params: { slug: a.slug } })); }
+---
+<V slug={Astro.params.slug} />
