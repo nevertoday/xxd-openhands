@@ -1,0 +1,202 @@
+---
+layout: ../../../layouts/Lesson.astro
+tldr: "Finish the setup wizard, open an empty folder, and send one three-part message to get a small page that tracks how much water you drink."
+lesson: 3
+description: Finish the desktop app's setup wizard, make a new empty folder its workspace, and send one three-part message to build a small water-tracking page. How to watch it work, check the result, and stop it.
+---
+import Callout from "../../../components/Callout.astro";
+import Copy from "../../../components/Copy.astro";
+import Reply from "../../../components/Reply.astro";
+import Q from "../../../components/Q.astro";
+import Term from "../../../components/Term.astro";
+
+In this lesson, OpenHands makes something real and small. It's a web page that tracks how many glasses of water you drink each day.
+
+## First, make an empty folder
+
+Make a new folder on your desktop called `water`. Leave it empty.
+
+This is its <Term k="工作区" />. It creates and edits files here.
+
+<Callout type="ok">
+There's an empty `water` folder on your desktop.
+</Callout>
+
+## Finish the setup wizard
+
+Go back to the **OpenHands Agent Canvas** window you left open in the last lesson. The wizard has three or four screens, with a progress bar at the top.
+
+### If you see Check your backend
+
+This screen confirms its background service is running. The desktop app starts it for you, so this screen is often skipped.
+
+<Callout type="ok">
+It says `You're connected!`. Click `Next`.
+</Callout>
+
+### Choose your agent
+
+The first option, **OpenHands**, is already selected. Ignore the others and click `Next`.
+
+<Callout type="ok">
+The title changes to `Set up your LLM`.
+</Callout>
+
+### Set up your LLM
+
+1. **LLM Provider:** leave it on `OpenHands`.
+2. **LLM Model:** open the list and pick one marked `Free`. As of this writing it's DeepSeek V4 Flash. The model it picks by default uses your credit, so be sure to switch.
+3. **API Key:** go back to the OpenHands Cloud page you left open. Copy the key in the `OpenHands LLM Key` section and paste it here.
+4. Leave the other fields alone and click `Next`.
+
+<Callout type="ok">
+The title changes to `Say hello`, with a text box below it.
+</Callout>
+
+### Say hello: don't send anything here
+
+A message sent from here starts a new conversation with no workspace. It wouldn't know to use your `water` folder.
+
+So send nothing here. Click `Close` at the bottom.
+
+<Callout type="ok">
+The wizard closes. The middle of the window says `What do you want to work on?`, with a large text box below it. A `Getting started` checklist may appear in the left sidebar. You can ignore it.
+</Callout>
+
+## Open the empty folder
+
+1. Under the large text box, click `Open Workspace`, the button with a folder icon.
+2. In the window that opens, click `Select a workspace`, then `+ Add Workspace`.
+3. An `Add workspaces` window opens, listing folders on your computer. Click `Desktop`, then `water`.
+4. Click `Add this directory`. That window closes by itself.
+5. Back in the `Open Workspace` window, click `Confirm`.
+
+<Callout type="ok">
+Under the large text box, where it said `Open Workspace`, it now says `water`.
+</Callout>
+
+## Send it this message
+
+<Copy id="first" title="Copy, paste into the large text box, press Enter" code={`What I want: a small web page that tracks how many glasses of water I drink each day. This is an empty folder. Put every file in it, and don't touch anything outside it.
+What done looks like: I open the page and click "I drank a glass," and today's count goes up by one; I close it and open it again and the number is still there; the page shows how many glasses I drank on each of the last 7 days.
+When you're done, show me: what you checked and what you saw for each check. Then tell me which file to double-click to open the page.`} />
+
+The message has just three parts. Use the same shape for anything you ask it to do:
+
+<mark><strong>What I want · What done looks like · What to show me when it's done</strong></mark>
+
+- **What I want:** a page that tracks water, built only inside this folder.
+- **What done looks like:** clicking adds one, the number survives closing and reopening, and you can see 7 days. It will try each of these.
+- **What to show me when it's done:** what it checked and what it saw. You don't need to read the code. This is enough.
+
+<Callout type="ok">
+Your message appears in the conversation, followed by startup progress. Then a `Thinking` line appears, and after that, the things it does.
+</Callout>
+
+## Watch it work
+
+It works on its own for a few minutes. By default it won't stop to ask "may I run this command?" It just keeps going.
+
+Each time it finishes a stretch of work, the conversation gets a one-line summary, such as:
+
+- `Ran a command`
+- `Made an edit`
+- `Read a file`
+
+The stretch it's working on now is at the bottom. It shows the current step, or `Thinking`. You can skip all of this and wait for its reply.
+
+At the end it writes a reply. It looks roughly like this:
+
+<Reply code={`① What I did: created index.html in the water folder.
+   Opening it shows the water-tracking page.
+
+② What I checked
+   ✓ Clicked "I drank a glass" 3 times; today shows 3
+   ✓ Closed the page and opened it again; still 3
+   ✓ One box for each of the last 7 days; today's says 3
+   ? Couldn't check: how it looks on a phone (I only checked on a computer)
+
+③ How to open it: double-click index.html in the water folder`} />
+
+- **①:** is this the thing you asked for?
+- **② matters most.** Each line says what it did and what it saw. The "couldn't check" line is it being honest.
+- **③:** do what it says and look for yourself.
+
+## Check it yourself
+
+1. Open the `water` folder on your desktop and double-click the file it named.
+2. Try your three points by hand: click a few times, close and reopen, look at the 7 days.
+
+Then ask yourself three questions:
+
+- Is what it made the thing I asked for?
+- When it said it was done, did it list the checks it actually did and what it saw?
+- When I try it myself, does it match what it said?
+
+If all three are yes, the job is done.
+
+If it only says "done" with no checks at all, reply with:
+
+<Copy id="no-proof" code="Show me what you actually checked: what you did and what you saw. Don't just tell me it's done." />
+
+## Make it stop
+
+While it's working, there's a button with a pause icon (two vertical bars) next to the text box. That's `Stop`. Click it and it stops.
+
+<Callout type="ok">
+It stops working, and the status says `Stopped`.
+</Callout>
+
+After it stops, type what you want in the text box, like "Just the water tracker, nothing else for now." Press Enter and it picks up from there.
+
+## If something's off
+
+<Q q="On Set up your LLM, I click Next and get an error instead of the next screen.">
+<p>It tests the key before saving and won't continue if the test fails. Go back to the `API Keys` page on OpenHands Cloud. Copy the key in the `OpenHands LLM Key` section again and paste it. Don't use a key made with `Create API Key`.</p>
+</Q>
+<Q q="Nothing in the model list is marked Free.">
+<p>The free model changes, and sometimes there isn't one. Any other model works too, but it uses the credit you added.</p>
+</Q>
+<Q q="I closed the wizard, or it didn't come back after I reopened the app.">
+<p>Click `Settings` in the left sidebar, then `LLM`, and add a new model setup. On the `Basic` tab, choose `OpenHands`, pick a model marked `Free`, paste the key, and save.</p>
+</Q>
+<Q q="The large text box on the home screen is grayed out and I can't type.">
+<p>The model probably isn't set up yet. Follow the previous answer, then come back.</p>
+</Q>
+<Q q="I can't find my desktop in the Add workspaces window.">
+<p>Look for `Desktop`. On some Windows computers the desktop lives inside OneDrive. In that case, click `OneDrive` first, then find `Desktop`.</p>
+</Q>
+<Q q="It says it can't find the folder, or the files didn't show up in water.">
+<p>You probably sent the message before opening the workspace. Start a new conversation from the left sidebar and follow "Open the empty folder" again. Once the box says `water`, send the message.</p>
+</Q>
+<Q q="Failed to send appears next to my message.">
+<p>This happens on a slow connection. Wait a moment. If the message shows up in the conversation, you're fine. If it never does, click `Retry`.</p>
+</Q>
+<Q q="The result is wrong, for example the number doesn't change when I click.">
+<p>Say only what you saw, like "I clicked three times and the number stayed at 0." Don't guess the cause. A wrong guess sends it the wrong way.</p>
+</Q>
+<Q q="It asked me a question I don't understand.">
+<p>Just reply: "I can't code. Please ask me in plain words, or pick the safest option for me and tell me why."</p>
+</Q>
+
+## You've got it
+
+From now on, everything works the same way: open a folder, then send three parts. For example:
+
+<Copy id="ex-card" title="Make another small thing" code={`What I want: a birthday card web page that says "Happy birthday" and changes color when I click it. This is an empty folder. Put every file in it.
+What done looks like: I open the page and see the message; one click changes the color; five clicks in a row give a different color each time.
+When you're done, show me: what you checked and what you saw. Then tell me which file to double-click to open it.`} />
+
+For each new task, make a new empty folder and open it in a new <Term k="对话" />.
+
+<Callout type="tip" title="That's enough for now">
+These three lessons are all a beginner needs. For practice, pick a small thing you actually want and ask for it in the same three parts.
+
+Look up the rest of the site when you need it:
+
+- It keeps going off track: see [How to brief it so it stays on track](/en/howto/good-instructions/).
+- You want to know what you've spent: see [Control costs](/en/howto/cost/).
+- It won't open or can't connect: see [Troubleshooting](/en/howto/troubleshoot/).
+- Other questions: see the [FAQ](/en/faq/).
+- You code and want to use it on real projects: see the [full guide](/en/guide/0-what/).
+</Callout>

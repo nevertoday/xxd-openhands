@@ -1,0 +1,55 @@
+---
+layout: ../../../layouts/Lesson.astro
+tldr: "OpenHands is an AI that does the work itself. You need a computer, a model key, and one empty folder for it."
+lesson: 1
+description: For people who don't code. What OpenHands is, what you need, what it costs, and what the risk is.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+
+## How you probably use AI today
+
+You ask an AI for a small web page. It replies with a big block of code.
+
+The rest is up to you. You create a file, paste, save, and open it. If it breaks, you copy the error back and ask again. That goes on for several rounds.
+
+## OpenHands does the work itself
+
+<Term k="OpenHands" /> is an AI that acts on its own, also called an <Term k="代理" />. You say what you want, and it does it:
+
+- **It creates and edits files.** It writes the code into the files itself.
+- **It runs commands.** Whatever needs installing or running, it types on your computer.
+- **It tries its own work.** It runs the result, and if something fails, it keeps fixing.
+
+You watch it work step by step. At the end, you open the result and check it yourself.
+
+## What you need
+
+- **A computer.** A Mac (Apple silicon or Intel), or Windows or Linux on x64.
+- **A GitHub account.** You sign in to <Term k="OpenHands Cloud" /> with it in the next lesson.
+- **A model key.** OpenHands has no built-in "brain". It connects to a <Term k="模型" />. These lessons use an <Term k="API key" /> from OpenHands Cloud, and the next lesson walks you through getting one.
+
+You don't need to know how to program, and you usually won't need the command line.
+
+## What it costs
+
+- **OpenHands itself is free.** It's open source, under the MIT license.
+- **The model is what costs money.** You pay for what you use. Longer tasks and more back-and-forth cost more.
+- **You'll add $10 first.** The official docs say you need at least $10 of OpenHands Cloud credit to get the key.
+- **There's a free model.** In the model list, one is marked `Free`, and it doesn't use your credit. As of this writing it's DeepSeek V4 Flash. Which model is free changes, so go by the `Free` label.
+
+So for these lessons, the money you spend is the $10 you add up front. As long as you pick the `Free` model, that credit stays unused.
+
+## What the risk is
+
+On your own computer, it uses your account's permissions. Any file you can read or change, it can too. Any command you can run, it can too. By default it doesn't ask you before each step.
+
+So these lessons take one precaution: <mark><strong>give it a brand-new, empty folder and have it work only there.</strong></mark>
+
+That folder isn't a lock. It's just where it works. You'll also tell it, in your message, to stay inside that folder. To fully box it in an isolated environment (<Term k="Docker" />), see the full guide.
+
+The desktop app is still a preview, so expect a few rough edges.
+
+<Callout type="tip" title="Just two more lessons">
+Install it and get a key, then have it do your first task. After these three lessons, you can use it. Everything else on the site is for looking up when you run into something. You don't need it now.
+</Callout>

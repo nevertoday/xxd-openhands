@@ -1,0 +1,123 @@
+---
+layout: ../../layouts/Lesson.astro
+tldr: "下载桌面版装好，再从 OpenHands Cloud 复制一个 key，下一课要用。"
+lesson: 2
+description: 从 GitHub 下载 OpenHands 桌面版并装好，第一次打开，Mac 打不开时怎么办，再从 OpenHands Cloud 拿到模型 key。每一步你应该看到什么，不对怎么办。
+---
+import Callout from "../../components/Callout.astro";
+import Cmd from "../../components/Cmd.astro";
+import Q from "../../components/Q.astro";
+import Tabs from "../../components/Tabs.astro";
+import Term from "../../components/Term.astro";
+
+这一课一共三步：装上桌面版，第一次打开它，再拿一个模型 key。桌面版自带它要的一切，不用另外装别的软件。
+
+## 第一步：下载并安装
+
+打开 OpenHands 的[最新发布页](https://github.com/OpenHands/OpenHands/releases/latest)，往下翻到 **Assets**，下载你电脑对应的那个文件。文件名里的版本号会变，比如现在是 `1.40.0`。
+
+<Tabs id="os" items={[["mac", "Mac"], ["win", "Windows"], ["linux", "Linux"]]}>
+<div slot="mac">
+
+1. 下载名字像 `OpenHands-Agent-Canvas-1.40.0-universal.dmg` 的文件。Apple 芯片和 Intel 的 Mac 都用这一个。
+2. 双击打开它，把 **OpenHands Agent Canvas** 拖到 **Applications**（应用程序）文件夹里。
+
+</div>
+<div slot="win">
+
+1. 下载名字像 `OpenHands-Agent-Canvas-Setup-1.40.0.exe` 的文件。
+2. 双击运行，照着提示装完。
+3. 如果弹出蓝色的 SmartScreen 提示，先确认这个文件是从上面那个官方发布页下的，再继续。官方文档没写要点哪个按钮；Windows 一般要先点「更多信息」，才会出现「仍要运行」。
+
+</div>
+<div slot="linux">
+
+- **Ubuntu、Debian：** 下载 `agent-canvas_1.40.0_amd64.deb`，用软件包管理器安装，比如 `sudo apt install ./agent-canvas_1.40.0_amd64.deb`。
+- **其他发行版：** 下载 `OpenHands.Agent.Canvas-1.40.0.AppImage`，在文件管理器的「权限」里勾上允许执行（或者运行 `chmod +x`），然后双击它。
+
+</div>
+</Tabs>
+
+<Callout type="ok">
+Mac 的应用程序文件夹、Windows 的开始菜单、Linux 的应用菜单里，多了一个 **OpenHands Agent Canvas**。
+</Callout>
+
+## 第二步：第一次打开
+
+打开 **OpenHands Agent Canvas**。
+
+先弹出一个小窗口，写着 `Starting services`，意思是「正在启动」。下面那行字说：第一次打开要下载 Python 和 OpenHands 的后台程序。新电脑上要等几分钟，别关它。
+
+<Callout type="ok">
+小窗口消失，出现一个大窗口，中间是一个设置向导。它的标题是 `Check your backend`（检查后端）或 `Choose your agent`（选择智能体）。
+
+**先停在这里，别点。** 窗口开着放一边，去做第三步。向导下一课再走。
+</Callout>
+
+### Mac 说它「已损坏」或「无法打开」
+
+桌面版还没有经过苹果的签名，Mac 可能会拦住它。先确认安装包是从官方发布页下的，再照下面做：
+
+1. 按 Command + 空格，输入「终端」，回车，打开<Term k="终端" />。
+2. 复制下面这一行，粘贴进终端窗口，回车：
+
+<Cmd c='xattr -dr com.apple.quarantine "/Applications/OpenHands Agent Canvas.app"' />
+
+3. 回到应用程序文件夹，再打开一次 **OpenHands Agent Canvas**。
+
+<Callout type="ok">
+终端里什么都没输出，直接换到了新的一行，就是成功了。再打开时，出现了写着 `Starting services` 的小窗口。
+</Callout>
+
+## 第三步：拿一个 OpenHands Cloud 的 key
+
+这个 key 让 OpenHands 能用 OpenHands Cloud 提供的模型。下面的按钮名来自官方文档，网页可能会改版，大致对得上就行。
+
+1. 在浏览器里打开 [app.all-hands.dev](https://app.all-hands.dev)。
+2. 点 `Log in with GitHub`，在 GitHub 的页面上同意授权。
+3. 看一下服务条款（`terms of service`），同意以后点 `Continue`。
+4. 打开 `Settings` 里的 `Billing`，充至少 10 美元。官方文档写着：不充这 10 美元，就拿不到下一步的 key。
+5. 打开 `Settings` 里的 `API Keys`，找到 `OpenHands LLM Key` 那一栏。你要的 key 就在这里。
+
+<Callout type="ok">
+`API Keys` 页面上有 `OpenHands LLM Key` 这一栏。
+
+**这个网页先别关**，下一课要从这里复制它。
+</Callout>
+
+同一个页面上还有一个 `Create API Key` 按钮。<u>别点它。它生成的是另一种 key，是给程序用的，填进桌面版用不了。</u>要的是 `OpenHands LLM Key` 那一栏里现成的那串。
+
+<Callout type="warn">
+这串 key 就像门卡，别发给任何人，也别贴到聊天里。万一泄露了，点 `Refresh API Key` 换一个新的，旧的就作废了。
+</Callout>
+
+## 不对怎么办
+
+<Q q="Assets 下面文件很多，不知道下哪个。">
+<p>只看名字的结尾：Mac 下 `.dmg`，Windows 下 `.exe`，Ubuntu 下 `.deb`，别的 Linux 下 `.AppImage`。其他文件不用管。</p>
+</Q>
+<Q q="一直停在 Starting services，好几分钟都没动。">
+
+第一次打开要下载东西，网慢的时候会更久，先多等一会儿。
+
+还是不动，点小窗口里的 `Show details`，会展开启动日志。点日志上面的 `Copy` 复制下来。到 [OpenHands 的问题页](https://github.com/OpenHands/OpenHands/issues) 开一个新问题，把日志贴进去。
+
+</Q>
+<Q q="小窗口里出现了一大段日志，然后就停住了。">
+<p>这是启动失败了，它把日志摊开给你看。点 `Copy` 复制日志，点 `Quit` 退出，再打开一次。还是这样，就把日志贴到 [OpenHands 的问题页](https://github.com/OpenHands/OpenHands/issues)。</p>
+</Q>
+<Q q="我没有 GitHub 账号。">
+<p>登录页上也有 `Log in with GitLab` 和 `Log in with Bitbucket`，有哪个用哪个。都没有的话，先去 [github.com](https://github.com) 注册一个。</p>
+</Q>
+<Q q="API Keys 页面上没有 OpenHands LLM Key，或者拿不到那串 key。">
+<p>多半是还没充值。先去 `Settings` 里的 `Billing` 充至少 10 美元，再回 `API Keys` 看。</p>
+</Q>
+<Q q="我不想装桌面版，想用命令行装。">
+<p>npm 和 Docker 的装法在[完整教程的安装那一步](/guide/1-install/)里。新手照这一课装桌面版就够了。</p>
+</Q>
+
+## 以后不想用了
+
+- **关掉它：** 从它的程序菜单里退出 **OpenHands Agent Canvas**。想再用，再打开就行。
+- **更新：** 下载最新的安装包重新装一遍。`Settings` 里的 `Application` 页也能看版本、检查更新。
+- **卸载：** 先退出。Mac 把它从应用程序拖进废纸篓；Windows 在「已安装的应用」里卸载；Linux 删掉 AppImage 文件，或卸载那个 deb 包。
