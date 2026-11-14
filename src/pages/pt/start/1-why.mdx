@@ -5,6 +5,7 @@ lesson: 1
 description: Para quem não programa. O que é o OpenHands, do que você precisa, quanto custa e qual é o risco.
 ---
 import Callout from "../../../components/Callout.astro";
+import Q from "../../../components/Q.astro";
 import Demo from "../../../components/Demo.astro";
 import Term from "../../../components/Term.astro";
 
@@ -36,15 +37,17 @@ Você não precisa saber programar e, em geral, nem vai precisar da linha de com
 
 ## Quanto custa
 
-- **O OpenHands em si é gratuito.** Ele é de código aberto, com licença MIT.
-- **O que custa dinheiro é o modelo.** Você paga pelo que usar. Tarefas mais longas e mais idas e vindas custam mais.
-- **Para quem você paga depende do que você já tem:**
-  - **Uma API key de um provedor** (Anthropic, OpenAI, Google etc.): é só colocar e usar. Não tem nada a mais para pagar; o uso é cobrado pelos preços desse provedor.
-  - **Uma assinatura do Claude Code, Codex ou Gemini CLI em que você já está logado neste computador**: dá para conectar e usar a assinatura que você já paga. São alguns passos a mais; o [passo 4 do guia completo](/en/guide/4-agents/) (em inglês) explica.
-  - **Nenhuma das duas**: estas lições levam você pelo OpenHands Cloud. A documentação oficial diz que você precisa de pelo menos US$ 10 de crédito antes de conseguir a chave dele.
-- **O Cloud tem um modelo gratuito.** Na lista de modelos, um deles vem marcado como `Free` (grátis) e não gasta o seu crédito. Quando este texto foi escrito, era o DeepSeek V4 Flash. Qual modelo é gratuito muda, então guie-se pela marca `Free`.
+O OpenHands em si é gratuito. Ele é de código aberto, com licença MIT. O que custa dinheiro é o modelo: você paga pelo que usar, e tarefas mais longas e com mais idas e vindas custam mais. Depende do que você já tem:
 
-Então, se você já tem uma chave ou assinatura, estas lições não custam nada a mais. No caminho do OpenHands Cloud, você coloca os US$ 10 primeiro e, enquanto escolher o modelo `Free`, esse crédito fica intacto.
+| Você tem | Tem algo a mais para pagar? |
+|:---|:---|
+| Uma API key de um provedor (Anthropic, OpenAI, Google etc.) | Não. É só colocar e usar; o uso é cobrado pelos preços desse provedor |
+| Uma assinatura do Claude Code, Codex ou Gemini CLI em que você já está logado neste computador | Não. Conecte e use a assinatura que você já paga; o [passo 4 do guia completo](/en/guide/4-agents/) (em inglês) mostra como |
+| Nenhuma das duas | Estas lições levam você pelo OpenHands Cloud. A documentação oficial diz que você precisa de pelo menos US$ 10 de crédito antes de conseguir a chave dele |
+
+<Q q="No caminho do OpenHands Cloud, os US$ 10 são gastos?">
+<p>Não necessariamente. O Cloud tem um modelo gratuito: na lista de modelos, um deles vem marcado como `Free` (grátis) e não gasta o seu crédito. Quando este texto foi escrito, era o DeepSeek V4 Flash. Qual modelo é gratuito muda, então guie-se pela marca `Free`. Enquanto você continuar escolhendo esse modelo, o crédito fica intacto.</p>
+</Q>
 
 ## Qual é o risco
 

@@ -4,7 +4,7 @@
 
 [English](./README.en.md) · [中文](./README.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · **Español** · [Português](./README.pt.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Русский](./README.ru.md) · [العربية](./README.ar.md)
 
-### ¿Te recomendaron probar OpenHands y la documentación oficial te dejó perdido?
+### ¿Quieres una IA que haga el trabajo por sí misma, pero la documentación oficial te dejó perdido?
 
 [OpenHands](https://github.com/OpenHands/OpenHands) es un agente de programación con IA, de código abierto. Le das una tarea y él mismo ejecuta los comandos, edita los archivos y abre el PR. Incluso puede ponerse a trabajar a una hora programada.<br>Esta guía lo explica con palabras sencillas, para que puedas seguirla aunque no sepas programar.
 

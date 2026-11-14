@@ -4,7 +4,7 @@
 
 **English** · [中文](./README.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Español](./README.es.md) · [Português](./README.pt.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Русский](./README.ru.md) · [العربية](./README.ar.md)
 
-### Someone told you to try OpenHands, and the official docs lost you?
+### Want an AI that does the work itself, but the official docs lost you?
 
 [OpenHands](https://github.com/OpenHands/OpenHands) is an open-source AI coding agent. You hand it a task, and it runs the commands, edits the files and opens the PR itself. It can even start work on a schedule.<br>This guide explains it in plain words, so you can follow along even if you don't code.
 

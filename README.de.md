@@ -4,7 +4,7 @@
 
 [English](./README.en.md) · [中文](./README.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Español](./README.es.md) · [Português](./README.pt.md) · [Français](./README.fr.md) · **Deutsch** · [Русский](./README.ru.md) · [العربية](./README.ar.md)
 
-### Dir hat jemand OpenHands empfohlen, und die offizielle Doku hat dich abgehängt?
+### Du willst eine KI, die die Arbeit selbst erledigt, aber die offizielle Doku hat dich abgehängt?
 
 [OpenHands](https://github.com/OpenHands/OpenHands) ist ein Open-Source-KI-Agent fürs Programmieren. Du gibst ihm eine Aufgabe, und er führt die Befehle selbst aus, ändert die Dateien und öffnet den PR. Er kann sogar nach Zeitplan von allein loslegen.<br>Diese Anleitung erklärt ihn in einfachen Worten, damit du mitkommst, auch wenn du nicht programmierst.
 

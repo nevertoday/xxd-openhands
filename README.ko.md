@@ -4,7 +4,7 @@
 
 [English](./README.en.md) · [中文](./README.md) · [日本語](./README.ja.md) · **한국어** · [Español](./README.es.md) · [Português](./README.pt.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Русский](./README.ru.md) · [العربية](./README.ar.md)
 
-### 누가 OpenHands를 써 보라고 했는데, 공식 문서에서 길을 잃었나요?
+### AI가 직접 일까지 해 주길 바라는데, 공식 문서에서 길을 잃었나요?
 
 [OpenHands](https://github.com/OpenHands/OpenHands)는 오픈소스 AI 코딩 에이전트예요. 일을 맡기면 명령어 실행, 파일 수정, PR 올리기까지 스스로 해요. 정해진 시간에 알아서 일을 시작할 수도 있어요.<br>이 가이드는 쉬운 말로 설명해서, 코딩을 몰라도 따라 할 수 있어요.
 

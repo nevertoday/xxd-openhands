@@ -5,6 +5,7 @@ lesson: 1
 description: 给没写过代码的人：OpenHands 是什么，要准备什么，花什么钱，有什么风险。
 ---
 import Callout from "../../components/Callout.astro";
+import Q from "../../components/Q.astro";
 import Demo from "../../components/Demo.astro";
 import Term from "../../components/Term.astro";
 
@@ -36,15 +37,17 @@ import Term from "../../components/Term.astro";
 
 ## 花什么钱
 
-- **OpenHands 本身免费。** 它是开源软件，用的是 MIT 许可。
-- **花钱的是模型。** 用多少扣多少，任务越长、来回越多，扣得越多。
-- **钱付给谁，看你手上有什么：**
-  - **已经有服务商的 API key**（Anthropic、OpenAI、Google 这些给的）：直接填进去用，不用另外花钱。用多少，照那家的价格扣。
-  - **已经在用 Claude Code、Codex 或 Gemini CLI，在这台电脑上登录了订阅**：可以把它们接进来，用你已经付过钱的订阅。这条路多几步，[完整教程第 4 步](/guide/4-agents/)讲。
-  - **什么都没有**：新手课带你走 OpenHands Cloud。官方文档写着：拿 key 之前，要先买至少 10 美元的额度。
-- **Cloud 上有一个免费模型。** 在模型列表里标着 `Free` 的那个，用它不扣额度。写这篇时是 DeepSeek V4 Flash。免费的是哪个会变，以列表里的 `Free` 标记为准。
+OpenHands 本身免费，它是开源软件（MIT 许可）。花钱的是模型：用多少扣多少，任务越长、来回越多，扣得越多。看你手上有什么：
 
-所以：已经有 key 或订阅的，新手课不用另外花钱。走 OpenHands Cloud 的，要先充那 10 美元；只要一直选 `Free` 的模型，这笔额度不会被用掉。
+| 你手上有 | 要不要另外花钱 |
+|:---|:---|
+| 服务商的 API key（Anthropic、OpenAI、Google 这些给的） | 不用。直接填进去用，照那家的价格扣 |
+| 这台电脑上登录了 Claude Code、Codex 或 Gemini CLI 的订阅 | 不用。接进来用你已经付过的订阅，[完整教程第 4 步](/guide/4-agents/)讲怎么接 |
+| 什么都没有 | 新手课带你走 OpenHands Cloud。官方文档写着：拿 key 之前，要先买至少 10 美元的额度 |
+
+<Q q="走 OpenHands Cloud 的话，这 10 美元会被花掉吗？">
+<p>不一定。Cloud 上有一个免费模型，在模型列表里标着 `Free`，用它不扣额度。写这篇时是 DeepSeek V4 Flash。免费的是哪个会变，以列表里的 `Free` 标记为准。只要一直选它，这笔额度不会被用掉。</p>
+</Q>
 
 ## 有什么风险
 

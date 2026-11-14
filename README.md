@@ -4,7 +4,7 @@
 
 [English](./README.en.md) · **中文** · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Español](./README.es.md) · [Português](./README.pt.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Русский](./README.ru.md) · [العربية](./README.ar.md)
 
-### 有人推荐你用 OpenHands，官方文档却看得一头雾水？
+### 想让 AI 直接动手做事，官方文档却看得一头雾水？
 
 [OpenHands](https://github.com/OpenHands/OpenHands) 是一个开源的 AI 编程代理：你交代一件事，它自己敲命令、改文件、开 PR，还能按时间自己开工。<br>这份教程用大白话把它讲清楚，不会写代码也能跟着做。
 

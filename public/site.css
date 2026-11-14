@@ -172,8 +172,9 @@
   .xxd-prose .xxd-banner { margin: var(--space-4) 0; }
   /* 正文里的按钮链接：用按钮自己的颜色，不吃正文链接的颜色和下划线 */
   .xxd-prose a.xxd-btn { color: var(--btn-fg); text-decoration: none; }
-  /* 表格第一列是短标签，不折行 */
-  .xxd-prose td:first-child, .xxd-prose th:first-child { white-space: nowrap; }
+  /* 表格第一列多是短标签，宽屏上不折行；手机上放开，免得第二列被挤出屏幕 */
+  @media (min-width: 640px) { .xxd-prose td:first-child, .xxd-prose th:first-child { white-space: nowrap; } }
+  .xxd-prose td:first-child { min-width: 6em; }
   .xxd-prose .xxd-banner p { margin: 0; }
   .xxd-prose .xxd-collapse p { margin: 6px 0 0; }
 

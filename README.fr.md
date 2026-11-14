@@ -4,7 +4,7 @@
 
 [English](./README.en.md) · [中文](./README.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Español](./README.es.md) · [Português](./README.pt.md) · **Français** · [Deutsch](./README.de.md) · [Русский](./README.ru.md) · [العربية](./README.ar.md)
 
-### On vous a conseillé OpenHands, et la documentation officielle vous a perdu ?
+### Vous voulez une IA qui fasse le travail elle-même, mais la documentation officielle vous a perdu ?
 
 [OpenHands](https://github.com/OpenHands/OpenHands) est un agent de code IA open source. Vous lui confiez une tâche, et il lance lui-même les commandes, modifie les fichiers et ouvre la pull request. Il peut même se mettre au travail à heure fixe.<br>Ce guide l'explique avec des mots simples, pour que vous puissiez suivre même sans savoir coder.
 

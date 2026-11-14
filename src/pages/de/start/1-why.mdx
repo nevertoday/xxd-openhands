@@ -5,6 +5,7 @@ lesson: 1
 description: "Für alle, die nicht programmieren. Was OpenHands ist, was du brauchst, was es kostet und welches Risiko es gibt."
 ---
 import Callout from "../../../components/Callout.astro";
+import Q from "../../../components/Q.astro";
 import Demo from "../../../components/Demo.astro";
 import Term from "../../../components/Term.astro";
 
@@ -36,15 +37,17 @@ Programmieren musst du nicht können, und die Kommandozeile brauchst du meistens
 
 ## Was es kostet
 
-- **OpenHands selbst ist kostenlos.** Es ist Open Source, unter der MIT-Lizenz.
-- **Das Modell kostet Geld.** Du zahlst, was du verbrauchst. Längere Aufgaben und mehr Hin und Her kosten mehr.
-- **Wen du bezahlst, hängt davon ab, was du schon hast:**
-  - **Ein API-Schlüssel von einem Anbieter** (Anthropic, OpenAI, Google und so weiter): Trag ihn ein und nutze ihn. Du zahlst nichts extra. Abgerechnet wird zu den Preisen dieses Anbieters.
-  - **Ein Abo von Claude Code, Codex oder Gemini CLI, mit dem du auf diesem Computer angemeldet bist**: Du kannst es verbinden und das Abo nutzen, das du ohnehin bezahlst. Das braucht ein paar Schritte mehr. Sie stehen in [Schritt 4 der vollständigen Anleitung](/en/guide/4-agents/) (auf Englisch).
-  - **Nichts davon**: Dann führt dich dieser Kurs über OpenHands Cloud. Laut offizieller Doku brauchst du dort mindestens 10 $ Guthaben, bevor du den Schlüssel bekommst.
-- **OpenHands Cloud hat ein kostenloses Modell.** In der Modellliste ist eines mit `Free` markiert, und das verbraucht dein Guthaben nicht. Während dieser Text entsteht, ist es DeepSeek V4 Flash. Welches Modell kostenlos ist, ändert sich. Verlass dich auf die Markierung `Free`.
+OpenHands selbst ist kostenlos. Es ist Open Source, unter der MIT-Lizenz. Das Modell kostet Geld: Du zahlst, was du verbrauchst, und längere Aufgaben mit mehr Hin und Her kosten mehr. Es hängt davon ab, was du schon hast:
 
-Wenn du schon einen Schlüssel oder ein Abo hast, kostet dich dieser Kurs also nichts extra. Auf dem Weg über OpenHands Cloud lädst du zuerst die 10 $ auf. Solange du das Modell mit `Free` wählst, bleibt das Guthaben unangetastet.
+| Du hast | Musst du extra zahlen? |
+|:---|:---|
+| Einen API-Schlüssel von einem Anbieter (Anthropic, OpenAI, Google und so weiter) | Nein. Trag ihn ein und nutze ihn. Abgerechnet wird zu den Preisen dieses Anbieters |
+| Ein Abo von Claude Code, Codex oder Gemini CLI, mit dem du auf diesem Computer angemeldet bist | Nein. Verbinde es und nutze das Abo, das du ohnehin bezahlst. Wie das geht, steht in [Schritt 4 der vollständigen Anleitung](/en/guide/4-agents/) (auf Englisch) |
+| Nichts davon | Dann führt dich dieser Kurs über OpenHands Cloud. Laut offizieller Doku brauchst du dort mindestens 10 $ Guthaben, bevor du den Schlüssel bekommst |
+
+<Q q="Werden die 10 $ auf dem Weg über OpenHands Cloud verbraucht?">
+<p>Nicht unbedingt. OpenHands Cloud hat ein kostenloses Modell: In der Modellliste ist eines mit `Free` markiert, und das verbraucht dein Guthaben nicht. Während dieser Text entsteht, ist es DeepSeek V4 Flash. Welches Modell kostenlos ist, ändert sich. Verlass dich auf die Markierung `Free`. Solange du dieses Modell wählst, bleibt das Guthaben unangetastet.</p>
+</Q>
 
 ## Welches Risiko es gibt
 

@@ -5,6 +5,7 @@ lesson: 1
 description: For people who don't code. What OpenHands is, what you need, what it costs, and what the risk is.
 ---
 import Callout from "../../../components/Callout.astro";
+import Q from "../../../components/Q.astro";
 import Demo from "../../../components/Demo.astro";
 import Term from "../../../components/Term.astro";
 
@@ -36,15 +37,17 @@ You don't need to know how to program, and you usually won't need the command li
 
 ## What it costs
 
-- **OpenHands itself is free.** It's open source, under the MIT license.
-- **The model is what costs money.** You pay for what you use. Longer tasks and more back-and-forth cost more.
-- **Who you pay depends on what you already have:**
-  - **An API key from a provider** (Anthropic, OpenAI, Google and so on): put it in and use it. Nothing extra to pay; usage is billed at that provider's prices.
-  - **A Claude Code, Codex or Gemini CLI subscription you're signed in to on this computer**: you can connect it and use the subscription you already pay for. It takes a few more steps; [full guide step 4](/en/guide/4-agents/) covers them.
-  - **Neither**: these lessons take you through OpenHands Cloud. The official docs say you need at least $10 of credit before you can get its key.
-- **Cloud has a free model.** In the model list, one is marked `Free`, and it doesn't use your credit. As of this writing it's DeepSeek V4 Flash. Which model is free changes, so go by the `Free` label.
+OpenHands itself is free. It's open source, under the MIT license. The model is what costs money: you pay for what you use, and longer tasks with more back-and-forth cost more. It depends on what you already have:
 
-So if you already have a key or subscription, these lessons cost nothing extra. On the OpenHands Cloud route you add the $10 first, and as long as you pick the `Free` model, that credit stays unused.
+| You have | Anything extra to pay? |
+|:---|:---|
+| An API key from a provider (Anthropic, OpenAI, Google and so on) | No. Put it in and use it; usage is billed at that provider's prices |
+| A Claude Code, Codex or Gemini CLI subscription you're signed in to on this computer | No. Connect it and use the subscription you already pay for; [full guide step 4](/en/guide/4-agents/) shows how |
+| Neither | These lessons take you through OpenHands Cloud. The official docs say you need at least $10 of credit before you can get its key |
+
+<Q q="On the OpenHands Cloud route, does the $10 get spent?">
+<p>Not necessarily. Cloud has a free model: in the model list, one is marked `Free`, and it doesn't use your credit. As of this writing it's DeepSeek V4 Flash. Which model is free changes, so go by the `Free` label. As long as you keep picking it, that credit stays unused.</p>
+</Q>
 
 ## What the risk is
 
