@@ -12,7 +12,8 @@
     "release": "npm run build && wrangler deploy",
     "check": "node scripts/check-links.mjs",
     "check:i18n": "node scripts/check-i18n.mjs",
-    "assets": "node tools/measure-text.mjs"
+    "assets": "node tools/measure-text.mjs",
+    "check:readme": "python3 tools/check_readme.py"
   },
   "dependencies": {
     "@astrojs/mdx": "7.0.3",

@@ -131,7 +131,7 @@ npm run check:i18n # 另外 8 种语言的翻译齐不齐、能不能编译
 
 ## README 的图
 
-`npm run assets` 生成 README 里的图：`assets/hero.svg`、`how.svg`、`automate.svg`（自动化怎么跑，例子是 Slack standup digest）、`safety.svg`（直接跑和放进 Docker 的区别）（英文在 `assets/en/`，另外 8 种语言的 README 用英文版），和 10 种语言的三扇门 `assets/doors/<语言>-1..3(-dark).svg`。它先在本机 Chrome 里量每段文字的宽度（存进 `tools/text-widths.json`），文字放不进卡片就报错，把那段改短再跑。门卡的文字在 `tools/build_assets.py` 的 `DOORS` 里；改了门卡、徽章里的数字（课数、篇数、自动化个数），10 份 README 一起改。
+`npm run assets` 生成 README 里的图：`assets/hero.svg`、`how.svg`、`automate.svg`（自动化怎么跑，例子是 Slack standup digest）、`safety.svg`（直接跑和放进 Docker 的区别）（英文在 `assets/en/`，另外 8 种语言的 README 用英文版），和 10 种语言的三扇门 `assets/doors/<语言>-1..3(-dark).svg`。它先在本机 Chrome 里量每段文字的宽度（存进 `tools/text-widths.json`），文字放不进卡片就报错，把那段改短再跑。改了 README 的标题或导航，跑 `npm run check:readme`：它用 GitHub 的渲染接口核对每个锚点都能跳、每张图都在。标题里别用带零宽连接符的 emoji（🧑‍💻 这种），GitHub 会把连接符留在锚点里。门卡的文字在 `tools/build_assets.py` 的 `DOORS` 里；改了门卡、徽章里的数字（课数、篇数、自动化个数），10 份 README 一起改。
 
 ## 分享大图
 
