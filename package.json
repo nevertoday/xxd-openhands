@@ -11,7 +11,8 @@
     "sync-xxd": "node scripts/sync-xxd.mjs",
     "release": "npm run build && wrangler deploy",
     "check": "node scripts/check-links.mjs",
-    "check:i18n": "node scripts/check-i18n.mjs"
+    "check:i18n": "node scripts/check-i18n.mjs",
+    "assets": "node tools/measure-text.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "7.0.3",

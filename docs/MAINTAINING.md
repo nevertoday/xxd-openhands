@@ -129,9 +129,13 @@ npm run check:i18n # 另外 8 种语言的翻译齐不齐、能不能编译
 线上（还没建）：<https://openhands.xiaoxiaodong.ai>　仓库（还没建）：<https://github.com/nevertoday/xxd-openhands>。两样建好、用户点头之前不部署。
 部署：`npm run release`（构建后 `wrangler deploy`，需要先 `npx wrangler login`），配置在 `wrangler.jsonc`（Cloudflare Workers 静态资源，worker 名 `xxd-openhands-site`）。
 
+## README 的图
+
+`npm run assets` 生成 README 里的图：`assets/hero.svg`、`assets/how.svg`（英文在 `assets/en/`），和 10 种语言的三扇门 `assets/doors/<语言>-1..3(-dark).svg`。它先在本机 Chrome 里量每段文字的宽度（存进 `tools/text-widths.json`），文字放不进卡片就报错，把那段改短再跑。门卡的文字在 `tools/build_assets.py` 的 `DOORS` 里；改了门卡、徽章里的数字（课数、篇数、自动化个数），10 份 README 一起改。
+
 ## 分享大图
 
-`python3 tools/build_assets.py` 生成 `assets/social.svg`（中文）和 `assets/social-en.svg`（英文）。再用 Chrome 转成 PNG（中文字体最准）：
+`npm run assets`（或 `python3 tools/build_assets.py`）同时生成 `assets/social.svg`（中文）和 `assets/social-en.svg`（英文）。再用 Chrome 转成 PNG（中文字体最准）：
 
 ```bash
 for v in social:og social-en:og-en; do
