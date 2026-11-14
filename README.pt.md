@@ -179,4 +179,4 @@ Achou algo confuso, ou algo que não funcionou como está escrito? [Abra uma iss
 
 O texto do guia e o código do site estão sob [MIT](LICENSE). A build do Xiaoxiaodong UI Kit em `public/xxd/` não; ela tem a sua própria [LICENSE](public/xxd/LICENSE) (gratuita para uso não comercial; uso comercial exige licença).
 
-Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong01)
+Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong)

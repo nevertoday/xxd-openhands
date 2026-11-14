@@ -179,4 +179,4 @@ Para editar contenido, añadir páginas y las normas de redacción, consulta [do
 
 El texto de la guía y el código del sitio están bajo [MIT](LICENSE). La compilación del Xiaoxiaodong UI Kit en `public/xxd/` no; tiene su propia [LICENSE](public/xxd/LICENSE) (gratis para uso no comercial; el uso comercial requiere licencia).
 
-Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong01)
+Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong)

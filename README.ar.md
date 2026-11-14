@@ -191,6 +191,6 @@ tools/build_assets.py    رسوم README وبطاقات الأبواب وصور 
 
 نصوص الدليل وكود الموقع مرخّصة بموجب [MIT](LICENSE). أما نسخة Xiaoxiaodong UI Kit المبنية في `public/xxd/` فغير مشمولة، ولها [LICENSE](public/xxd/LICENSE) خاص بها (مجاني للاستخدام غير التجاري، والاستخدام التجاري يتطلب ترخيصًا).
 
-Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong01)
+Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong)
 
 </div>

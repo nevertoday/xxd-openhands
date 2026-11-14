@@ -179,4 +179,4 @@ tools/build_assets.py    README のイラスト、入口カード、共有用画
 
 ガイドの文章とサイトのコードは [MIT](LICENSE) です。`public/xxd/` にある Xiaoxiaodong UI Kit のビルドは対象外で、独自の [LICENSE](public/xxd/LICENSE) があります（非商用は無料、商用はライセンスが必要）。
 
-Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong01)
+Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong)

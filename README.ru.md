@@ -181,4 +181,4 @@ tools/build_assets.py    иллюстрации для README, карточки-
 
 Текст руководства и код сайта распространяются по лицензии [MIT](LICENSE). Сборка Xiaoxiaodong UI Kit в `public/xxd/` под неё не подпадает: у неё своя [LICENSE](public/xxd/LICENSE) (бесплатно для некоммерческого использования, для коммерческого нужна лицензия).
 
-Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong01)
+Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong)

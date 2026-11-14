@@ -177,4 +177,4 @@ tools/build_assets.py    README 插画、门卡和分享大图
 
 教程文字和站点代码采用 [MIT](LICENSE)。`public/xxd/` 里的小小东 UI Kit 构建产物不在此列，适用它自己的 [LICENSE](public/xxd/LICENSE)（非商用免费，商用需授权）。
 
-Copyright (c) 2026 [小小东 Xiaoxiaodong](https://x.com/xiaoxiaodong01)
+Copyright (c) 2026 [小小东 Xiaoxiaodong](https://x.com/xiaoxiaodong)

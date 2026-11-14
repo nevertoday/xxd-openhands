@@ -179,4 +179,4 @@ tools/build_assets.py    README 그림, 입구 카드, 공유 이미지
 
 가이드 글과 사이트 코드는 [MIT](LICENSE)예요. `public/xxd/`의 Xiaoxiaodong UI Kit 빌드는 예외로, 별도의 [LICENSE](public/xxd/LICENSE)를 따라요(비상업적 사용은 무료, 상업적 사용은 라이선스 필요).
 
-Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong01)
+Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong)

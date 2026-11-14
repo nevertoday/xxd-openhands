@@ -177,4 +177,4 @@ Found something unclear, or something that didn't work as written? [Open an issu
 
 The guide's text and site code are [MIT](LICENSE). The Xiaoxiaodong UI Kit build in `public/xxd/` is not; it has its own [LICENSE](public/xxd/LICENSE) (free for noncommercial use, commercial use needs a license).
 
-Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong01)
+Copyright (c) 2026 [Xiaoxiaodong](https://x.com/xiaoxiaodong)
