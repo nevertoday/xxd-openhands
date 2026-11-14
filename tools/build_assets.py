@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """生成 README 的插画和网站分享大图。
 
-- assets/hero.svg、assets/how.svg（中文），assets/en/ 下是英文版：README 里的演示动画和流程图。
+- assets/hero.svg、how.svg、automate.svg、safety.svg（中文），assets/en/ 下是英文版：README 里的演示动画、流程图、自动化和安全两张图。
 - assets/doors/<语言>-1..3(-dark).svg：README 顶部的三扇门，10 种语言，亮色暗色各一张。
 - assets/social.svg、assets/social-en.svg：分享大图，再按 docs/MAINTAINING.md 用 Chrome 转成 public/og.png、og-en.png。
 
@@ -269,6 +269,167 @@ def how(lang="zh"):
                          "\n".join(body), "".join(defs)), lang)
 
 
+# ---------- automate：到点 → 后端自己开一个对话干活 → 结果发到你说的地方（循环 12 秒） ----------
+# 例子照现成自动化 Slack standup digest（src/data/automations.js）。是示意，不是截图。
+def automate(lang="zh"):
+    L = pick(lang)
+    W, H, T = 960, 400, 12.0
+    end = 11.3
+    top, ch = 80, 252
+    cols = [(40, 210), (290, 380), (710, 210)]
+    heads = L(["① 到点，或有事发生", "② 后端自己开一个对话", "③ 结果发到你说的地方"],
+              ["① Time's up, or an event", "② The backend starts a chat", "③ It posts where you said"])
+    body = []
+    for (x, w), h in zip(cols, heads):
+        body.append(t(x, 60, fits(h, 14.5, w + 20, 700), 14.5, INK, 700))
+
+    # ① 触发：定时（这次触发的就是它）和事件
+    x, w = cols[0]
+    body.append(rect(x, top, w, ch, CARD, 14, LINE))
+    body.append(f'<rect x="{x + 10}" y="{top + 12}" width="{w - 20}" height="66" rx="10" fill="{SKY}" opacity="0">'
+                f'<animate attributeName="opacity" dur="{T}s" repeatCount="indefinite" keyTimes="0;{0.8 / T:.4f};{1.2 / T:.4f};{end / T:.4f};{(end + 0.35) / T:.4f};1" values="0;0;1;1;0;0"/></rect>')
+    ox, oy = x + 38, top + 45
+    body.append(f'<circle cx="{ox}" cy="{oy}" r="15" fill="{CARD}" stroke="{INK}" stroke-width="1.8"/>')
+    body.append(f'<path d="M{ox},{oy} h-8" stroke="{INK}" stroke-width="2" stroke-linecap="round"/>')
+    body.append(f'<path d="M{ox},{oy} v-11" stroke="{INK}" stroke-width="1.6" stroke-linecap="round">'
+                f'<animateTransform attributeName="transform" type="rotate" dur="{T}s" repeatCount="indefinite" '
+                f'keyTimes="0;{1.0 / T:.4f};1" values="-60 {ox} {oy};0 {ox} {oy};0 {ox} {oy}"/></path>')
+    body.append(t(x + 64, top + 41, fits(L("每个工作日 9:00", "Weekdays 9:00"), 14, w - 74, 600), 14, INK, 600))
+    body.append(t(x + 64, top + 60, fits(L("定时", "schedule"), 12, w - 74), 12, MUTED))
+    body.append(t(x + w / 2, top + 104, L("或", "or"), 12, MUTED, anchor="middle"))
+    ey = top + 140
+    body.append(f'<path d="M{ox + 3},{ey - 16} l-9,17 h7 l-3,15 l10,-19 h-7 z" fill="{APRICOT}" stroke="{INK}" stroke-width="1.5" stroke-linejoin="round"/>')
+    body.append(t(x + 64, ey - 4, fits(L("有新的 PR、新消息", "New PR or message"), 14, w - 74, 600), 14, INK, 600))
+    body.append(t(x + 64, ey + 15, fits(L("事件", "event"), 12, w - 74), 12, MUTED))
+    body.append(f'<path d="M{x + 16},{top + 186} h{w - 32}" stroke="{LINE}"/>')
+    body.append(f'<circle cx="{x + 24}" cy="{top + 211}" r="4" fill="{OK}"><animate attributeName="opacity" dur="2s" repeatCount="indefinite" values="1;.35;1"/></circle>')
+    body.append(t(x + 36, top + 215, fits("Automation Server", 12, w - 46, 600, MONO), 12, INK, 600, MONO))
+    body.append(t(x + 16, top + 236, fits(L("在后端里，后端停了就不跑", "backend off = no runs"), 12, w - 28), 12, MUTED))
+
+    # 连线和跑过去的小点
+    def link(x1, x2, t0):
+        y = top + ch / 2
+        k = lambda v: f"{v / T:.4f}"
+        return (f'<path d="M{x1},{y} L{x2 - 4},{y}" stroke="{MUTED}" stroke-width="1.6" stroke-linecap="round"/>'
+                f'<path d="M{x2 - 9},{y - 5} L{x2 - 4},{y} L{x2 - 9},{y + 5}" fill="none" stroke="{MUTED}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
+                f'<circle cx="{x1}" cy="{y}" r="3.5" fill="{INK}" opacity="0">'
+                f'<animate attributeName="cx" dur="{T}s" repeatCount="indefinite" keyTimes="0;{k(t0)};{k(t0 + 0.6)};1" values="{x1};{x1};{x2 - 6};{x2 - 6}"/>'
+                f'<animate attributeName="opacity" dur="{T}s" repeatCount="indefinite" keyTimes="0;{k(t0)};{k(t0 + 0.05)};{k(t0 + 0.55)};{k(t0 + 0.6)};1" values="0;0;1;1;0;0"/></circle>')
+    body.append(link(cols[0][0] + cols[0][1] + 6, cols[1][0] - 2, 1.3))
+    body.append(link(cols[1][0] + cols[1][1] + 6, cols[2][0] - 2, 8.0))
+
+    # ② 新对话：状态 PENDING → RUNNING → COMPLETED，三步打勾
+    x, w = cols[1]
+    body.append(f'<rect x="{x}" y="{top}" width="{w}" height="{ch}" rx="12" fill="#000" opacity=".9" filter="url(#ash)"/>')
+    body.append(f'<g clip-path="url(#aw)">{rect(x, top, w, ch, TERM)}{rect(x, top, w, 32, "#2A2926")}')
+    for i, c in enumerate(["#FF5F57", "#FEBC2E", "#28C840"]):
+        body.append(f'<circle cx="{x + 18 + i * 18}" cy="{top + 16}" r="5" fill="{c}"/>')
+    body.append(t(x + 80, top + 21, fits(L("新对话 · Slack standup digest", "New chat · Slack standup digest"), 12, w - 96, font=MONO), 12, TERM_MUTED, font=MONO))
+    body.append(t(x + 22, top + 64, L("状态", "Status"), 12.5, TERM_MUTED))
+    sx = x + 22 + tw(L("状态", "Status"), 12.5) + 12
+    for s, col, a, b in [("PENDING", TERM_MUTED, 1.9, 3.0), ("RUNNING", "#EFDFC9", 3.0, 7.4), ("COMPLETED", OK, 7.4, end)]:
+        body.append(f'<g opacity="0">{appear(a, b, T)}{t(sx, top + 64, s, 12.5, col, 700, MONO)}</g>')
+    steps = L([("读设定频道里昨天的消息", SKY), ("分成做完、在做、卡住、定下", APRICOT), ("写成一条站会笔记", SAGE), ("发到 #standup 频道", LILAC)],
+              [("Read yesterday's messages", SKY), ("Sort: shipped, doing, blocked, decided", APRICOT), ("Write one standup note", SAGE), ("Post it to #standup", LILAC)])
+    for i, (s, col) in enumerate(steps):
+        y = top + 106 + i * 36
+        tin = 3.3 + i * 1.0
+        body.append(f'<g opacity="0">{appear(tin, end, T)}')
+        body.append(rect(x + 22, y - 16, 20, 20, "none", 4, "#55524B", 'stroke-width="1.5"'))
+        body.append(f'<path d="M{x + 27},{y - 6} l4,4 l7,-9" fill="none" stroke="{col}" stroke-width="2.2" '
+                    f'stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="18" stroke-dashoffset="18">'
+                    f'<animate attributeName="stroke-dashoffset" dur="{T}s" repeatCount="indefinite" '
+                    f'keyTimes="0;{(tin + 0.4) / T:.4f};{(tin + 0.8) / T:.4f};1" values="18;18;0;0"/></path>')
+        body.append(t(x + 54, y - 1, fits(s, 13.5, w - 70), 13.5, TERM_FG))
+        body.append("</g>")
+    body.append("</g>")
+
+    # ③ Slack 频道里多了一条消息；对话列表里也多了一条
+    x, w = cols[2]
+    body.append(rect(x, top, w, ch, CARD, 14, LINE))
+    body.append(t(x + 16, top + 30, "# standup", 13, INK, 700, MONO))
+    body.append(f'<path d="M{x + 16},{top + 44} h{w - 32}" stroke="{LINE}"/>')
+    body.append(f'<g opacity="0">{appear(8.6, end, T)}')
+    body.append(rect(x + 16, top + 58, 26, 26, LILAC, 6))
+    body.append(t(x + 50, top + 70, "OpenHands", 13, INK, 700))
+    body.append(t(x + 50, top + 86, "9:03", 11, MUTED))
+    body.append(t(x + 16, top + 112, fits(L("站会笔记 · 昨天", "Standup · yesterday"), 13, w - 32, 600), 13, INK, 600))
+    for i, (lab, col) in enumerate(L([("做完", SAGE), ("在做", SKY), ("卡住", ROSE), ("定下", APRICOT)],
+                                     [("Shipped", SAGE), ("Doing", SKY), ("Blocked", ROSE), ("Decided", APRICOT)])):
+        y = top + 136 + i * 22
+        lw = tw(lab, 11.5, 600) + 12
+        body.append(rect(x + 16, y - 12, lw, 17, col, 4))
+        body.append(t(x + 22, y + 1, fits(lab, 11.5, 70, 600), 11.5, INK, 600))
+        body.append(rect(x + 24 + lw, y - 6, [96, 72, 84, 60][i], 6, LINE, 3))
+    body.append("</g>")
+    body.append(f'<g opacity="0">{appear(9.4, end, T)}')
+    body.append(f'<path d="M{x + 16},{top + 222} h{w - 32}" stroke="{LINE}"/>')
+    body.append(t(x + 16, top + 241, fits(L("对话列表里也多了一条，能点开看", "Also in your chat list to open"), 12, w - 28), 12, MUTED))
+    body.append("</g>")
+
+    body.append(t(W / 2, H - 24, fits(L("示意：到点或有事发生，后端自己开一个完整的对话去干活，把结果发到你说的地方。",
+                                        "Illustration: at the set time or on an event, the backend starts a full conversation and sends the result where you said."), 14, W - 40),
+                  14, MUTED, anchor="middle"))
+    x, w = cols[1]
+    defs = (f'<clipPath id="aw"><rect x="{x}" y="{top}" width="{w}" height="{ch}" rx="12"/></clipPath>'
+            '<filter id="ash" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#111111" flood-opacity=".09"/></filter>')
+    write("automate.svg", svg(W, H, L("自动化怎么跑：每个工作日 9 点，后端自己开一个对话，读 Slack 消息、写成站会笔记，发到 #standup 频道",
+                                      "How an automation runs: at 9:00 every weekday the backend starts a conversation by itself, reads Slack, writes a standup note and posts it to #standup"),
+                              "\n".join(body), defs), lang)
+
+
+# ---------- safety：直接在电脑上跑（靠约定）和放进 Docker（靠隔离） ----------
+def safety(lang="zh"):
+    L = pick(lang)
+    W, H = 960, 340
+    panels = L([("直接在电脑上跑", APRICOT, "它能碰到的范围", "靠约定：只让它在新建的空文件夹里干活"),
+                ("放进 Docker 里跑", SAGE, "Docker", "靠隔离：它只看得到你挂进去的那个文件夹")],
+               [("Straight on your computer", APRICOT, "what it can reach", "By request: you tell it to stay in one empty folder"),
+                ("Inside Docker", SAGE, "Docker", "By isolation: it only sees the folder you mount")])
+    folders = L(["文档", "照片", "桌面", "water（空的）"], ["Documents", "Photos", "Desktop", "water (empty)"])
+    pw, gap, y0, ph = 430, 20, 28, 262
+    body, defs = [], []
+    for p, (title, col, reach, rule) in enumerate(panels):
+        x = (W - pw * 2 - gap) / 2 + p * (pw + gap)
+        defs.append(f'<clipPath id="s{p}"><rect x="{x}" y="{y0}" width="{pw}" height="{ph}" rx="14"/></clipPath>')
+        body.append(rect(x, y0, pw, ph, CARD, 14, LINE))
+        body.append(f'<g clip-path="url(#s{p})">{rect(x, y0, pw, 46, col)}</g>')
+        body.append(t(x + 18, y0 + 29, fits(title, 17, pw - 36, 700), 17, INK, 700))
+        cx0, cy0, cw, chh = x + 20, y0 + 62, pw - 40, 150
+        body.append(rect(cx0, cy0, cw, chh, PAPER, 10, LINE))
+        body.append(t(cx0 + 12, cy0 + 17, L("你的电脑", "your computer"), 11.5, MUTED, font=MONO))
+        centers = [cx0 + 14 + (cw - 28) * (i + 0.5) / 4 for i in range(4)]
+        fy = cy0 + 56
+        if p == 0:
+            bx, bw = cx0 + 8, cw - 16
+        else:
+            bx, bw = centers[3] - 47, 94
+        by, bh = cy0 + 26, chh - 34
+        stroke = (f'stroke="{INK}" stroke-width="1.6" stroke-dasharray="5 4"' if p == 0 else f'stroke="{INK}" stroke-width="2"')
+        march = ('<animate attributeName="stroke-dashoffset" dur="1.2s" repeatCount="indefinite" values="0;-9"/>' if p == 0 else "")
+        body.append(f'<rect x="{bx}" y="{by}" width="{bw}" height="{bh}" rx="8" fill="none" {stroke}>{march}</rect>')
+        body.append(t(bx + 8, by + 15, fits(reach, 11, bw - 12, 600, MONO), 11, INK, 600, MONO))
+        for i, (fx, name) in enumerate(zip(centers, folders)):
+            water = i == 3
+            op = "" if water or p == 0 else ' opacity=".35"'
+            fill = SKY if water else "#EFEDE9"
+            body.append(f'<g{op}>')
+            body.append(rect(fx - 32, fy, 26, 12, fill, 3, "#C9C6C0"))
+            body.append(rect(fx - 32, fy + 7, 64, 42, fill, 4, "#C9C6C0"))
+            body.append(t(fx, fy + 70, fits(name, 12, (cw - 28) / 4 - 4, 600 if water else 400), 12, INK, 600 if water else 400, anchor="middle"))
+            body.append("</g>")
+            if water:
+                body.append(f'<circle cx="{fx}" cy="{fy + 30}" r="4.5" fill="{INK}">'
+                            f'<animateMotion dur="5s" repeatCount="indefinite" path="M0,0 L16,-6 L6,8 L-14,2 Z"/></circle>')
+        body.append(t(x + 18, y0 + ph - 22, fits(rule, 13, pw - 36), 13, INK))
+    body.append(t(W / 2, H - 22, fits(L("新手入门用左边的做法。想彻底关住它，用右边的 Docker，见完整教程第 5 步。",
+                                        "The beginner lessons use the left setup. To fully fence it in, use Docker (guide step 5)."), 14, W - 40),
+                  14, MUTED, anchor="middle"))
+    write("safety.svg", svg(W, H, L("安全的两种做法：直接在电脑上跑时，它能碰到你账号能碰到的所有文件，所以只让它在空文件夹里干活；放进 Docker 里，它只看得到挂进去的那个文件夹",
+                                    "Two ways to stay safe: run straight on your computer and it can reach every file your account can, so you keep it to one empty folder; run it in Docker and it only sees the folder you mount"),
+                            "\n".join(body), "".join(defs)), lang)
+
+
 # ---------- doors：README 顶部的三扇门（没写过代码 / 会写代码 / 想让它自己干活），每种语言三张，亮色暗色各一张 ----------
 # 细线框、直角、没有阴影；顶上一条柔和的色条。唯一的动效：箭头隔几秒往前挪 4px；系统开了「减少动态效果」就不动。
 # 卡片宽度按量出来的字宽算，同一种语言三张一样宽。
@@ -320,6 +481,8 @@ def build():
     for lang in ("zh", "en"):
         hero(lang)
         how(lang)
+        automate(lang)
+        safety(lang)
         social(lang)
     for lang in DOORS:
         doors(lang)
@@ -334,6 +497,8 @@ if __name__ == "__main__":
         for lang in ("zh", "en"):
             hero(lang)
             how(lang)
+            automate(lang)
+            safety(lang)
         for lang in DOORS:
             W_ = [tw(a, 18, 600, DOOR_FONT) + tw(b, 13, 400, DOOR_FONT) for a, b in DOORS[lang]]
         print(json.dumps(NEED, ensure_ascii=False))

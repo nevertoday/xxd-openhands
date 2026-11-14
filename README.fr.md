@@ -97,6 +97,10 @@ Le résultat attendu : j'ouvre la page, je clique sur « J'ai bu un verre », et
 
 ## 🤖 Le laisser travailler seul
 
+<p align="center">
+  <img src="assets/en/automate.svg" width="100%" alt="Fonctionnement d'une automatisation : à l'heure prévue, le backend ouvre seul une conversation, lit Slack, rédige une note de standup et la publie dans #standup">
+</p>
+
 OpenHands peut lancer une conversation tout seul, à heure fixe ou quand quelque chose se produit. Ce sont les **automatisations**. Il en existe 27 officielles, prêtes à l'emploi : choisissez-en une et activez-la. Quelques exemples (pages en anglais) :
 
 | Automatisation prête à l'emploi | Quand elle se lance | Ce qu'elle fait pour vous |
@@ -127,6 +131,10 @@ Les fiches pratiques sont en anglais.
 Et aussi [des prompts à copier-coller](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [comment lui expliquer pour qu'il ne dévie pas](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [il ne s'ouvre pas ou n'arrive pas à se connecter ?](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) et d'autres : 19 en tout.
 
 ## 🔒 La sécurité d'abord
+
+<p align="center">
+  <img src="assets/en/safety.svg" width="100%" alt="Deux façons de faire : directement sur votre ordinateur, il atteint tous les fichiers de votre compte, donc vous le limitez à un dossier vide ; dans Docker, il ne voit que le dossier monté">
+</p>
 
 > [!WARNING]
 > Quand OpenHands tourne directement sur votre ordinateur, l'agent a les droits de votre compte : il peut lire et écrire vos fichiers et lancer des commandes, et par défaut il ne demande pas avant chaque étape. Le parcours débutant le fait travailler seulement dans un nouveau dossier vide. Pour une vraie isolation, faites-le tourner dans Docker ([étape 5 du guide complet](https://openhands.xiaoxiaodong.ai/en/guide/5-backends/), en anglais).

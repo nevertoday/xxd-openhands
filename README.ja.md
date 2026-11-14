@@ -97,6 +97,10 @@ agent-canvas
 
 ## 🤖 自動で働かせる
 
+<p align="center">
+  <img src="assets/en/automate.svg" width="100%" alt="自動化の流れ：決まった時刻にバックエンドが自分で会話を始め、Slack を読んでスタンドアップのメモを書き、#standup に投稿する">
+</p>
+
 OpenHands は、決まった時間や、何かが起きたときに、自分から会話を始められます。これが**自動化**です。公式の既製の自動化が 27 個あり、選んでオンにするだけです。いくつか例を挙げます（リンク先は英語のページです）。
 
 | 既製の自動化 | 動くタイミング | してくれること |
@@ -127,6 +131,10 @@ OpenHands は、決まった時間や、何かが起きたときに、自分か�
 ほかにも[コピペできるプロンプト](https://openhands.xiaoxiaodong.ai/en/howto/recipes/)、[脇道にそれない頼み方](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/)、[開かない、つながらない？](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/)など、全部で 19 ページあります。
 
 ## 🔒 まず安全のこと
+
+<p align="center">
+  <img src="assets/en/safety.svg" width="100%" alt="2 つのやり方：パソコンで直接動かすと、あなたのアカウントで触れるファイルすべてに手が届くので、空のフォルダーの中だけで作業させる。Docker に入れると、マウントしたフォルダーしか見えない">
+</p>
 
 > [!WARNING]
 > OpenHands をパソコンの上で直接動かすと、エージェントはあなたのアカウントの権限を持ちます。ファイルを読み書きし、コマンドを実行でき、初期設定では 1 ステップごとに確認を求めません。入門コースでは、新しく作った空のフォルダの中だけで作業させます。しっかり隔離したいなら、Docker で動かしてください（[完全ガイドのステップ 5（英語）](https://openhands.xiaoxiaodong.ai/en/guide/5-backends/)）。

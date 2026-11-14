@@ -97,6 +97,10 @@ agent-canvas
 
 ## 🤖 让它自己干活
 
+<p align="center">
+  <img src="assets/automate.svg" width="100%" alt="自动化怎么跑：到点后，后端自己开一个对话，读 Slack 消息、写成站会笔记，发到 #standup 频道">
+</p>
+
 OpenHands 能按时间或事件自己开一个对话干活，叫**自动化**。官方有 27 个现成的，挑一个开起来就行。几个例子：
 
 | 现成自动化 | 什么时候跑 | 它替你做什么 |
@@ -125,6 +129,10 @@ OpenHands 能按时间或事件自己开一个对话干活，叫**自动化**。
 还有 [照抄就能用的提示词](https://openhands.xiaoxiaodong.ai/howto/recipes/)、[怎么交代它才不跑偏](https://openhands.xiaoxiaodong.ai/howto/good-instructions/)、[打不开、连不上怎么办](https://openhands.xiaoxiaodong.ai/howto/troubleshoot/) 等，一共 19 篇。
 
 ## 🔒 先说安全
+
+<p align="center">
+  <img src="assets/safety.svg" width="100%" alt="两种做法：直接在电脑上跑，它能碰到你账号能碰到的所有文件，所以只让它在空文件夹里干活；放进 Docker，它只看得到挂进去的那个文件夹">
+</p>
 
 > [!WARNING]
 > OpenHands 在你电脑上直接跑的时候，AI 能用你的账号权限读写文件、执行命令，默认不会每一步都先问你。新手入门只让它在一个新建的空文件夹里干活；想彻底隔离，就用 Docker（[完整教程第 5 步](https://openhands.xiaoxiaodong.ai/guide/5-backends/)）。

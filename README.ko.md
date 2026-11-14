@@ -97,6 +97,10 @@ agent-canvas
 
 ## 🤖 알아서 일하게 하기
 
+<p align="center">
+  <img src="assets/en/automate.svg" width="100%" alt="자동화가 도는 방식: 정해진 시간이 되면 백엔드가 스스로 대화를 열고, Slack을 읽어 스탠드업 메모를 써서 #standup에 올려요">
+</p>
+
 OpenHands는 정해진 시간이나 어떤 일이 생겼을 때 스스로 대화를 시작할 수 있어요. 이걸 **자동화**라고 해요. 공식 준비된 자동화가 27개 있고, 하나 골라서 켜기만 하면 돼요. 몇 가지 예를 볼게요(링크는 영어 페이지예요).
 
 | 준비된 자동화 | 실행 시점 | 해 주는 일 |
@@ -127,6 +131,10 @@ OpenHands는 정해진 시간이나 어떤 일이 생겼을 때 스스로 대화
 그 밖에도 [복사해 쓰는 프롬프트](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [길을 잃지 않게 맡기는 법](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [열리지 않거나 연결이 안 될 때](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) 등 모두 19편이 있어요.
 
 ## 🔒 안전이 먼저
+
+<p align="center">
+  <img src="assets/en/safety.svg" width="100%" alt="두 가지 방법: 컴퓨터에서 바로 돌리면 내 계정이 닿는 모든 파일에 닿을 수 있어서 빈 폴더 안에서만 일하게 해요. Docker에 넣으면 마운트한 폴더만 보여요">
+</p>
 
 > [!WARNING]
 > OpenHands를 내 컴퓨터에서 바로 실행하면, 에이전트는 내 계정의 권한을 가져요. 파일을 읽고 쓰고 명령어를 실행할 수 있고, 기본 설정에서는 단계마다 묻지 않아요. 입문 코스에서는 새로 만든 빈 폴더 안에서만 일하게 해요. 제대로 격리하려면 Docker에서 실행하세요([전체 가이드 5단계(영어)](https://openhands.xiaoxiaodong.ai/en/guide/5-backends/)).

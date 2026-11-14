@@ -97,6 +97,10 @@ When you're done, show me: what you checked and what you saw for each check. The
 
 ## 🤖 Let it work on its own
 
+<p align="center">
+  <img src="assets/en/automate.svg" width="100%" alt="How an automation runs: at the set time the backend starts a conversation by itself, reads Slack, writes a standup note and posts it to #standup">
+</p>
+
 OpenHands can start a conversation by itself on a schedule or when something happens. These are **automations**. There are 27 official prebuilt ones; pick one and turn it on. A few examples:
 
 | Prebuilt automation | When it runs | What it does for you |
@@ -125,6 +129,10 @@ All 27 are in [Prebuilt automations](https://openhands.xiaoxiaodong.ai/en/automa
 Plus [copy-paste prompts](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [how to brief it so it stays on track](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [won't open or connect?](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) and more: 19 in all.
 
 ## 🔒 Safety first
+
+<p align="center">
+  <img src="assets/en/safety.svg" width="100%" alt="Two setups: straight on your computer it can reach every file your account can, so you keep it to one empty folder; in Docker it only sees the folder you mount">
+</p>
 
 > [!WARNING]
 > When OpenHands runs directly on your computer, the agent has your account's permissions: it can read and write your files and run commands, and by default it doesn't ask before each step. The beginner track has it work only inside a new, empty folder. For real isolation, run it in Docker ([full guide step 5](https://openhands.xiaoxiaodong.ai/en/guide/5-backends/)).

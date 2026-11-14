@@ -97,6 +97,10 @@ Zeig mir am Ende: was du geprüft hast und was du bei jeder Prüfung gesehen has
 
 ## 🤖 Allein arbeiten lassen
 
+<p align="center">
+  <img src="assets/en/automate.svg" width="100%" alt="So läuft eine Automation: Zur festgelegten Zeit startet das Backend selbst eine Unterhaltung, liest Slack, schreibt eine Standup-Notiz und postet sie in #standup">
+</p>
+
 OpenHands kann von selbst eine Unterhaltung starten, nach Zeitplan oder wenn etwas passiert. Das sind **Automationen**. Es gibt 27 offizielle fertige Automationen; such dir eine aus und schalte sie ein. Ein paar Beispiele (Seiten auf Englisch):
 
 | Fertige Automation | Wann sie läuft | Was sie für dich tut |
@@ -127,6 +131,10 @@ Die Kurzanleitungen sind auf Englisch.
 Dazu [Prompts zum Kopieren](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [wie du ihn so einweist, dass er auf Kurs bleibt](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [startet nicht oder verbindet sich nicht?](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) und mehr: 19 insgesamt.
 
 ## 🔒 Sicherheit zuerst
+
+<p align="center">
+  <img src="assets/en/safety.svg" width="100%" alt="Zwei Wege: Direkt auf deinem Rechner erreicht es alle Dateien deines Kontos, also hältst du es in einem leeren Ordner; in Docker sieht es nur den eingebundenen Ordner">
+</p>
 
 > [!WARNING]
 > Wenn OpenHands direkt auf deinem Computer läuft, hat der Agent die Rechte deines Benutzerkontos: Er kann deine Dateien lesen und schreiben und Befehle ausführen, und standardmäßig fragt er nicht vor jedem Schritt. Der Einsteigerkurs lässt ihn nur in einem neuen, leeren Ordner arbeiten. Für echte Abschottung lass ihn in Docker laufen ([Schritt 5 der vollständigen Anleitung](https://openhands.xiaoxiaodong.ai/en/guide/5-backends/), auf Englisch).
