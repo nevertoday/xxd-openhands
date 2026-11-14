@@ -60,7 +60,7 @@ export default {
     diffW: "Onde você trava", diffA: "Lendo só a documentação oficial", diffB: "Com este guia",
     DIFF: [
       ["Instalar", "Várias formas de instalar lado a lado; você escolhe", "Um só caminho: o aplicativo para computador, sem terminal"],
-      ["Escolher um modelo", "Uma lista enorme de provedores e nomes de modelos", "Uma chave do OpenHands Cloud resolve, depois de colocar US$ 10 de crédito"],
+      ["Escolher um modelo", "Uma lista enorme de provedores e nomes de modelos", "Já tem uma chave ou assinatura? Use a sua. Se não, uma chave do OpenHands Cloud (depois de colocar US$ 10 de crédito)"],
       ["O que ele pode mexer", "A documentação avisa que o agente pode acessar todos os seus arquivos", "Na primeira vez, ele trabalha só dentro de uma pasta nova e vazia"],
     ],
     lessonsH: "Para quem está começando, bastam três lições",

@@ -60,7 +60,7 @@ export default {
     diffW: "Wo du hängen bleibst", diffA: "Nur mit der offiziellen Doku", diffB: "Mit dieser Anleitung",
     DIFF: [
       ["Installieren", "Mehrere Installationswege nebeneinander; du musst wählen", "Ein Weg: die Desktop-App, ganz ohne Terminal"],
-      ["Modell wählen", "Eine lange Liste von Anbietern und Modellnamen", "Ein Schlüssel von OpenHands Cloud reicht, nachdem du 10 $ aufgeladen hast"],
+      ["Modell wählen", "Eine lange Liste von Anbietern und Modellnamen", "Hast du schon einen Schlüssel oder ein Abo, nimm das. Sonst reicht ein Schlüssel von OpenHands Cloud (nachdem du 10 $ aufgeladen hast)"],
       ["Worauf er Zugriff hat", "Die Doku warnt: Der Agent kann auf dein ganzes Dateisystem zugreifen", "Beim ersten Mal arbeitet er nur in einem neuen, leeren Ordner"],
     ],
     lessonsH: "Als Einsteiger brauchst du nur drei Lektionen",

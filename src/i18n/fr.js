@@ -60,7 +60,7 @@ export default {
     diffW: "Là où l'on bloque", diffA: "Seul avec la documentation officielle", diffB: "Avec ce guide",
     DIFF: [
       ["L'installation", "Plusieurs façons d'installer, côte à côte ; à vous de choisir", "Un seul chemin : l'application de bureau, sans terminal"],
-      ["Le choix du modèle", "Une longue liste de fournisseurs et de noms de modèles", "Une seule clé OpenHands Cloud suffit, après avoir ajouté 10 $ de crédit"],
+      ["Le choix du modèle", "Une longue liste de fournisseurs et de noms de modèles", "Vous avez déjà une clé ou un abonnement ? Servez-vous-en. Sinon, une seule clé OpenHands Cloud (après avoir ajouté 10 $ de crédit)"],
       ["Ce qu'il peut toucher", "La documentation prévient que l'agent peut accéder à tous vos fichiers", "La première fois, il travaille seulement dans un nouveau dossier vide"],
     ],
     lessonsH: "Trois leçons suffisent pour débuter",

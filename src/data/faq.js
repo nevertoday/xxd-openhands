@@ -3,7 +3,7 @@
 // 写法：第一句直接回答（能 / 不用 / 不要钱，但……），后面最多两三句短句。全页最多一处 ==荧光笔==。
 export const FAQ = [
   { id: "before", title: "上手之前", items: [
-    ["OpenHands 要钱吗？", "软件不要钱，它开源免费（MIT 协议）。要钱的是背后的模型，按用量付费。OpenHands Cloud 上有一个免费模型 DeepSeek V4 Flash，新手可以先用它。怎么省见 [控制花费](/howto/cost/)。"],
+    ["OpenHands 要钱吗？", "软件不要钱，它开源免费（MIT 协议）。要钱的是背后的模型，按用量付费。已经有服务商的 key，或者登录了 Claude Code、Codex 的订阅，直接用就行，不用另外花钱。走 OpenHands Cloud 的，拿 key 之前要先充 10 美元；Cloud 上的免费模型 DeepSeek V4 Flash 不扣这笔额度。怎么省见 [控制花费](/howto/cost/)。"],
     ["OpenHands、Agent Canvas、OpenHands Cloud 是什么关系？", "Agent Canvas 是你用的控制台，OpenHands Cloud 是官方托管的在线版，都属于 OpenHands。Agent Canvas 默认在你电脑上跑。它也可以连上 Cloud，把活放到云上干。详见 [OpenHands 是什么](/wiki/openhands/)。"],
     ["旧文章里的 `openhands serve` 和 OpenHands CLI 还能用吗？", "别再用了。`openhands serve` 启动的旧版本地界面已经弃用，OpenHands CLI 也不再积极维护。只装了 Agent Canvas 的话，`openhands serve` 根本跑不起来。现在用桌面版，或者运行 `agent-canvas`。"],
     ["我不会写代码，能用吗？", "能上手。桌面版不用开终端，装好就能点着用。先让它在一个空文件夹里做件小事，比如一个小网页，再打开看看结果。[新手入门](/start/1-why/) 就是这么带你走的。"],

@@ -66,7 +66,7 @@ export default {
     diffW: "Where you get stuck", diffA: "Reading the official docs alone", diffB: "With this guide",
     DIFF: [
       ["Installing", "Several install options side by side; you pick", "One path: the desktop app, no terminal needed"],
-      ["Picking a model", "A long list of providers and model names", "One OpenHands Cloud key covers it, after a $10 top-up"],
+      ["Picking a model", "A long list of providers and model names", "Already have a key or subscription? Use it. Otherwise one OpenHands Cloud key (after a $10 top-up)"],
       ["What it can touch", "The docs warn the agent can access your whole filesystem", "The first time, it works only inside a new, empty folder"],
     ],
     lessonsH: "Beginners need just three lessons",
