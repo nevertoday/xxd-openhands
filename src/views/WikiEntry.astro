@@ -1,9 +1,9 @@
 ---
-// 一个 Wiki 条目：一句话、打个比方、在 OpenHands 里、（可选）清单、常见误区、动手操作、相关条目
+// 一个 Wiki 条目：一句话、打个比方、在 OpenHands 里、（可选）清单、常见误区、动手操作、（可选）再遇到它的页面、相关条目
 import Site from "../layouts/Site.astro";
 import { WIKI } from "../data/wiki.js";
 import { WIKI_EN, WIKI_GROUPS_EN } from "../data/wiki.en.js";
-import { wikiHref, howtoHref, stepHref, HOWTO_FLAT, STEPS, link, langOf, t } from "../data/nav.js";
+import { wikiHref, howtoHref, stepHref, HOWTO_FLAT, STEPS, LESSONS, link, langOf, t } from "../data/nav.js";
 import { inline } from "../lib/md.js";
 interface Props { slug: string }
 const lang = langOf(Astro.url.pathname);
@@ -14,14 +14,26 @@ const w = local(raw);
 const titleOf = (slug) => { const x = WIKI.find((y) => y.slug === slug); if (!x) throw new Error(`Wiki 里没有 ${slug}`); return local(x).title; };
 const howto = w.howto && HOWTO_FLAT.find((h) => h.slug === w.howto);
 const step = w.step !== undefined && STEPS.find((s) => s.n === w.step);
+// seen 里写站内路径（中文那份）；标题从导航里取，英文页自动用英文标题和 /en 路径
+const PAGES = [
+  ...LESSONS.map((x) => [`/start/${x.slug}/`, x, "lesson"]),
+  ...STEPS.map((x) => [`/guide/${x.slug}/`, x, "step"]),
+  ...HOWTO_FLAT.map((x) => [`/howto/${x.slug}/`, x, "howto"]),
+];
+const seen = (w.seen ?? []).map((path) => {
+  const p = PAGES.find(([k]) => k === path);
+  if (!p) throw new Error(`Wiki ${w.slug} 的 seen 里，${path} 不在导航里`);
+  return { href: link(path, lang), kind: p[2], n: p[1].n, title: t(p[1], "title", lang) };
+});
 const T = en
-  ? { like: "An analogy", here: "In OpenHands", list: "List", head: ["Name", "In plain words"], myths: "Common misconceptions", try: "Try it: ", step: (n) => `Full guide step ${n}: `, see: "Related: ", sep: ", " }
-  : { like: "打个比方", here: "在 OpenHands 里", list: "清单", head: ["名字", "说人话"], myths: "常见误区", try: "动手操作：", step: (n) => `完整教程第 ${n} 步：`, see: "相关条目：", sep: "、" };
+  ? { like: "An analogy", here: "In OpenHands", list: "List", head: ["Name", "In plain words"], myths: "Common misconceptions", try: "Try it: ", step: (n) => `Full guide step ${n}: `, lesson: (n) => `Beginner lesson ${n}: `, seen: "Where you'll meet it again", see: "Related: ", sep: ", " }
+  : { like: "打个比方", here: "在 OpenHands 里", list: "清单", head: ["名字", "说人话"], myths: "常见误区", try: "动手操作：", step: (n) => `完整教程第 ${n} 步：`, lesson: (n) => `新手第 ${n} 课：`, seen: "在这些地方会再遇到它", see: "相关条目：", sep: "、" };
 const headings = [
   { slug: "like", text: T.like, depth: 2 },
   { slug: "here", text: T.here, depth: 2 },
   ...(w.list ? [{ slug: "list", text: w.listTitle ?? T.list, depth: 2 }] : []),
   { slug: "myths", text: T.myths, depth: 2 },
+  ...(seen.length ? [{ slug: "seen", text: T.seen, depth: 2 }] : []),
 ];
 ---
 <Site title={`${w.title} · Wiki`} description={w.one.replace(/\*\*|==|\+\+/g, "")} headings={headings}>
@@ -45,6 +57,12 @@ const headings = [
     <h2 id="myths">{T.myths}</h2>
     <ul>{w.myths.map((m) => <li set:html={inline(m)} />)}</ul>
     {(howto || step) && <p>{T.try}{step && <a href={stepHref(step, lang)}>{T.step(step.n)}{t(step, "title", lang)}</a>}{howto && step && T.sep}{howto && <a href={howtoHref(howto.slug, lang)}>{t(howto, "title", lang)}</a>}</p>}
+    {seen.length > 0 && (
+      <>
+        <h2 id="seen">{T.seen}</h2>
+        <ul>{seen.map((p) => <li><a href={p.href}>{p.kind === "lesson" ? T.lesson(p.n) : p.kind === "step" ? T.step(p.n) : ""}{p.title}</a></li>)}</ul>
+      </>
+    )}
     {w.see?.length > 0 && <p class="wiki__see">{T.see}{w.see.map((s, i) => <>{i > 0 && T.sep}<a href={wikiHref(s, lang)}>{titleOf(s)}</a></>)}</p>}
   </article>
 </Site>

@@ -1,12 +1,19 @@
 ---
-// 检查点：做到这里应该满足的几条，可以打勾（打勾记在这个浏览器里，见 Site.astro）
+// 检查点：先顺手想一两个问题（点开看答案），再勾做到了的几条。打勾记在这个浏览器里，见 Site.astro。
+// ask：[问题, 答案] 的列表，问的是这一步讲过、读者容易想错的事；done：勾完以后的那句话，写这一步学会了什么。
 import { langOf } from "../data/nav.js";
-interface Props { id: string; items: string[]; done?: string }
+interface Props { id: string; items: string[]; ask?: [string, string][]; done?: string }
 const lang = langOf(Astro.url.pathname);
-const T = { zh: ["做到这里，检查一下", "都勾上了，可以去下一步。"], en: ["Before moving on, check", "All ticked — on to the next step."] }[lang];
-const { id, items, done = T[1] } = Astro.props;
+const T = { zh: ["做到这里，检查一下", "都勾上了，可以去下一步。", "先想一想，再点开看答案"], en: ["Before moving on, check", "All ticked — on to the next step.", "Think first, then open to check"] }[lang === "zh" ? "zh" : "en"];
+const { id, items, ask = [], done = T[1] } = Astro.props;
 ---
 <div class="checkpoint" data-checkpoint={lang === "en" ? `en-${id}` : id}>
+  {ask.length > 0 && (
+    <div class="checkpoint__ask">
+      <p class="checkpoint__title"><i data-xxd-icon="CircleHelp" data-size="16"></i>{T[2]}</p>
+      {ask.map(([q, a]) => <details class="checkpoint__q"><summary set:html={q} /><p set:html={a} /></details>)}
+    </div>
+  )}
   <p class="checkpoint__title"><i data-xxd-icon="ListChecks" data-size="16"></i>{T[0]}</p>
   <ul>
     {items.map((x) => <li><label><input type="checkbox" class="xxd-check" /><span set:html={x} /></label></li>)}

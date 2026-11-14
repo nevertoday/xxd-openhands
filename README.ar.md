@@ -18,7 +18,7 @@
 ![الدليل الكامل](https://img.shields.io/badge/%D8%A7%D9%84%D8%AF%D9%84%D9%8A%D9%84_%D8%A7%D9%84%D9%83%D8%A7%D9%85%D9%84-9_%D8%AE%D8%B7%D9%88%D8%A7%D8%AA-8A9A8C?style=flat-square)
 ![How-to](https://img.shields.io/badge/How--to-19_%D8%B5%D9%81%D8%AD%D8%A9-C9A97A?style=flat-square)
 ![الأتمتة](https://img.shields.io/badge/%D8%A3%D8%AA%D9%85%D8%AA%D8%A9_%D8%AC%D8%A7%D9%87%D8%B2%D8%A9-27-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-24_%D9%85%D8%B5%D8%B7%D9%84%D8%AD%D9%8B%D8%A7-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-29_%D9%85%D8%B5%D8%B7%D9%84%D8%AD%D9%8B%D8%A7-9AA8C4?style=flat-square)
 ![اللغات](https://img.shields.io/badge/%D8%A7%D9%84%D9%84%D8%BA%D8%A7%D8%AA-10-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/%D9%85%D9%8F%D8%B1%D8%A7%D8%AC%D9%8E%D8%B9_%D8%B9%D9%84%D9%89-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -153,7 +153,7 @@ agent-canvas
 - **[الدليل الكامل](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)**: 9 خطوات لمن يكتب الكود · ما هو ← التثبيت ← النماذج ← أول محادثة ← وكلاء آخرون ← الواجهات الخلفية ← الأتمتة ← المهارات والإضافات وMCP ← الاستضافة الذاتية وSDK
 - **[الأتمتة الجاهزة](https://openhands.xiaoxiaodong.ai/en/automations/)**: كل الـ27، مع تصفية حسب الاسم أو المجموعة أو المُشغِّل
 - **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)**: 19 صفحة، لكل صفحة مهمة واحدة
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**: 24 مصطلحًا · جملة واحدة ← تشبيه ← في OpenHands ← مفاهيم خاطئة شائعة
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**: 29 مصطلحًا · جملة واحدة ← تشبيه ← في OpenHands ← مفاهيم خاطئة شائعة
 - **[الأسئلة الشائعة](https://openhands.xiaoxiaodong.ai/en/faq/)**: هل يكلّف مالًا؟ هل أحتاج إلى مفتاح API؟ يشغّل الأوامر دون أن يسأل، فهل هذا آمن؟
 - **اللغات**: الصفحة الرئيسية ومسار المبتدئين بعشر لغات؛ وكل ما عداهما بالإنجليزية والصينية
 

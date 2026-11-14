@@ -27,4 +27,9 @@ export const GLOSSARY = {
   终端: { tip: "打命令的黑窗口。Mac 上叫「终端」，Windows 上是 PowerShell。", wiki: "terminal", en: { label: "terminal", tip: "The window where you type commands. Terminal on a Mac, PowerShell on Windows." } },
   PR: { tip: "Pull Request：把一组改动交上去，请人看过以后再并进正式版本。", wiki: "pr", en: { label: "PR", tip: "Pull Request: a set of changes submitted for review before being merged into the main version." } },
   token: { tip: "模型用量的计算单位，相当于「字数额度」。任务越长、来回越多，花得越多。", wiki: "token", en: { label: "tokens", tip: "The unit model usage is counted and billed in. Longer tasks and more back-and-forth cost more." } },
+  三段式交代: { tip: "交代一件事分三段：我想要什么、做好是什么样子、做完给我看什么。", wiki: "three-part-brief", en: { label: "three-part brief", tip: "Brief every task in three parts: what I want, what done looks like, and what to show me when it's done." } },
+  先只看不改: { tip: "先让它读代码、讲给你听，不改任何文件。看懂了再让它动手。", wiki: "read-first", en: { label: "read only", tip: "Have it read the code and explain it first, changing nothing. Let it make changes once you understand." } },
+  空文件夹: { tip: "头几次用，新建一个空文件夹给它，让它只在里面干活。", wiki: "empty-folder", en: { label: "empty folder", tip: "For your first runs, make a new empty folder and have it work only inside." } },
+  先跑一次: { tip: "新建的自动化，先用 Run now 手动跑一次，看过结果再让它按时自己跑。", wiki: "run-once", en: { label: "run it once first", tip: "Run a new automation once by hand with Run now, and check the result before leaving it on its schedule." } },
+  "草稿 PR": { tip: "让它开的 PR 先开成草稿，有人审过再合并。", wiki: "draft-pr", en: { label: "draft PR", tip: "Have it open PRs as drafts first, and merge only after someone reviews them." } },
 };

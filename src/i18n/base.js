@@ -8,6 +8,7 @@ export default {
     skip: "Skip to content",
     menu: "Open menu",
     search: "Search the guide",
+    termMore: "Read more",
     searchPh: "Search lessons, steps, automations, terms…",
     searchEmpty: "Nothing found. Try another word",
     look: "Appearance",
@@ -61,12 +62,13 @@ export default {
       "You open the official docs and see npm, Docker and uv before you know which one to install.",
       "Agent Canvas, Agent Server, backends, ACP, Cloud, SDK: so many names, and no clue which one is for you.",
       "You've heard it edits files and runs commands on its own, and you worry it will mess up the rest of your computer.",
+      "You don't know what it costs, or whether you need accounts with a pile of AI companies first.",
     ],
     diffH: "What this guide does differently",
     diffW: "Where you get stuck", diffA: "Reading the official docs alone", diffB: "With this guide",
     DIFF: [
       ["Installing", "Several install options side by side; you pick", "One path: the desktop app, no terminal needed"],
-      ["Picking a model", "A long list of providers and model names", "Already have a key or subscription? Use it. Otherwise one OpenHands Cloud key (after a $10 top-up)"],
+      ["Picking a model", "A long list of providers and model names", "OpenHands itself is free. Already have a key or subscription? Use it. Otherwise one OpenHands Cloud key: a $10 top-up first, and models marked Free don't use it"],
       ["What it can touch", "The docs warn the agent can access your whole filesystem", "The first time, it works only inside a new, empty folder"],
     ],
     lessonsH: "Beginners need just three lessons",
@@ -131,6 +133,8 @@ export default {
 
   // 正文里用到的组件
   comp: {
+    demoAlt: "Demo: one sentence in the water folder; OpenHands creates the files, tries the page, checks it, and hands back a small page that counts glasses of water",
+    demoCap: "By the end of lesson 3, you'll have made this yourself.",
     callout: { ok: "You should see", warn: "Heads up", no: "Don't do this", tip: "Tip" },
     copyTitle: "Copy this",
     copy: "Copy",

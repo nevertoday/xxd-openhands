@@ -16,7 +16,7 @@
 ![Guide complet](https://img.shields.io/badge/Guide_complet-9_%C3%A9tapes-8A9A8C?style=flat-square)
 ![Fiches pratiques](https://img.shields.io/badge/Fiches_pratiques-19-C9A97A?style=flat-square)
 ![Automatisations](https://img.shields.io/badge/Automatisations_pr%C3%AAtes-27-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-24_termes-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-29_termes-9AA8C4?style=flat-square)
 ![Langues](https://img.shields.io/badge/Langues-10-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/V%C3%A9rifi%C3%A9_sur-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -145,7 +145,7 @@ Et aussi [des prompts à copier-coller](https://openhands.xiaoxiaodong.ai/en/how
 - **[Guide complet](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)** (en anglais) : 9 étapes pour ceux qui codent · ce que c'est → installation → modèles → première conversation → autres agents → backends → automatisations → skills, plugins, MCP → auto-hébergement et SDK
 - **[Automatisations prêtes à l'emploi](https://openhands.xiaoxiaodong.ai/en/automations/)** (en anglais) : les 27, à filtrer par nom, par groupe ou par déclencheur
 - **[Fiches pratiques](https://openhands.xiaoxiaodong.ai/en/howto/)** (en anglais) : 19 fiches, une tâche chacune
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)** (en anglais) : 24 termes · une phrase → une analogie → dans OpenHands → idées reçues
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)** (en anglais) : 29 termes · une phrase → une analogie → dans OpenHands → idées reçues
 - **[FAQ](https://openhands.xiaoxiaodong.ai/en/faq/)** (en anglais) : C'est payant ? Faut-il une clé d'API ? Il lance des commandes sans demander, est-ce sans danger ?
 - **Langues** : la page d'accueil et le parcours débutant en 10 langues ; tout le reste en anglais et en chinois
 

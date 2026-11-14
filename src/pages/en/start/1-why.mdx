@@ -1,15 +1,16 @@
 ---
 layout: ../../../layouts/Lesson.astro
-tldr: "OpenHands is an AI that does the work itself. You need a computer, a model key, and one empty folder for it."
+tldr: "You say what you want; OpenHands creates the files, tries them and hands the result back. You bring a computer, a model, and one empty folder for it."
 lesson: 1
 description: For people who don't code. What OpenHands is, what you need, what it costs, and what the risk is.
 ---
 import Callout from "../../../components/Callout.astro";
+import Demo from "../../../components/Demo.astro";
 import Term from "../../../components/Term.astro";
 
 ## How you probably use AI today
 
-You ask an AI for a small web page. It replies with a big block of code.
+You ask an AI for a small web page that counts how many glasses of water you drink each day. It replies with a big block of code.
 
 The rest is up to you. You create a file, paste, save, and open it. If it breaks, you copy the error back and ask again. That goes on for several rounds.
 
@@ -21,7 +22,9 @@ The rest is up to you. You create a file, paste, save, and open it. If it breaks
 - **It runs commands.** Whatever needs installing or running, it types on your computer.
 - **It tries its own work.** It runs the result, and if something fails, it keeps fixing.
 
-You watch it work step by step. At the end, you open the result and check it yourself.
+You watch it work step by step. At the end, you open the result and check it yourself. Here is the same water page, handed to OpenHands:
+
+<Demo />
 
 ## What you need
 
@@ -54,5 +57,5 @@ That folder isn't a lock. It's just where it works. You'll also tell it, in your
 The desktop app is still a preview, so expect a few rough edges.
 
 <Callout type="tip" title="Just two more lessons">
-Install it and get a key, then have it do your first task. After these three lessons, you can use it. Everything else on the site is for looking up when you run into something. You don't need it now.
+The next lesson takes about 10 minutes: install it and get a model ready. In the one after that, you write one message and watch it build the water page above. After these three lessons, you can use it. Everything else on the site is for looking up when you run into something. You don't need it now.
 </Callout>

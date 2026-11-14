@@ -142,4 +142,7 @@ With an OpenHands key, use the **LLM API Key**, not a Cloud API key, and a model
 <p>You probably used an OpenHands Cloud API key. The SDK needs the LLM API Key from the <code>API Keys</code> page.</p>
 </Q>
 
-<Checkpoint id="s8" items={["I know to set the firewall first, then start with --public and a strong key", "I can add the server as a backend over an SSH tunnel", "I know what the critic and the SDK are for, and where to look when I need them"]} />
+<Checkpoint id="s8" ask={[
+  ["What happens if you start it on the server without --public?", "The key is built into the page, so anyone who opens the UI gets in without entering it. That's only fine on your own computer."],
+  ["Can you start the service first and set the firewall afterwards?", "No. Set it before the first start: SSH only from your own IP or VPN range, and every other port dropped."]
+]} items={["Before the first start, I set the firewall so only SSH gets in", "I started it with --public and a random key, and stored the key somewhere safe", "I added the server as a backend over an SSH tunnel, and it shows as connected"]} done="Your backend runs on a machine that stays on, with the doors locked." />

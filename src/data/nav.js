@@ -103,6 +103,18 @@ export const HOWTO = [
 export const howtoHref = (slug, lang = "zh") => link(`/howto/${slug}/`, lang);
 export const HOWTO_FLAT = HOWTO.flatMap((g) => g.items.map((i) => ({ ...i, group: g.group, groupEn: g.en.group })));
 
+// 一条读下去的路：每篇 How-to 末尾指向下一篇。新加的 How-to 要排进来，不然构建报错。
+export const HOWTO_PATH = [
+  "new-codebase", "good-instructions", "recipes", "issue-to-pr", "code-review", "qa-changes",
+  "docker-sandbox", "parallel", "cost", "dependency-upgrades", "vulnerability-remediation",
+  "slack-digest", "custom-automation", "local-llm", "cloud", "server", "phone", "update-remove", "troubleshoot",
+];
+{
+  const a = [...HOWTO_PATH].sort().join(), b = HOWTO_FLAT.map((h) => h.slug).sort().join();
+  if (a !== b) throw new Error(`HOWTO_PATH 和 HOWTO 对不上：\n${a}\n${b}`);
+}
+export const howtoNext = (slug) => HOWTO_FLAT.find((h) => h.slug === HOWTO_PATH[HOWTO_PATH.indexOf(slug) + 1]) ?? null;
+
 export const wikiHref = (slug, lang = "zh") => link(`/wiki/${slug}/`, lang);
 
 /** 现成自动化：速查页和每个自动化的详情页（数据在 automations.js） */

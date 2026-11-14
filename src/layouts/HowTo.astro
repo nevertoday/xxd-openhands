@@ -2,7 +2,8 @@
 // How-to 一篇：面包屑、标题、适用于谁、正文、同类文章
 import Site from "./Site.astro";
 import Feedback from "../components/Feedback.astro";
-import { HOWTO_FLAT, howtoHref, stepHref, STEPS, link, langOf, t } from "../data/nav.js";
+import { HOWTO_FLAT, howtoHref, howtoNext, automationHref, stepHref, STEPS, link, langOf, t } from "../data/nav.js";
+import { howtoMeta } from "../lib/howtos.js";
 const { frontmatter, headings = [] } = Astro.props;
 const lang = langOf(Astro.url.pathname);
 const en = lang === "en";
@@ -12,6 +13,10 @@ const sameGroup = HOWTO_FLAT.filter((h) => h.group === me.group && h.slug !== me
 const step = frontmatter.step !== undefined ? STEPS.find((s) => s.n === frontmatter.step) : null;
 const title = t(me, "title", lang);
 const group = en ? me.groupEn : me.group;
+const nx = howtoNext(me.slug);
+const next = nx
+  ? { label: en ? "Read next" : "下一篇", href: howtoHref(nx.slug, lang), title: t(nx, "title", lang), sub: howtoMeta(nx.slug, lang).tldr }
+  : { label: en ? "That's the last one" : "这是最后一篇", href: automationHref(null, lang), title: en ? "Prebuilt automations" : "现成自动化", sub: en ? "Pick one and let it start work on its own." : "挑一个开起来，让它按时自己开工。" };
 ---
 <Site title={title} description={frontmatter.description} headings={headings}>
   <header class="step-head">
@@ -25,6 +30,11 @@ const group = en ? me.groupEn : me.group;
     </div>
   </header>
   <article class="xxd-prose"><slot /></article>
+  <a class="next-read" href={next.href}>
+    <span class="next-read__label">{next.label}<i data-xxd-icon="ArrowRight" data-size="14"></i></span>
+    <span class="next-read__title">{next.title}</span>
+    {next.sub && <span class="next-read__sub">{next.sub}</span>}
+  </a>
   <Feedback page={`How-to: ${title}`} />
   {sameGroup.length > 0 && (
     <nav class="related" aria-label={en ? "Related articles" : "同类文章"}>

@@ -7,6 +7,7 @@ export default {
     skip: "Aller au contenu",
     menu: "Ouvrir le menu",
     search: "Rechercher dans le guide",
+    termMore: "En savoir plus",
     searchPh: "Une leçon, une étape, une automatisation, un mot…",
     searchEmpty: "Aucun résultat. Essayez un autre mot",
     look: "Apparence",
@@ -55,12 +56,13 @@ export default {
       "Vous ouvrez la documentation officielle et tombez sur npm, Docker et uv avant même de savoir lequel installer.",
       "Agent Canvas, Agent Server, backends, ACP, Cloud, SDK : tant de noms, et aucune idée de celui qui vous concerne.",
       "On vous a dit qu'il modifie des fichiers et lance des commandes tout seul, et vous avez peur qu'il abîme le reste de votre ordinateur.",
+      "Vous ne savez pas combien ça coûte, ni s'il faut d'abord ouvrir des comptes chez une flopée d'entreprises d'IA.",
     ],
     diffH: "Ce que ce guide fait autrement",
     diffW: "Là où l'on bloque", diffA: "Seul avec la documentation officielle", diffB: "Avec ce guide",
     DIFF: [
       ["L'installation", "Plusieurs façons d'installer, côte à côte ; à vous de choisir", "Un seul chemin : l'application de bureau, sans terminal"],
-      ["Le choix du modèle", "Une longue liste de fournisseurs et de noms de modèles", "Vous avez déjà une clé ou un abonnement ? Servez-vous-en. Sinon, une seule clé OpenHands Cloud (après avoir ajouté 10 $ de crédit)"],
+      ["Le choix du modèle", "Une longue liste de fournisseurs et de noms de modèles", "OpenHands lui-même est gratuit. Vous avez déjà une clé ou un abonnement ? Servez-vous-en. Sinon, une seule clé OpenHands Cloud : il faut d'abord ajouter 10 $ de crédit, et les modèles marqués Free n'utilisent pas ce crédit"],
       ["Ce qu'il peut toucher", "La documentation prévient que l'agent peut accéder à tous vos fichiers", "La première fois, il travaille seulement dans un nouveau dossier vide"],
     ],
     lessonsH: "Trois leçons suffisent pour débuter",
@@ -119,6 +121,8 @@ export default {
   },
 
   comp: {
+    demoAlt: "Démo : une phrase dans le dossier water ; OpenHands crée les fichiers, essaie la page, la vérifie et vous rend une petite page qui compte les verres d'eau",
+    demoCap: "À la fin de la leçon 3, vous l'aurez fait vous-même.",
     callout: { ok: "Vous devriez voir", warn: "Attention", no: "À éviter", tip: "Astuce" },
     copyTitle: "À copier",
     copy: "Copier",

@@ -67,6 +67,8 @@ It replies with a sentence. Your model is connected.
 
 Model changes apply to **new conversations**. A conversation that's already open keeps the model it started with.
 
+With the model connected, [step 3](/en/guide/3-first-conversation/) has it build a counter page in a new empty folder called `counter`. The later steps keep using that folder.
+
 ## Save several and switch
 
 Each save stores an <Term k="LLM Profile" />: which provider, which model, which key. You can keep several:
@@ -105,4 +107,7 @@ OpenHands sends your model a lot of requests. Most models charge per use, so set
 
 For each provider's details, see the official [LLM Configuration](https://docs.openhands.dev/openhands/usage/llms/llms) and [Configure a Model](https://docs.openhands.dev/openhands/usage/agent-canvas/model-configuration).
 
-<Checkpoint id="s2" items={["I finished the setup wizard", "I saved a model setup", "I sent a message in a new conversation and it answered"]} />
+<Checkpoint id="s2" ask={[
+  ["You change the model settings. Does an open conversation switch to the new model?", "No. A conversation that's already open keeps the model it started with. The change applies to new conversations."],
+  ["The OpenHands Cloud <code>API Keys</code> page has two kinds of key. Which one goes in the model settings?", "The <strong>LLM API Key</strong>. The other kind, a Cloud API key, is for calling the Cloud API and won't work here."]
+]} items={["I finished the setup wizard", "I saved a model setup", "I sent a message in a new conversation and it answered"]} done="Your model is connected. Next, it does its first job in the counter folder." />

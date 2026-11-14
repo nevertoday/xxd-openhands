@@ -88,4 +88,7 @@ OpenHands sends your model a lot of requests. Most models charge per use, so set
 <p>The <Term k="SDK" /> is a Python toolkit for building agents in code. The Agent Server is built on it. If you only want the UI, skip it for now. <a href="/en/guide/8-beyond/">Step 8</a> covers it.</p>
 </Q>
 
-<Checkpoint id="s0" items={["I know Agent Canvas is only the screen and the backend does the work", "I've decided where it works first: one dedicated folder on my machine, or Docker", "I have a model I can use, or I know where to get one"]} />
+<Checkpoint id="s0" ask={[
+  ["Running the desktop app straight on your computer, which files can it reach?", "Everything your account can. So give it one dedicated folder at first. For isolation, use Docker."],
+  ["After you switch backends, can you still see your old conversations?", "No. Conversation history, model settings and secrets are stored on the backend. Switch backends and you see a different set of conversations and settings."]
+]} items={["I've decided where it works first: one dedicated folder on my machine, or Docker", "I have a model I can use, or I know where to get one", "I have a folder ready for it to work in"]} done="All three are ready. Time to install." />

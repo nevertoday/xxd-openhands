@@ -2,7 +2,7 @@
 //   node scripts/check-i18n.mjs ja        只查日语
 //   node scripts/check-i18n.mjs           全部查
 // 查的是：src/i18n/<语言>.js 的键和 base.js 一样多、{占位} 没丢、数组长度一样；
-// src/pages/<语言>/ 下的首页和三课都在、MDX 能编译、复制块的 id 和术语键和英文版一样、每页最多一处 <mark>、
+// src/pages/<语言>/ 下的首页和三课都在、MDX 能编译、复制块的 id 和术语键和英文版一样、Demo/Callout/Q/Checkpoint 的个数和英文版一样、每页最多一处 <mark>、
 // 站内链接指向存在的页面（新手入门指向本语言，其他页面指向 /en/）。
 import { readFileSync, existsSync } from "node:fs";
 import { compile } from "@mdx-js/mdx";
@@ -31,6 +31,7 @@ const walk = (base, tr, path, code) => {
 
 const ids = (s) => [...s.matchAll(/<Copy id="([^"]+)"/g)].map((m) => m[1]).sort().join(",");
 const terms = (s) => [...s.matchAll(/<Term k="([^"]+)"/g)].map((m) => m[1]).sort().join(",");
+const blocks = (s) => ["Demo", "Callout", "Q", "Checkpoint"].map((c) => `${c}×${(s.match(new RegExp(`<${c}\\b`, "g")) || []).length}`).join(" ");
 
 for (const code of want) {
   const d = EXTRA[code];
@@ -45,6 +46,7 @@ for (const code of want) {
     try { await compile(s); } catch (e) { fail(code, `${f} 编译不过：${e.message.split("\n")[0]}`); }
     if (s === en) fail(code, `${f} 还是英文原样`);
     if (ids(s) !== ids(en)) fail(code, `${f} 复制块的 id 和英文版不一样`);
+    if (blocks(s) !== blocks(en)) fail(code, `${f} 的组件数和英文版不一样（英文版：${blocks(en)}；这里：${blocks(s)}）`);
     if (terms(s) !== terms(en)) fail(code, `${f} 用到的术语和英文版不一样（英文版：${terms(en) || "没有"}）`);
     if ((s.match(/<mark/g) || []).length > 1) fail(code, `${f} 有不止一处 <mark>`);
     if (!/^tldr: /m.test(s)) fail(code, `${f} 缺 tldr`);

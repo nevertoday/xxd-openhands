@@ -16,7 +16,7 @@
 ![Full guide](https://img.shields.io/badge/Full_guide-9_steps-8A9A8C?style=flat-square)
 ![How-to](https://img.shields.io/badge/How--to-19_pages-C9A97A?style=flat-square)
 ![Automations](https://img.shields.io/badge/Prebuilt_automations-27-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-24_terms-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-29_terms-9AA8C4?style=flat-square)
 ![Languages](https://img.shields.io/badge/Languages-10-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/Checked_against-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -143,7 +143,7 @@ Plus [copy-paste prompts](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), 
 - **[Full guide](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)**: 9 steps for people who code · what it is → install → models → first conversation → other agents → backends → automations → skills, plugins, MCP → self-hosting and the SDK
 - **[Prebuilt automations](https://openhands.xiaoxiaodong.ai/en/automations/)**: all 27, filter by name, group or trigger
 - **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)**: 19 pages, one job each
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**: 24 terms · one sentence → an analogy → in OpenHands → common misconceptions
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**: 29 terms · one sentence → an analogy → in OpenHands → common misconceptions
 - **[FAQ](https://openhands.xiaoxiaodong.ai/en/faq/)**: Does it cost money? Do I need an API key? It runs commands without asking; is that safe?
 - **Languages**: the home page and beginner track in 10 languages; everything else in English and Chinese
 

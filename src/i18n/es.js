@@ -7,6 +7,7 @@ export default {
     skip: "Ir al contenido",
     menu: "Abrir menú",
     search: "Buscar en la guía",
+    termMore: "Leer más",
     searchPh: "Busca lecciones, pasos, automatizaciones, términos…",
     searchEmpty: "No hay resultados. Prueba con otra palabra",
     look: "Apariencia",
@@ -55,12 +56,13 @@ export default {
       "Abres la documentación oficial y ves npm, Docker y uv antes de saber cuál tienes que instalar.",
       "Agent Canvas, Agent Server, backends, ACP, Cloud, SDK: tantos nombres y ni idea de cuál es para ti.",
       "Has oído que edita archivos y ejecuta comandos por su cuenta, y te preocupa que desordene el resto de tu computadora.",
+      "No sabes cuánto cuesta, ni si antes tienes que abrir cuentas en un montón de empresas de IA.",
     ],
     diffH: "Qué hace distinto esta guía",
     diffW: "Dónde te atascas", diffA: "Leyendo solo la documentación oficial", diffB: "Con esta guía",
     DIFF: [
       ["Instalarlo", "Varias formas de instalarlo, una al lado de otra; tú eliges", "Un solo camino: la aplicación de escritorio, sin terminal"],
-      ["Elegir un modelo", "Una lista larga de proveedores y nombres de modelos", "¿Ya tienes una clave o una suscripción? Úsala. Si no, una clave de OpenHands Cloud (tras recargar 10 $)"],
+      ["Elegir un modelo", "Una lista larga de proveedores y nombres de modelos", "OpenHands en sí es gratis. ¿Ya tienes una clave o una suscripción? Úsala. Si no, una clave de OpenHands Cloud: primero recargas 10 $, y los modelos marcados como Free no gastan ese saldo"],
       ["Qué puede tocar", "La documentación avisa que el agente puede acceder a todos tus archivos", "La primera vez, trabaja solo dentro de una carpeta nueva y vacía"],
     ],
     lessonsH: "Si empiezas, te bastan tres lecciones",
@@ -119,6 +121,8 @@ export default {
   },
 
   comp: {
+    demoAlt: "Demostración: una frase en la carpeta del agua; OpenHands crea los archivos, prueba la página, la comprueba y te entrega una página pequeña que cuenta vasos de agua",
+    demoCap: "Al terminar la lección 3, lo habrás hecho tú.",
     callout: { ok: "Deberías ver", warn: "Atención", no: "No hagas esto", tip: "Consejo" },
     copyTitle: "Copia esto",
     copy: "Copiar",

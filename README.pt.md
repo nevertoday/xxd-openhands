@@ -16,7 +16,7 @@ O [OpenHands](https://github.com/OpenHands/OpenHands) é um agente de programaç
 ![Guia completo](https://img.shields.io/badge/Guia_completo-9_passos-8A9A8C?style=flat-square)
 ![How-to](https://img.shields.io/badge/How--to-19_p%C3%A1ginas-C9A97A?style=flat-square)
 ![Automações](https://img.shields.io/badge/Automa%C3%A7%C3%B5es_prontas-27-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-24_termos-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-29_termos-9AA8C4?style=flat-square)
 ![Idiomas](https://img.shields.io/badge/Idiomas-10-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/Conferido_com-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -145,7 +145,7 @@ E ainda [prompts para copiar e colar](https://openhands.xiaoxiaodong.ai/en/howto
 - **[Guia completo](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)** (em inglês): 9 passos para quem programa · o que é → instalar → modelos → primeira conversa → outros agentes → backends → automações → skills, plugins e MCP → hospedagem própria e o SDK
 - **[Automações prontas](https://openhands.xiaoxiaodong.ai/en/automations/)** (em inglês): as 27, com filtro por nome, grupo ou gatilho
 - **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)** (em inglês): 19 páginas, uma tarefa em cada
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)** (em inglês): 24 termos · uma frase → uma analogia → no OpenHands → equívocos comuns
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)** (em inglês): 29 termos · uma frase → uma analogia → no OpenHands → equívocos comuns
 - **[Perguntas frequentes](https://openhands.xiaoxiaodong.ai/en/faq/)** (em inglês): Custa dinheiro? Preciso de uma API key? Ele roda comandos sem perguntar; isso é seguro?
 - **Idiomas**: a página inicial e as lições para iniciantes em 10 idiomas; todo o resto em inglês e em chinês
 

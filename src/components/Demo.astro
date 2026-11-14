@@ -1,0 +1,15 @@
+---
+// 演示动画：第 3 课做的喝水网页，从交代一句话到交回来。首页和第 1 课用，让读者先看到它能做出什么。
+// 图是 tools/build_assets.py 生成的 public/img/hero-zh.svg、hero-en.svg（其他语言用英文图）。
+import { langOf, link } from "../data/nav.js";
+import { X as dict } from "../i18n/index.js";
+const lang = langOf(Astro.url.pathname);
+const x = dict(lang)?.comp;
+const T = x ? { alt: x.demoAlt, cap: x.demoCap } : lang === "en"
+  ? { alt: "Demo: one sentence in the water folder; OpenHands creates the files, tries the page, checks it, and hands back a small page that counts glasses of water", cap: "By the end of lesson 3, you'll have made this yourself." }
+  : { alt: "演示：在 water 文件夹里交代一句话，OpenHands 建文件、试一遍、自己检查，最后交回一个记录喝水的小网页", cap: "第 3 课结束，你自己也会做出这个。" };
+---
+<figure class="demo">
+  <img src={link(`/img/hero-${lang === "zh" ? "zh" : "en"}.svg`, "zh")} width="960" height="480" alt={T.alt} loading="lazy" decoding="async" />
+  <figcaption>{T.cap}</figcaption>
+</figure>

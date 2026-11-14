@@ -20,13 +20,13 @@ interface Props {
 }
 const UI = {
   zh: { html: "zh-CN", brand: "OpenHands 新手教程", desc: "不会写代码也能用上 OpenHands：三课入门，说人话。", skip: "跳到正文", menu: "打开目录", search: "搜索教程", lang: "语言",
-  searchPh: "搜步骤、How-to、自动化、名词、问题……", searchEmpty: "没找到，换个词试试", look: "外观", repo: "本教程的 GitHub 仓库", repoMore: "其他链接：OpenHands 仓库、官方文档", repoDefault: "默认",
+  termMore: "看全文", searchPh: "搜步骤、How-to、自动化、名词、问题……", searchEmpty: "没找到，换个词试试", look: "外观", repo: "本教程的 GitHub 仓库", repoMore: "其他链接：OpenHands 仓库、官方文档", repoDefault: "默认",
   repos: [[REPO, "本教程", "nevertoday/xxd-openhands", "教程的源码，有问题在这里提"], [OPENHANDS, "OpenHands", "OpenHands/OpenHands", "官方仓库，MIT 许可"], [DOCS, "官方文档", "docs.openhands.dev", "命令和行为以这里为准"]],
   navLabel: "网站目录", start: "开始", home: "首页", lessons: "新手入门：先看这三课", main: "完整教程：会写代码的人看", pending: "编写中", ref: "查资料", howto: "How-to：具体怎么做",
   wiki: "Wiki：这是什么", faq: "常见问题", toc: "本页", tocLabel: "本页目录", hintMain: "完整教程", hintLesson: "新手入门", hintFaq: "常见问题", hintAuto: "现成自动化",
   foot: `本站是 <a href="${OPENHANDS}">OpenHands</a> 的非官方入门教程，不是官方文档。OpenHands 由 OpenHands contributors 开发（MIT 许可），命令和行为以<a href="${OPENHANDS}">官方仓库</a>和<a href="${DOCS}">官方文档</a>为准。教程源码和问题反馈在 <a href="${REPO}">GitHub</a>；网站骨架来自 <a href="${SKELETON}">xxd-pstack</a>。` },
   en: { html: "en", brand: "OpenHands for beginners", desc: "Put OpenHands to work even if you don't code: three beginner lessons, in plain words.", skip: "Skip to content", menu: "Open menu", search: "Search the guide", lang: "Language",
-    searchPh: "Search steps, how-tos, automations, terms, questions…", searchEmpty: "Nothing found. Try another word", look: "Appearance", repo: "This guide on GitHub", repoMore: "More links: the OpenHands repo, the official docs", repoDefault: "Default",
+    termMore: "Read more", searchPh: "Search steps, how-tos, automations, terms, questions…", searchEmpty: "Nothing found. Try another word", look: "Appearance", repo: "This guide on GitHub", repoMore: "More links: the OpenHands repo, the official docs", repoDefault: "Default",
     repos: [[REPO, "This guide", "nevertoday/xxd-openhands", "Source for this guide; file issues here"], [OPENHANDS, "OpenHands", "OpenHands/OpenHands", "The official repo, MIT licensed"], [DOCS, "Official docs", "docs.openhands.dev", "The source of truth for commands and behavior"]],
     navLabel: "Site navigation", start: "Start", home: "Home", lessons: "Beginner track: start here", main: "Full guide: for people who code", pending: "In progress", ref: "Reference", howto: "How-to: how exactly",
     wiki: "Wiki: what is it", faq: "FAQ", toc: "On this page", tocLabel: "On this page", hintMain: "Full guide", hintLesson: "Beginner track", hintFaq: "FAQ", hintAuto: "Prebuilt automation",
@@ -293,6 +293,37 @@ const GITHUB_MARK = '<svg width="16" height="16" viewBox="0 0 16 16" fill="curre
           inputs.forEach((el) => el.addEventListener("change", update));
           update();
         }
+      })();
+    </script>
+    <script is:inline data-more={L.termMore}>
+      // 手机上没有悬停：第一下点虚线词，先弹出那句解释和「看全文」；再点同一个词，才进 Wiki
+      (() => {
+        const more = document.currentScript.dataset.more;
+        let pop = null, owner = null;
+        const close = () => { pop?.remove(); pop = null; owner = null; };
+        document.addEventListener("click", (e) => {
+          if (pop?.contains(e.target)) return;
+          const a = e.target.closest?.("a.term[data-tooltip]");
+          if (!a || !matchMedia("(hover: none)").matches) return close();
+          if (owner === a) return close();
+          e.preventDefault();
+          close();
+          owner = a;
+          pop = document.createElement("div");
+          pop.className = "term-pop";
+          pop.setAttribute("role", "note");
+          const tip = document.createElement("span");
+          tip.textContent = a.dataset.tooltip + " ";
+          const go = document.createElement("a");
+          go.href = a.href;
+          go.textContent = more + " →";
+          pop.append(tip, go);
+          document.body.append(pop);
+          const r = a.getBoundingClientRect(), w = pop.offsetWidth;
+          pop.style.top = `${r.bottom + scrollY + 6}px`;
+          pop.style.left = `${Math.max(8, Math.min(r.left, innerWidth - w - 8)) + scrollX}px`;
+        });
+        addEventListener("keydown", (e) => e.key === "Escape" && close());
       })();
     </script>
   </body>

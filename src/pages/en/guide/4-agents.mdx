@@ -8,6 +8,7 @@ description: What an ACP agent is, which ones you can use, how to reuse a signed
 import Callout from "../../../components/Callout.astro";
 import Checkpoint from "../../../components/Checkpoint.astro";
 import Term from "../../../components/Term.astro";
+import Copy from "../../../components/Copy.astro";
 import Q from "../../../components/Q.astro";
 
 ## Know what you're switching
@@ -70,6 +71,21 @@ Without a subscription, or with a backend in Docker or the cloud, give it a key.
 
 With a Docker or cloud backend, this step is required, because a fresh container has none of your logins. The wizard also asks for login credentials, such as `CLAUDE_CODE_OAUTH_TOKEN` for Claude Code or `CODEX_AUTH_JSON` for Codex.
 
+## Try it on counter
+
+Once the agent is picked and has a login or key, open the `counter` folder from step 3, start a new conversation, and hand it the same task. Use a different file name so the two sit side by side:
+
+<Copy id="compare" title="Same task, different agent" code={`What I want: in this folder, create index-acp.html: a button in the middle of the page, and a number under it that goes up by 1 on each click. Use only this one file and install nothing. Don't touch index.html.
+What done looks like: when I open it in a browser, the number starts at 0; after 3 clicks it shows 3.
+When you're done, show me: which files you changed; what you checked and what you saw for each check; how to open it in a browser.`} />
+
+The model and tools are now that agent's own, so a different result is normal. Compare two things:
+
+- **The replies.** Which checks each agent reported, and what it saw.
+- **The pages.** Open each in a browser, click 3 times, and see whether both show 3.
+
+Then keep one. If you like the new one, delete the old `index.html` and rename `index-acp.html` to `index.html`. If you like the old one, delete `index-acp.html`. The next steps keep using this folder.
+
 ## Save agent profiles and switch
 
 Each agent setup can be saved as an <Term k="Agent Profile" />: which agent, and how it's configured. It works at a different layer from the <Term k="LLM Profile" /> in [step 2](/en/guide/2-model/):
@@ -104,4 +120,7 @@ Treat agents and ACP processes as untrusted. They can run commands and read and 
 
 For each agent's details, see the official [ACP Agents](https://docs.openhands.dev/openhands/usage/agent-canvas/acp-agents) and [Agent Profiles](https://docs.openhands.dev/openhands/usage/agent-canvas/agent-profiles) pages.
 
-<Checkpoint id="s4" items={["I know that with an ACP agent, the model and tools belong to that agent", "I picked an agent and tried it in a new conversation", "I know I can't switch agents mid-conversation, so I start a new one"]} />
+<Checkpoint id="s4" ask={[
+  ["After switching to Claude Code, does the LLM Profile from step 2 still apply?", "No. An ACP agent uses its own model, not an LLM Profile."],
+  ["Halfway through a conversation, you want another agent to take over. What do you do?", "Start a new conversation. Once a conversation has started, you can't switch its agent."]
+]} items={["I picked an ACP agent in Settings > Agent and saved it", "I started a new conversation in the counter folder and gave it the same task", "I compared the two pages and the two replies, and kept a single index.html"]} done="You can hand the same task to another agent and compare the results." />

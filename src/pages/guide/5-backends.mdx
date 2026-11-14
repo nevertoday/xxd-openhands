@@ -58,14 +58,17 @@ Windows 要在 WSL 2 里的 Linux 系统中跑这两条，并且打开 Docker De
 
 ## 确认它真的在容器里
 
-在新对话里让它跑这两条：
+打开第 3 步的 `counter` 文件夹，开一个新对话，让它跑这三条：
 
 <Copy id="verify" lang="bash" title="让代理运行" code={`id
-printf 'PWD=%s\\nHOME=%s\\n' "$PWD" "$HOME"`} />
+printf 'PWD=%s\\nHOME=%s\\n' "$PWD" "$HOME"
+ls`} />
 
 <Callout type="ok">
-输出里 `PWD` 是 `/workspace`，`HOME` 是 `/var/openhands/.openhands`，不是你电脑上的用户目录。
+输出里 `PWD` 是 `/workspace`，`HOME` 是 `/var/openhands/.openhands`，不是你电脑上的用户目录。`ls` 列出的是 counter 里的文件，比如 `index.html`。
 </Callout>
+
+它碰得到的，是挂进来的 counter 文件夹。这个文件夹在你电脑上，它改了 `index.html`，你那边打开也是改过的。它的 `HOME` 在容器里，不是你的用户目录。
 
 ## 添加和切换后端
 
@@ -105,4 +108,7 @@ printf 'PWD=%s\\nHOME=%s\\n' "$PWD" "$HOME"`} />
 
 同时开好几个对话的做法见[同时开好几个对话](/howto/parallel/)，Docker 的更多用法见[把它关进 Docker 里跑](/howto/docker-sandbox/)。
 
-<Checkpoint id="s5" items={["我知道换后端会把设置、模型、自动化一起换掉", "我知道哪种后端能碰到我电脑上的文件，哪种碰不到", "我在 Manage Backends 里看过怎么添加一个后端"]} />
+<Checkpoint id="s5" ask={[
+  ["换到 Cloud 后端，你在本机配的 MCP 还在吗？", "不在。设置、模型、MCP、自动化都跟着当前后端走。Cloud 后端的模型、密钥、MCP 和本地后端是分开的，要单独配。"],
+  ["两个对话都打开 counter，一个改了 index.html，另一个看得到吗？", "看得到。用同一个工作区，改的就是同一份文件。不想互相影响，各用各的文件夹，或者各用一个 Git worktree。"]
+]} items={["我用多容器模式开了一个新对话，打开的是 counter 文件夹", "它跑了那三条命令，PWD 是 /workspace，HOME 不是我的用户目录", "我在 Manage Backends 里看过怎么添加一个后端"]} done="你看过容器里的对话能碰到什么，也会添加和切换后端。" />

@@ -1,15 +1,16 @@
 ---
 layout: ../../../layouts/Lesson.astro
-tldr: "OpenHands ist eine KI, die die Arbeit selbst erledigt. Du brauchst einen Computer, einen Schlüssel für ein Modell und einen leeren Ordner für ihn."
+tldr: "Du sagst, was du willst; OpenHands legt die Dateien an, probiert sie aus und gibt dir das Ergebnis. Du bringst einen Computer, ein Modell und einen leeren Ordner für ihn mit."
 lesson: 1
 description: "Für alle, die nicht programmieren. Was OpenHands ist, was du brauchst, was es kostet und welches Risiko es gibt."
 ---
 import Callout from "../../../components/Callout.astro";
+import Demo from "../../../components/Demo.astro";
 import Term from "../../../components/Term.astro";
 
 ## So nutzt du KI wahrscheinlich heute
 
-Du bittest eine KI um eine kleine Webseite. Sie antwortet mit einem großen Block Code.
+Du bittest eine KI um eine kleine Webseite, die zählt, wie viele Gläser Wasser du jeden Tag trinkst. Sie antwortet mit einem großen Block Code.
 
 Der Rest bleibt an dir hängen. Du legst eine Datei an, fügst den Code ein, speicherst und öffnest sie. Klappt es nicht, kopierst du die Fehlermeldung zurück und fragst noch mal. Das geht mehrere Runden so.
 
@@ -21,7 +22,9 @@ Der Rest bleibt an dir hängen. Du legst eine Datei an, fügst den Code ein, spe
 - **Er führt Befehle aus.** Was installiert oder gestartet werden muss, tippt er selbst auf deinem Computer ein.
 - **Er probiert seine Arbeit selbst aus.** Er startet das Ergebnis, und wenn etwas schiefgeht, bessert er weiter nach.
 
-Du schaust ihm Schritt für Schritt zu. Am Ende öffnest du das Ergebnis und prüfst es selbst.
+Du schaust ihm Schritt für Schritt zu. Am Ende öffnest du das Ergebnis und prüfst es selbst. Hier ist dieselbe Wasser-Seite, diesmal an OpenHands übergeben:
+
+<Demo />
 
 ## Was du brauchst
 
@@ -54,5 +57,5 @@ Dieser Ordner ist kein Schloss. Er ist nur der Ort, an dem er arbeitet. Du sagst
 Die Desktop-App ist noch eine Vorschauversion. Rechne also mit ein paar kleinen Macken.
 
 <Callout type="tip" title="Nur noch zwei Lektionen">
-Installiere ihn und hol dir einen Schlüssel. Dann lässt du ihn seine erste Aufgabe erledigen. Nach diesen drei Lektionen kannst du ihn benutzen. Alles andere auf der Seite schlägst du nach, wenn du darauf stößt. Jetzt brauchst du es noch nicht.
+Die nächste Lektion dauert etwa 10 Minuten: installieren und ein Modell bereitmachen. In der Lektion danach schreibst du eine einzige Nachricht und schaust zu, wie er die Wasser-Seite von oben baut. Nach diesen drei Lektionen kannst du ihn benutzen. Alles andere auf der Seite schlägst du nach, wenn du darauf stößt. Jetzt brauchst du es noch nicht.
 </Callout>

@@ -16,7 +16,7 @@
 ![完全ガイド](https://img.shields.io/badge/%E5%AE%8C%E5%85%A8%E3%82%AC%E3%82%A4%E3%83%89-9_%E3%82%B9%E3%83%86%E3%83%83%E3%83%97-8A9A8C?style=flat-square)
 ![How-to](https://img.shields.io/badge/How--to-19_%E3%83%9A%E3%83%BC%E3%82%B8-C9A97A?style=flat-square)
 ![既製の自動化](https://img.shields.io/badge/%E6%97%A2%E8%A3%BD%E3%81%AE%E8%87%AA%E5%8B%95%E5%8C%96-27_%E5%80%8B-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-%E7%94%A8%E8%AA%9E_24_%E5%80%8B-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-%E7%94%A8%E8%AA%9E_29_%E5%80%8B-9AA8C4?style=flat-square)
 ![対応言語](https://img.shields.io/badge/%E5%AF%BE%E5%BF%9C%E8%A8%80%E8%AA%9E-10-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/%E7%A2%BA%E8%AA%8D%E3%81%97%E3%81%9F%E3%83%90%E3%83%BC%E3%82%B8%E3%83%A7%E3%83%B3-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -145,7 +145,7 @@ OpenHands は、決まった時間や、何かが起きたときに、自分か�
 - **[完全ガイド](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)**（英語）：コードを書く人向けの 9 ステップ · OpenHands とは → インストール → モデル → 最初の会話 → ほかのエージェント → バックエンド → 自動化 → スキル、プラグイン、MCP → セルフホストと SDK
 - **[既製の自動化](https://openhands.xiaoxiaodong.ai/en/automations/)**（英語）：27 個すべて。名前、グループ、トリガーで絞り込めます
 - **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)**（英語）：19 ページ、1 ページに 1 つの仕事
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**（英語）：24 の用語 · 一言で → たとえると → OpenHands では → よくある誤解
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**（英語）：29 の用語 · 一言で → たとえると → OpenHands では → よくある誤解
 - **[よくある質問](https://openhands.xiaoxiaodong.ai/en/faq/)**（英語）：お金はかかる？ API キーは必要？ 確認なしでコマンドを実行するけど、安全？
 - **言語**：ホームと入門コースは 10 言語。それ以外は英語と中国語
 

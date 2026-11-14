@@ -67,6 +67,8 @@ OpenHands Cloud 的 `API Keys` 页里，**LLM API Key** 才是给模型用的。
 
 改了模型设置，要开**新对话**才生效。已经开着的对话，会继续用它开始时的模型。
 
+模型接好了，[第 3 步](/guide/3-first-conversation/)就让它在一个叫 `counter` 的空文件夹里做一个计数网页。后面几步都接着用这个文件夹。
+
 ## 存几套，随时换
 
 每一次保存，存下的就是一个 <Term k="LLM Profile" />：哪家、哪个模型、用哪个 key。你可以存好几套：
@@ -105,4 +107,7 @@ OpenHands 会向模型发很多次请求。大部分模型按用量收费，到�
 
 各家模型怎么配，见官方的 [LLM Configuration](https://docs.openhands.dev/openhands/usage/llms/llms) 和 [Configure a Model](https://docs.openhands.dev/openhands/usage/agent-canvas/model-configuration)。
 
-<Checkpoint id="s2" items={["我走完了首次设置向导", "我存好了一套模型设置", "新对话里发了一句话，它回答了"]} />
+<Checkpoint id="s2" ask={[
+  ["改了模型设置，开着的对话会换成新模型吗？", "不会。开着的对话继续用它开始时的模型，要开新对话才生效。"],
+  ["OpenHands Cloud 的 API Keys 页里有两种 key，填进模型设置的是哪种？", "<strong>LLM API Key</strong>。另一种 Cloud API key 是调 Cloud 接口用的，填到这里不管用。"]
+]} items={["我走完了首次设置向导", "我存好了一套模型设置", "新对话里发了一句话，它回答了"]} done="模型接好了。下一步让它在 counter 文件夹里做第一件事。" />

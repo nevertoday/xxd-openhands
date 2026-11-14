@@ -1,7 +1,7 @@
 ---
 layout: ../../../layouts/Guide.astro
 step: 7
-need: Step 3 done; a project you work on often
+need: The counter folder from step 3; a project you work on often
 tldr: Write your project's rules in AGENTS.md, then add skills, outside tools and plugins as you need them.
 description: What AGENTS.md, skills, MCP, plugins and hooks each do, how to write an AGENTS.md, add skills, connect MCP servers and install plugins, and make it pass checks before it finishes.
 ---
@@ -25,11 +25,24 @@ There are five ways to teach it your rules:
 
 ## Write an AGENTS.md
 
-The easy way is to have it write one. Open your project and start a new conversation:
+The easy way is to have it write one. Practice on the `counter` folder from step 3 first: open it, start a new conversation, and send:
 
 <Copy id="agents" title="Have it write AGENTS.md" code="Please browse the repository, look at the documentation and relevant code, and understand the purpose of this repository. Specifically, I want you to create an `AGENTS.md` file at the repository root. This file should contain succinct information that summarizes: 1. The purpose of this repository 2. The general setup of this repo 3. A brief description of the structure of this repo. Read all the GitHub workflows under .github/ of the repository (if this folder exists) to understand the CI checks (e.g., linter, pre-commit), and include those in the `AGENTS.md` file." />
 
-Then read it yourself. Delete what's wrong, and add rules it can't know, like "always run the tests before committing."
+Then read it yourself. Delete what's wrong, and add rules it can't know. For counter, the rules are the ones you gave in step 3. Once added, it looks roughly like this:
+
+```markdown
+# counter
+
+A counter page: a button in the middle, and a number under it that goes up by 1 on each click. Open index.html in a browser to use it.
+
+## Rules
+
+- Keep the whole page in index.html, and install no dependencies.
+- After a change, open it in a browser, click the button 3 times, and confirm it shows 3.
+```
+
+Every new conversation in counter now starts out knowing these two rules. In a real project, also add rules like "always run the tests before committing."
 
 OpenHands also reads `CLAUDE.md` and `GEMINI.md`.
 
@@ -134,6 +147,8 @@ Then register it in `.openhands/hooks.json`:
 
 Swap `make test` for your project's checks. The format is compatible with Claude Code hooks.
 
+To try it on counter, replace the `if` line with `if [ ! -f index.html ] || [ -e package.json ]; then`. If `index.html` is gone, or a `package.json` shows up, it can't finish. That checks exactly the rule in its AGENTS.md.
+
 ## Remember: all of this follows the backend
 
 Skills, MCP servers and secrets are stored on the active backend. Switch backends and you set them up again. With OpenHands Cloud as the backend, `Customize > Skills` becomes **Skills and Plugins** and opens Cloud's settings in a new tab.
@@ -152,4 +167,7 @@ Skills, MCP servers and secrets are stored on the active backend. Switch backend
 
 For details, see the official [Skills Overview](https://docs.openhands.dev/overview/skills), [Model Context Protocol](https://docs.openhands.dev/openhands/usage/settings/mcp-settings), [Plugins in Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/plugins) and [Hooks](https://docs.openhands.dev/openhands/usage/customization/hooks).
 
-<Checkpoint id="s7" items={["My project root has an AGENTS.md I've read myself", "I know skills go under .agents/skills/ and need a new conversation after changes", "I've seen how to connect an outside tool in Customize > MCP Servers"]} />
+<Checkpoint id="s7" ask={[
+  ["A rule it must follow every time: AGENTS.md or a skill?", "AGENTS.md. Make a skill only for what it needs sometimes. AGENTS.md loads in full at the start of every conversation, so every line takes up room."],
+  ["You edit a skill. Does the conversation that's already open pick up the change?", "No. After you change a skill, start a new conversation."]
+]} items={["The counter folder has an AGENTS.md I've read and added rules to", "I've looked in Customize > Skills at which skills are installed and which are on", "I've seen how to connect an outside tool in Customize > MCP Servers"]} done="Your project's rules are written down, and every new conversation reads them first." />

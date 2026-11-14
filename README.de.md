@@ -16,7 +16,7 @@
 ![Vollständige Anleitung](https://img.shields.io/badge/Vollst%C3%A4ndige_Anleitung-9_Schritte-8A9A8C?style=flat-square)
 ![Kurzanleitungen](https://img.shields.io/badge/Kurzanleitungen-19-C9A97A?style=flat-square)
 ![Automationen](https://img.shields.io/badge/Fertige_Automationen-27-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-24_Begriffe-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-29_Begriffe-9AA8C4?style=flat-square)
 ![Sprachen](https://img.shields.io/badge/Sprachen-10-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/Gepr%C3%BCft_mit-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -145,7 +145,7 @@ Dazu [Prompts zum Kopieren](https://openhands.xiaoxiaodong.ai/en/howto/recipes/)
 - **[Vollständige Anleitung](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)** (Englisch): 9 Schritte für alle, die programmieren · was es ist → Installation → Modelle → erste Unterhaltung → andere Agenten → Backends → Automationen → Skills, Plugins, MCP → selbst hosten und das SDK
 - **[Fertige Automationen](https://openhands.xiaoxiaodong.ai/en/automations/)** (Englisch): alle 27, filterbar nach Name, Gruppe oder Auslöser
 - **[Kurzanleitungen](https://openhands.xiaoxiaodong.ai/en/howto/)** (Englisch): 19 Seiten, je eine Aufgabe
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)** (Englisch): 24 Begriffe · ein Satz → ein Vergleich → in OpenHands → häufige Missverständnisse
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)** (Englisch): 29 Begriffe · ein Satz → ein Vergleich → in OpenHands → häufige Missverständnisse
 - **[Häufige Fragen](https://openhands.xiaoxiaodong.ai/en/faq/)** (Englisch): Kostet es Geld? Brauche ich einen API-Schlüssel? Er führt Befehle aus, ohne zu fragen; ist das sicher?
 - **Sprachen**: Startseite und Einsteigerkurs in 10 Sprachen; alles andere auf Englisch und Chinesisch
 

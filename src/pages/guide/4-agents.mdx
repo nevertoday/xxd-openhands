@@ -8,6 +8,7 @@ description: 什么是 ACP 代理，能接哪几个，怎么用本机已登录�
 import Callout from "../../components/Callout.astro";
 import Checkpoint from "../../components/Checkpoint.astro";
 import Term from "../../components/Term.astro";
+import Copy from "../../components/Copy.astro";
 import Q from "../../components/Q.astro";
 
 ## 先弄懂换的是什么
@@ -70,6 +71,21 @@ OpenCode 不登录也能跑，用的是它的免费模型。Pi 一定要有某�
 
 后端在 Docker 或云上时，这一步是必须的。新容器里没有你电脑上的登录。向导会额外问你要登录凭证，比如 Claude Code 的 `CLAUDE_CODE_OAUTH_TOKEN`、Codex 的 `CODEX_AUTH_JSON`。
 
+## 拿 counter 比一比
+
+选好代理、配好登录或 key 以后，打开第 3 步的 `counter` 文件夹，再开一个新对话，把同一件事交给它。文件名换一个，两份就能放在一起比：
+
+<Copy id="compare" title="同一件事，换个代理做" code={`我想要：在这个文件夹里新建一个 index-acp.html，页面中间有一个按钮，每点一次，按钮下面的数字加 1。只用这一个文件，不装任何依赖。不要动 index.html。
+做好是什么样子：用浏览器打开它，数字从 0 开始；点 3 次按钮，显示 3。
+做完给我看：改了哪些文件；你做了哪些检查，每一项看到了什么；怎么在浏览器里打开它。`} />
+
+模型和工具都换成了那个代理自己的，做出来不一样很正常。对两样：
+
+- **回复。** 两个代理各报了哪些检查，看到了什么。
+- **页面。** 用浏览器分别打开，各点 3 次，看是不是都显示 3。
+
+比完留一份。喜欢新的，删掉旧的 `index.html`，把 `index-acp.html` 改名成 `index.html`。喜欢旧的，删掉 `index-acp.html`。后面几步接着用这个文件夹。
+
 ## 存成 Agent Profile，随时换
 
 每种代理设置可以存成一个 <Term k="Agent Profile" />：用哪个代理、配什么。它和[第 2 步](/guide/2-model/)的 <Term k="LLM Profile" /> 管的不是一层：
@@ -104,4 +120,7 @@ ACP 代理用它自己的模型，不用 LLM Profile。
 
 每个代理的细节见官方的 [ACP Agents](https://docs.openhands.dev/openhands/usage/agent-canvas/acp-agents) 和 [Agent Profiles](https://docs.openhands.dev/openhands/usage/agent-canvas/agent-profiles)。
 
-<Checkpoint id="s4" items={["我知道换成 ACP 代理后，模型和工具都归那个代理管", "我选好了一个代理，在新对话里试过", "我知道对话开始后不能换代理，要换就开新对话"]} />
+<Checkpoint id="s4" ask={[
+  ["换成 Claude Code 以后，第 2 步存的 LLM Profile 还管用吗？", "不管用。ACP 代理用它自己的模型，不用 LLM Profile。"],
+  ["对话开到一半，想换个代理接着做，怎么办？", "开一个新对话。对话开始以后就不能再换代理了。"]
+]} items={["我在 Settings > Agent 里选了一个 ACP 代理，保存了", "我在 counter 文件夹里开了新对话，让它做了同一件事", "我比过两份页面和两段回复，只留下了一份 index.html"]} done="你能把同一件事交给别家代理，再对比两边的结果。" />

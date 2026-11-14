@@ -3,6 +3,7 @@
 
 - assets/hero.svg、how.svg、automate.svg、safety.svg（中文），assets/en/ 下是英文版：README 里的演示动画、流程图、自动化和安全两张图。
 - assets/doors/<语言>-1..3(-dark).svg：README 顶部的三扇门，10 种语言，亮色暗色各一张。
+- public/img/hero-zh.svg、hero-en.svg：hero 的副本，网站首页和第 1 课用。
 - assets/social.svg、assets/social-en.svg：分享大图，再按 docs/MAINTAINING.md 用 Chrome 转成 public/og.png、og-en.png。
 
 用法：npm run assets（先在 Chrome 里量字宽，写进 tools/text-widths.json，再生成；文字放不下会报错）。
@@ -221,9 +222,15 @@ def hero(lang="zh"):
             f'<animate attributeName="width" dur="{T}s" repeatCount="indefinite" keyTimes="0;0.02;0.2;1" values="0;0;{pw + 4:.0f};{pw + 4:.0f}"/>'
             f'</rect></clipPath>'
             '<filter id="sh" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#111111" flood-opacity=".09"/></filter>')
-    write("hero.svg", svg(W, H, L("演示：在 water 文件夹里交代一句话，OpenHands 建文件、试一遍、自己检查，最后交回一个记录喝水的小网页",
+    content = svg(W, H, L("演示：在 water 文件夹里交代一句话，OpenHands 建文件、试一遍、自己检查，最后交回一个记录喝水的小网页",
                                   "Demo: one sentence in the water folder; OpenHands creates the files, tries the page, checks it, and hands back a small water-tracking page"),
-                          "\n".join(body), defs), lang)
+                    "\n".join(body), defs)
+    write("hero.svg", content, lang)
+    if OUT != Path("/dev/null"):
+        # 网站首页和第 1 课也用这张图（public/img/hero-zh.svg、hero-en.svg）
+        site = OUT.parent / "public" / "img"
+        site.mkdir(parents=True, exist_ok=True)
+        (site / f"hero-{lang}.svg").write_text(content, encoding="utf-8")
 
 
 # ---------- how：一次对话走过的四站（连线上有小点跑过） ----------

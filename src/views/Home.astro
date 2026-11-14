@@ -3,6 +3,7 @@
 // 最后才是给会写代码的人的一张图和完整教程路线。事实只取 docs/PLAN.md 列的来源。
 import Site from "../layouts/Site.astro";
 import Contact from "../components/Contact.astro";
+import Demo from "../components/Demo.astro";
 import { LESSONS, lessonHref, STEPS, stepHref, langOf, fullLang, t } from "../data/nav.js";
 import { X as dict, fmt } from "../i18n/index.js";
 
@@ -18,12 +19,13 @@ const ZH = {
     "打开官方文档，满屏是 npm、Docker、uv，还没开始就不知道该装哪个。",
     "Agent Canvas、Agent Server、后端、ACP、Cloud、SDK，名字一大堆，分不清哪个是给你用的。",
     "听说它会自己改文件、跑命令，又怕它把电脑上别的东西弄乱。",
+    "不知道要花多少钱，要不要先去各家开一堆账号。",
   ],
   diffH: "跟着这份教程，有什么不一样",
   diffW: "卡在哪", diffA: "自己啃官方文档", diffB: "跟着这份教程",
   DIFF: [
     ["怎么装", "好几种装法摆在一起，先得自己挑", "只走一条路：装桌面版，不用开终端"],
-    ["接哪个模型", "一长串服务商和模型名", "已有别家的 key 或订阅就直接用；什么都没有，再用 OpenHands Cloud 的 key（先充 10 美元）"],
+    ["接哪个模型", "一长串服务商和模型名", "OpenHands 本身免费。已有别家的 key 或订阅就直接用；什么都没有，再用 OpenHands Cloud 的 key：先充 10 美元，选标着 Free 的模型不扣钱"],
     ["它能碰什么", "文档提醒：代理能访问你整个文件系统", "第一次只让它在一个新建的空文件夹里干活"],
   ],
   lessonsH: "新手只要三课", lessonsP: "按顺序看，大约 30 分钟。学完这三课就能用起来，网站上其他内容都是以后遇到了再查。",
@@ -53,12 +55,13 @@ const EN = {
     "You open the official docs and see npm, Docker and uv before you know which one to install.",
     "Agent Canvas, Agent Server, backends, ACP, Cloud, SDK: so many names, and no clue which one is for you.",
     "You've heard it edits files and runs commands on its own, and you worry it will mess up the rest of your computer.",
+    "You don't know what it costs, or whether you need accounts with a pile of AI companies first.",
   ],
   diffH: "What this guide does differently",
   diffW: "Where you get stuck", diffA: "Reading the official docs alone", diffB: "With this guide",
   DIFF: [
     ["Installing", "Several install options side by side; you pick", "One path: the desktop app, no terminal needed"],
-    ["Picking a model", "A long list of providers and model names", "Already have a key or subscription? Use it. Otherwise one OpenHands Cloud key (after a $10 top-up)"],
+    ["Picking a model", "A long list of providers and model names", "OpenHands itself is free. Already have a key or subscription? Use it. Otherwise one OpenHands Cloud key: a $10 top-up first, and models marked Free don't use it"],
     ["What it can touch", "The docs warn the agent can access your whole filesystem", "The first time, it works only inside a new, empty folder"],
   ],
   lessonsH: "Beginners need just three lessons", lessonsP: "Read them in order, about 30 minutes in all. After these three you can put it to work. Everything else on the site is for looking up later.",
@@ -94,6 +97,7 @@ const headings = [["h-pain", C.painH], ["h-diff", C.diffH], ["h-lessons", C.less
       <a class="xxd-btn" data-variant="ghost" href={stepHref(STEPS[0], fl)} hreflang={fl === lang ? undefined : fl}>{C.cta[1]}</a>
     </div>
     <p class="home__note">{C.ctaNote}</p>
+    <Demo />
 
     <section aria-labelledby="h-pain">
       <h2 id="h-pain">{C.painH}</h2>

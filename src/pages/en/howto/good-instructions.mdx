@@ -4,14 +4,16 @@ slug: good-instructions
 time: Five minutes to read, then an extra minute per prompt
 for: It keeps drifting from what you asked, or takes several rounds to get right
 step: 3
-tldr: Say where, what happens now, what should happen, and what counts as done. One task at a time.
-description: "How to hand a task to OpenHands: a bad and a good prompt side by side, the four things to include, one task at a time, a template to fill in, the phrasings that make it drift, and what to do when you sent the wrong thing."
+tldr: What I want, what done looks like, what to show me when it's done. Then add clues and what not to touch.
+description: "How to hand a task to OpenHands: a bad and a good prompt side by side, making the three-part brief specific in a real project, the clues and limits to add, one task at a time, a template to fill in, the phrasings that make it drift, and what to do when you sent the wrong thing."
 ---
 import Callout from "../../../components/Callout.astro";
 import Term from "../../../components/Term.astro";
 import Q from "../../../components/Q.astro";
 import Copy from "../../../components/Copy.astro";
 import Checkpoint from "../../../components/Checkpoint.astro";
+
+You already know the <Term k="三段式交代" />: **What I want · What done looks like · What to show me when it's done**. Real projects use the same three parts. Each one gets more specific, and you add two more: clues, and what it must not touch.
 
 ## Compare two prompts
 
@@ -29,18 +31,19 @@ TypeError: 'NoneType' object has no attribute 'get'
 Expected: get_user_preferences() returns default preferences when the user has none saved.
 Actual: it crashes with the error above when user.preferences is None.
 What done looks like: it returns DEFAULT_PREFERENCES in that case, and the tests pass.
-What to show me when done: what you changed, and the test results.`} />
+When you're done, show me: what you changed, and the test results.`} />
 
-The difference is a file and line, the exact error, expected versus actual behavior, and a definition of fixed.
+The difference: it has all three parts (which line to fix, what fixed looks like, what to show when done), plus clues: the exact error, and expected versus actual behavior.
 
-## Include four things
+## Make the three parts specific, then add two
 
-- **Where.** File, line, function. If you don't know, name the feature.
-- **What happens now, and what should.** Paste errors and logs as they are.
-- **Context and limits.** Who uses it, how bad a failure is, what mustn't change, which patterns to follow.
-- **What counts as done.** Ideally something a command can check: tests that pass, what an endpoint returns.
+- **What I want: name the file.** File, line, function. If you don't know, name the feature.
+- **What done looks like: ideally checkable by a command.** Tests that pass, what an endpoint returns.
+- **What to show me when it's done: proof.** What changed, test results, screenshots or output.
+- **Add clues.** What happens now and what should, with errors and logs pasted as they are. Also who uses it and how bad a failure is.
+- **Add what it must not touch.** What mustn't change, which patterns to follow.
 
-<mark>"What counts as done" matters most.</mark> The docs say it does better when success can be checked by a program. Without that, a checklist of what must be finished works too.
+<mark>"What done looks like" matters most.</mark> The docs say it does better when success can be checked by a program. Without that, a checklist of what must be finished works too.
 
 | Instead of | Say |
 | --- | --- |
@@ -55,32 +58,31 @@ The docs suggest one feature per prompt, usually under 100 lines of change. Spli
 
 <Copy id="gi-phase" title="Step one: analysis only" code={`Analyze the current authentication system and list every touch point that must change for an OAuth2 migration.
 What done looks like: each item names its file and its role in the login flow.
-What to show me when done: the list. Don't change any code in this step.`} />
+When you're done, show me: the list. Don't change any code in this step.`} />
 
 Step two adds the OAuth2 configuration and basic token flow, with the old login still working. Step three moves user login over, keeping backward compatibility.
 
 ## Use this template
 
-For anything complex, fill this in:
+For anything complex, fill this in. The first three sections are the three parts. The last two are what real projects add:
 
-<Copy id="gi-template" title="Task template" code={`## Task
+<Copy id="gi-template" title="Task template" code={`## What I want
 <One sentence on what you want>
-
-## Background
-<Why it matters, what this code does, who uses it>
-
-## Requirements
 1. <Specific requirement>
 2. <Specific requirement>
 
-## Constraints
-- <APIs, files, or behavior that must not change>
-
-## Success criteria
+## What done looks like
 - <Which tests pass, which command checks it>
 
-## What to show me when done
-- <What changed, test results, screenshots or output>`} />
+## What to show me when it's done
+- <What changed, test results, screenshots or output>
+
+## Clues
+- <The exact errors and logs, the files involved>
+- <Why it matters, what this code does, who uses it>
+
+## Must not touch
+- <APIs, files, or behavior that must not change>`} />
 
 Give examples when you can. If you want errors in a certain shape, paste one.
 
@@ -116,7 +118,7 @@ The second time you type the same instruction, put it in <Term k="AGENTS.md" /> 
 
 ## Check before you send
 
-<Checkpoint id="gi-check" items={["It says which file or feature", "It includes the exact error or log, if there is one", "It says what counts as done, ideally checkable by a command", "It says what must not change", "The task fits in one go (roughly under 100 lines of change)", "It says what to show me when done"]} done="All ticked. Send it." />
+<Checkpoint id="gi-check" items={["It says what I want: which file or feature", "It says what done looks like, ideally checkable by a command", "It says what to show me when it's done", "It adds clues: the exact error or log, if there is one", "It adds what must not change", "The task fits in one go (roughly under 100 lines of change)"]} done="All ticked. Send it." />
 
 ## Stuck?
 

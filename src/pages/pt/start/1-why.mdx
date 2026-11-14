@@ -1,15 +1,16 @@
 ---
 layout: ../../../layouts/Lesson.astro
-tldr: "O OpenHands é uma IA que faz o trabalho sozinha. Você precisa de um computador, uma chave de modelo e uma pasta vazia para ele."
+tldr: "Você diz o que quer; o OpenHands cria os arquivos, testa e devolve o resultado. Você entra com um computador, um modelo e uma pasta vazia para ele."
 lesson: 1
 description: Para quem não programa. O que é o OpenHands, do que você precisa, quanto custa e qual é o risco.
 ---
 import Callout from "../../../components/Callout.astro";
+import Demo from "../../../components/Demo.astro";
 import Term from "../../../components/Term.astro";
 
 ## Como você provavelmente usa IA hoje
 
-Você pede para uma IA uma pequena página web. Ela responde com um bloco enorme de código.
+Você pede para uma IA uma pequena página web que conte quantos copos de água você bebe por dia. Ela responde com um bloco enorme de código.
 
 O resto é com você. Você cria um arquivo, cola, salva e abre. Se não funciona, copia o erro, manda de volta e pergunta de novo. E assim vão várias rodadas.
 
@@ -21,7 +22,9 @@ O <Term k="OpenHands" /> é uma IA que age por conta própria, o que também se 
 - **Roda comandos.** O que precisar instalar ou executar, ele digita no seu computador.
 - **Testa o próprio trabalho.** Ele roda o resultado e, se algo falha, continua corrigindo.
 
-Você acompanha o trabalho passo a passo. No fim, abre o resultado e confere você mesmo.
+Você acompanha o trabalho passo a passo. No fim, abre o resultado e confere você mesmo. Veja a mesma página da água, entregue ao OpenHands:
+
+<Demo />
 
 ## Do que você precisa
 
@@ -54,5 +57,5 @@ Essa pasta não é um cadeado. É só o lugar onde ele trabalha. Você também v
 O aplicativo para computador ainda é uma versão de prévia, então pode ter alguns defeitos.
 
 <Callout type="tip" title="Só mais duas lições">
-Instale e pegue uma chave, depois peça a primeira tarefa. Depois dessas três lições, você já sabe usar. O resto do site é para consultar quando aparecer alguma dúvida. Você não precisa dele agora.
+A próxima lição leva uns 10 minutos: instalar e deixar um modelo pronto. Na seguinte, você escreve uma mensagem e vê ele construir a página da água aí de cima. Depois dessas três lições, você já sabe usar. O resto do site é para consultar quando aparecer alguma dúvida. Você não precisa dele agora.
 </Callout>

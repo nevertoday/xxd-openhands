@@ -48,11 +48,12 @@ It walks you through the name, schedule, timezone and task. This example needs G
 
 Creating one from Automate opens a split view: a form on one side, a conversation with OpenHands on the other. You describe it and it fills in the form. It only proposes settings. It doesn't create or enable the automation itself. You select create.
 
-When you write the task, cover three things:
+When you write the task, use the same <Term k="三段式交代" />, plus what to do when it fails:
 
-- **Exactly what to do.** "Check X, and if Y, then Z."
-- **What to do when things fail.** "If any backup is missing, alert the team."
-- **Where results go.** "Post to this Slack channel," "Create a GitHub issue."
+- **What I want.** Exactly what to do: "Check X, and if Y, then Z."
+- **What done looks like.** For example, "list each issue with its title and link."
+- **What to show me when it's done.** That is, where results go: "Post to this Slack channel," "Create a GitHub issue."
+- **What to do when it fails.** "If any backup is missing, alert the team." Nobody watches it run, so write this one down.
 
 Say the schedule in plain words, like "every weekday at 9 AM" or "hourly." Each run stops after 10 minutes by default. You can ask for up to 30.
 
@@ -99,4 +100,7 @@ The webhook URL must be reachable from the internet, so a backend on `localhost`
 
 For more examples, see [A daily Slack digest](/en/howto/slack-digest/) and [Write your own automation](/en/howto/custom-automation/). For everything else, see the official [Managing automations](https://docs.openhands.dev/openhands/usage/agent-canvas/managing-automations).
 
-<Checkpoint id="s6" items={["I know scheduled runs stop when the backend stops", "I created an automation and ran it once with Run now", "I opened the conversation one run started"]} />
+<Checkpoint id="s6" ask={[
+  ["Your backend runs with npx on your laptop. You close the terminal and go to bed. Does the 9 AM task run?", "No. When the backend stops, scheduled runs stop too. To keep it running, put it on a machine that stays on, or use OpenHands Cloud as the backend."],
+  ["When OpenHands helps fill in the form in Automate, does it create and enable the automation itself?", "No. It only proposes settings. You select create."]
+]} items={["My task has the three parts, plus what to do when it fails", "I created an automation and ran it once with Run now", "The run reached COMPLETED, and I opened the conversation it started"]} done="You can create an automation, run it once by hand, and check the result before leaving it on a schedule." />

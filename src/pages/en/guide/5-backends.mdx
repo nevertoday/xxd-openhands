@@ -58,14 +58,17 @@ So containers can reach your computer, the launcher listens on all interfaces (`
 
 ## Confirm it's really in a container
 
-In a new conversation, ask it to run these two:
+Open the `counter` folder from step 3, start a new conversation, and ask it to run these three:
 
 <Copy id="verify" lang="bash" title="Ask the agent to run" code={`id
-printf 'PWD=%s\\nHOME=%s\\n' "$PWD" "$HOME"`} />
+printf 'PWD=%s\\nHOME=%s\\n' "$PWD" "$HOME"
+ls`} />
 
 <Callout type="ok">
-The output shows `PWD` as `/workspace` and `HOME` as `/var/openhands/.openhands`, not your home folder.
+The output shows `PWD` as `/workspace` and `HOME` as `/var/openhands/.openhands`, not your home folder. `ls` lists the files in counter, such as `index.html`.
 </Callout>
+
+What it can reach is the counter folder mounted into the container. The folder lives on your computer, so when it edits `index.html`, you see the edit too. Its `HOME` is inside the container, not your home folder.
 
 ## Add and switch backends
 
@@ -105,4 +108,7 @@ Conversations and automations then run in cloud sandboxes and don't touch files 
 
 To run several conversations at once, see [Run several conversations](/en/howto/parallel/). For more on Docker, see [Box it in with Docker](/en/howto/docker-sandbox/).
 
-<Checkpoint id="s5" items={["I know switching backends switches settings, models and automations too", "I know which backends can reach files on my computer and which can't", "I've seen how to add a backend in Manage Backends"]} />
+<Checkpoint id="s5" ask={[
+  ["After you switch to the Cloud backend, are the MCP servers you set up locally still there?", "No. Settings, models, MCP servers and automations all belong to the active backend. A Cloud backend has its own models, secrets and MCP servers, separate from your local backend, so you set them up again."],
+  ["Two conversations both open counter. One edits index.html. Does the other see the change?", "Yes. Two conversations in the same workspace edit the same files. To keep them apart, give each its own folder or Git worktree."]
+]} items={["I started a new conversation in multi-container mode, with the counter folder open", "It ran the three commands: PWD is /workspace, and HOME is not my home folder", "I've seen how to add a backend in Manage Backends"]} done="You've seen what a containerized conversation can reach, and you can add and switch backends." />

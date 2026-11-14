@@ -114,7 +114,7 @@ triggers:
 
 Use the ready-made "QA changes" <Term k="自动化" />. When a PR comes in, it runs the method above.
 
-- **When it starts**: a PR is opened, or a draft is marked ready for review. You pick one.
+- **When it starts**: a PR is opened, or a <Term k="草稿 PR" text="draft" /> is marked ready for review. You pick one.
 - **Three gate checks first**: the PR isn't a draft. Its author already has more than 3 commits on the base branch. The description has no "QA Agent" section yet. If any check fails, it stops and changes nothing.
 - **Where the result goes**: it doesn't post a comment. It appends a horizontal rule and a "QA Agent" section to the end of the PR description, with the report inside.
 - **What you fill in**: the repository, the base branch (default `main`), and which PR event starts it. Connect GitHub first.

@@ -1,44 +1,50 @@
 ---
 layout: ../../../layouts/Guide.astro
 step: 3
-need: Agent Canvas with a model connected; a dedicated folder for it to work in
-tldr: Open a folder, hand it one small task, watch it work, then check what it changed.
-description: Open a workspace before the conversation, say clearly what you want, know where to look while it works, check the result, and decide when to keep going or start fresh.
+need: Agent Canvas with a model connected; a new empty folder
+tldr: Open an empty folder, brief one small task in three parts, watch it work, then check the proof it hands back.
+description: Open a workspace before the conversation, brief a task in three parts and what real projects add, know where to look while it works, check the result, and decide when to keep going or start fresh.
 ---
 import Callout from "../../../components/Callout.astro";
 import Checkpoint from "../../../components/Checkpoint.astro";
 import Term from "../../../components/Term.astro";
 import Copy from "../../../components/Copy.astro";
+import Reply from "../../../components/Reply.astro";
 import Q from "../../../components/Q.astro";
 
 ## Open a folder first
 
 Before you start a conversation, select `Open Workspace` and pick a folder. That folder is its <Term k="工作区" />. It reads and writes files there.
 
-For your first try, make a new empty folder. With Docker, pick a folder under `/projects`.
+For your first try, make a new empty folder called `counter`. The next steps keep using it. With Docker, make it under `/projects`.
 
 ## Copy a small task
 
 Go back home, start a new <Term k="对话" />, and send:
 
-<Copy id="first" title="Your first task" code="In this folder, create index.html: a button in the middle of the page, and a number under it that goes up by 1 on each click. Use only this one file and install nothing. When you're done, tell me which files you changed and how to open it in a browser." />
+<Copy id="first" title="Your first task" code={`What I want: in this folder, create index.html: a button in the middle of the page, and a number under it that goes up by 1 on each click. Use only this one file and install nothing.
+What done looks like: when I open it in a browser, the number starts at 0; after 3 clicks it shows 3.
+When you're done, show me: which files you changed; what you checked and what you saw for each check; how to open it in a browser.`} />
 
-That message has three parts:
+This is the <Term k="三段式交代" /> from the beginner lessons:
 
-1. **What you want.** A button that counts.
-2. **Where and how big.** One file, no dependencies.
-3. **What done looks like.** It tells you what changed and how to open it.
+**What I want · What done looks like · What to show me when it's done**
+
+1. **What I want.** A button that counts, in one file, with no dependencies.
+2. **What done looks like.** It starts at 0 and shows 3 after 3 clicks. It will try exactly this.
+3. **What to show me when it's done.** What changed, what it checked, how to open it. If it only lists changed files, you can't tell whether it checked anything.
 
 The official advice for good prompts comes down to three things: be concrete, say where to change things, and keep it small. Small means one feature, usually no more than 100 lines of code.
 
-## Say what you want, clearly
+## In a real project, add two more
 
-For a task in a real project, add these in order:
+For a task in a real project, keep the same three parts, make each one more specific, and add clues and what it must not touch:
 
-- **Exactly what you want.** "Fix the TypeError on line 45 of `src/api/users.py`," not "fix the bug."
-- **Clues.** File paths, line numbers, the full error message, relevant logs.
+- **What I want.** "Fix the TypeError on line 45 of `src/api/users.py`," not "fix the bug."
 - **What done looks like.** Which tests should pass, what the user should see.
-- **What it must not touch.** For example, "keep the public API unchanged" or "only change this one file."
+- **What to show me when it's done.** Which tests it ran, and their results.
+- **Add clues.** File paths, line numbers, the full error message, relevant logs.
+- **Add what it must not touch.** For example, "keep the public API unchanged" or "only change this one file."
 
 Split a big job into small ones and hand them over one at a time.
 
@@ -55,6 +61,22 @@ When a group finishes, its header turns into a one-line summary, like `Ran a com
 To stop it, select `Stop` in the chat box. Send a new message afterwards and it can carry on.
 
 ## Check what it did
+
+When it's done, it writes a reply. A reply that hands back its checks looks roughly like this:
+
+<Reply code={`① Files changed: created index.html, nothing else.
+
+② What I checked
+   ✓ Opened the page: the number under the button shows 0
+   ✓ Clicked the button 3 times: it shows 3
+   ✓ The folder holds only index.html, no dependencies
+   ? Not sure: I only tried it in one browser
+
+③ How to open it: open index.html in the counter folder in a browser`} />
+
+- **①** Check it changed only what you asked for.
+- **② matters most.** Each line says what it did and what it saw. If it only says "done" and lists no checks, ask "how did you confirm that?"
+- **③** Follow it and open the page yourself.
 
 <Callout type="ok">
 You should see a new `index.html` in the folder. Open it in a browser and click the button. The number goes up by 1.
@@ -101,4 +123,7 @@ The chat box has a meter showing how much of the model's context the conversatio
 
 For everything conversations can do, see the official [Conversations](https://docs.openhands.dev/openhands/usage/agent-canvas/conversations) page.
 
-<Checkpoint id="s3" items={["I opened a dedicated folder before starting the conversation", "It finished the first small task, and I tried it in a browser", "I know a new task means a new conversation"]} />
+<Checkpoint id="s3" ask={[
+  ["It replies \"Done, I created index.html.\" Is that finished?", "Not yet. Look for what it checked and what it saw for each check. If that's missing, ask, then click through it in a browser yourself."],
+  ["The counter works. For a different task, do you keep going in this conversation?", "Start a new conversation. Each one has its own history and settings. Keep going in the same one only while the same task isn't done."]
+]} items={["I opened the counter folder before starting the conversation", "Its reply listed what it checked and what it saw for each check", "I opened index.html in a browser, clicked 3 times, and saw 3"]} done="You can brief a small task in three parts and get its checks back. The next steps keep using counter." />

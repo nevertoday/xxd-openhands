@@ -1,15 +1,16 @@
 ---
 layout: ../../layouts/Lesson.astro
-tldr: "OpenHands 是会自己动手的 AI。你要一台电脑、一个模型 key，再给它一个空文件夹。"
+tldr: "你说要什么，OpenHands 自己建文件、试一遍、交回来。你只要准备一台电脑、一个模型，再给它一个空文件夹。"
 lesson: 1
 description: 给没写过代码的人：OpenHands 是什么，要准备什么，花什么钱，有什么风险。
 ---
 import Callout from "../../components/Callout.astro";
+import Demo from "../../components/Demo.astro";
 import Term from "../../components/Term.astro";
 
 ## 你平时用 AI 可能是这样
 
-你让 AI 做一个小网页。它回你一大段代码。
+你让 AI 做一个记录每天喝了几杯水的小网页。它回你一大段代码。
 
 接下来全靠你：新建文件、粘贴、保存、打开。打不开，再把报错复制回去问它。来回好几轮。
 
@@ -21,7 +22,9 @@ import Term from "../../components/Term.astro";
 - **运行命令。** 需要装什么、跑什么，它自己在电脑上敲。
 - **自己试。** 跑起来看看，出错了接着改。
 
-你在旁边看着它一步步做，最后自己打开结果检查。
+你在旁边看着它一步步做，最后自己打开结果检查。还是那个喝水的小网页，交给 OpenHands 是这样的：
+
+<Demo />
 
 ## 你要准备什么
 
@@ -54,5 +57,5 @@ import Term from "../../components/Term.astro";
 桌面版现在还是预览版，可能有些小毛病。
 
 <Callout type="tip" title="接下来只要两课">
-先装上它、拿到 key，再让它做第一件事。学完这三课你就会用了。网站上其他的内容，都是以后遇到了再查的，现在不用看。
+下一课大约 10 分钟：把它装好，准备好模型。再下一课，你交代一段话，看着它把上面那个喝水网页做出来。学完这三课你就会用了。网站上其他的内容，都是以后遇到了再查的，现在不用看。
 </Callout>

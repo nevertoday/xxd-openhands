@@ -174,4 +174,7 @@ PowerShell 用反引号换行，别删。
 
 完整的装法、启动选项和环境变量，见官方的 [Install Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/setup)。
 
-<Checkpoint id="s1" items={["我选好了一种装法，知道它能碰到哪些文件", "首次设置向导里显示 You're connected!", "我知道怎么停掉它、下次怎么再打开"]} />
+<Checkpoint id="s1" ask={[
+  ["用 npm 启动的 Agent Canvas，关掉终端以后还在跑吗？", "不在了。关掉终端它就停了，再用就重新运行同一条命令。设置和对话存在 <code>~/.openhands</code> 里，不会丢。"],
+  ["用 Docker 装，AI 能看到哪些文件？", "只有你挂进去的那个文件夹，在容器里的 <code>/projects</code> 下面。"]
+]} items={["我选好了一种装法，知道它能碰到哪些文件", "首次设置向导里显示 You're connected!", "我停掉过它一次，又重新打开了"]} done="Agent Canvas 跑起来了，你也会关、会重开。下一步接模型。" />

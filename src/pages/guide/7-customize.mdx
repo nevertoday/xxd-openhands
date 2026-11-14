@@ -1,7 +1,7 @@
 ---
 layout: ../../layouts/Guide.astro
 step: 7
-need: 跑通过第 3 步；一个你常用的项目
+need: 第 3 步的 counter 文件夹；一个你常用的项目
 tldr: 用 AGENTS.md 写下项目规矩，按需加技能、接外部工具、装插件。
 description: AGENTS.md、技能、MCP、插件、hooks 各管什么，怎么写一份 AGENTS.md，怎么加技能、接 MCP 服务器、装插件，以及让它收工前先过检查。
 ---
@@ -25,11 +25,24 @@ import Q from "../../components/Q.astro";
 
 ## 写一份 AGENTS.md
 
-最省事的办法是让它自己写。打开你的项目，开一个新对话：
+最省事的办法是让它自己写。先拿第 3 步的 `counter` 文件夹练手：打开它，开一个新对话，发：
 
 <Copy id="agents" title="让它写 AGENTS.md" code="请浏览这个仓库，看看文档和相关代码，弄清楚这个仓库是做什么的。然后在仓库根目录创建一个 AGENTS.md 文件，简要写清楚：1. 这个仓库的用途；2. 怎么装、怎么跑；3. 目录结构的简要说明。如果有 .github/ 文件夹，读一下里面所有的 GitHub workflow，弄清楚 CI 会检查什么（比如 linter、pre-commit），也写进 AGENTS.md。" />
 
-写完自己读一遍，删掉不准的，补上它不知道的规矩，比如「提交前一定要跑测试」。
+写完自己读一遍，删掉不准的，补上它不知道的规矩。counter 的规矩就是第 3 步交代过的那几句，补完大概是这样：
+
+```markdown
+# counter
+
+一个计数网页：页面中间一个按钮，每点一次，下面的数字加 1。用浏览器打开 index.html 就能用。
+
+## 规矩
+
+- 整个页面写在 index.html 一个文件里，不装任何依赖。
+- 改完用浏览器打开，点 3 次按钮，确认显示 3。
+```
+
+以后在 counter 里开的新对话，一开始就知道这两条。真实项目里，再补上「提交前一定要跑测试」这样的规矩。
 
 OpenHands 也认 `CLAUDE.md` 和 `GEMINI.md`。
 
@@ -134,6 +147,8 @@ exit 0`} />
 
 把 `make test` 换成你项目的检查命令。这套格式和 Claude Code 的 hooks 兼容。
 
+在 counter 里试的话，把 `if` 那一行换成 `if [ ! -f index.html ] || [ -e package.json ]; then`。`index.html` 不见了，或者多出一个 `package.json`，它就不能收工。查的正是 AGENTS.md 里那条规矩。
+
 ## 记住：这些都跟着后端走
 
 技能、MCP、密钥都存在当前后端上。换一个后端，要重新配一遍。用 OpenHands Cloud 当后端时，`Customize > Skills` 会变成 **Skills and Plugins**，在新标签页里打开 Cloud 的设置。
@@ -152,4 +167,7 @@ exit 0`} />
 
 细节见官方的 [Skills Overview](https://docs.openhands.dev/overview/skills)、[Model Context Protocol](https://docs.openhands.dev/openhands/usage/settings/mcp-settings)、[Plugins in Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/plugins) 和 [Hooks](https://docs.openhands.dev/openhands/usage/customization/hooks)。
 
-<Checkpoint id="s7" items={["我的项目根目录有一份自己读过的 AGENTS.md", "我知道技能放在 .agents/skills/ 下面，改完要开新对话", "我在 Customize > MCP Servers 里看过怎么接一个外部工具"]} />
+<Checkpoint id="s7" ask={[
+  ["每次都要守的规矩，写进 AGENTS.md，还是做成技能？", "写进 AGENTS.md。偶尔才要的做法才做成技能。AGENTS.md 每个对话一开始就整份读进去，越长越占地方。"],
+  ["改完一个技能，开着的那个对话会用上新版吗？", "不会。改完技能，要开新对话才生效。"]
+]} items={["counter 文件夹里有一份我读过、补上了规矩的 AGENTS.md", "我在 Customize > Skills 里看过装了哪些技能、开了哪些", "我在 Customize > MCP Servers 里看过怎么接一个外部工具"]} done="项目规矩写下来了，每个新对话一开始就会读到。" />

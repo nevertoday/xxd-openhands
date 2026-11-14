@@ -11,7 +11,7 @@ import Term from "../../../components/Term.astro";
 import Q from "../../../components/Q.astro";
 import Copy from "../../../components/Copy.astro";
 
-Replace the parts in angle brackets with your own files, errors, and definition of done. Every prompt follows the same order: what I want, what done looks like, what to show me when done.
+Replace the parts in angle brackets with your own files, errors, and definition of done. Every prompt follows the same order, the <Term k="三段式交代" />: what I want, what done looks like, what to show me when it's done.
 
 ## Understand the project first
 
@@ -19,7 +19,7 @@ Replace the parts in angle brackets with your own files, errors, and definition 
 
 <Copy id="r-tour" code={`Walk me through this project: what it does, how to run it locally, and where the main code lives.
 What done looks like: every point names the file you learned it from.
-What to show me when done: a short write-up. Read only for now.`} />
+When you're done, show me: a short write-up. Read only for now.`} />
 
 "Read only" keeps it investigating. The full routine is in [Take over an unfamiliar project](/en/howto/new-codebase/).
 
@@ -28,7 +28,7 @@ What to show me when done: a short write-up. Read only for now.`} />
 <Copy id="r-agents" code={`Read this repo's docs, code, and the workflows in .github/, then create an AGENTS.md at the root.
 What I want: its purpose, how to install and run it, the folder structure, and what CI checks.
 What done looks like: short enough that a newcomer can get started from it alone.
-What to show me when done: the full file. Don't touch anything else.`} />
+When you're done, show me: the full file. Don't touch anything else.`} />
 
 New conversations don't remember old ones, but every one reads <Term k="AGENTS.md" />.
 
@@ -41,7 +41,7 @@ Error message: <paste the error>
 Expected: <get_user_preferences() returns default preferences when the user has none saved>
 Actual: <it crashes when user.preferences is None>
 What done looks like: <it returns DEFAULT_PREFERENCES in that case>, existing tests pass, and a new test covers this case.
-What to show me when done: the real cause, what you changed, and the test results.`} />
+When you're done, show me: the real cause, what you changed, and the test results.`} />
 
 File, line, exact error, expected and actual behavior. With all four, it doesn't have to guess.
 
@@ -52,7 +52,7 @@ Symptoms: <the login form returns a 500 error>
 Logs: <Redis connection refused>
 Likely cause: <Redis moved to a new host yesterday, and src/config/redis.js may still have the old one>
 What done looks like: <login works against the new Redis at redis.internal:6380>.
-What to show me when done: the cause you found and the evidence, then a proposed fix. Wait for my OK before fixing.`} />
+When you're done, show me: the cause you found and the evidence, then a proposed fix. Wait for my OK before fixing.`} />
 
 Include every clue you already have. It saves a lot of searching.
 
@@ -66,7 +66,7 @@ What I want:
 4. <A JWT on success, 401 on failure>
 Follow the patterns in <src/api/routes.js>, and use the db.query() helper in <src/db/index.js>.
 What done looks like: <calling the endpoint with valid credentials returns a JWT that works with our existing auth middleware>.
-What to show me when done: the files you changed, and the result of actually calling the endpoint.`} />
+When you're done, show me: the files you changed, and the result of actually calling the endpoint.`} />
 
 Name the files to copy from, so it knows how the project already does things.
 
@@ -78,7 +78,7 @@ Problems to address:
 2. <Database queries are mixed with business logic. Separate them>
 Constraint: keep the public API unchanged, since other code depends on it.
 What done looks like: the same behavior, and <npm test> passes.
-What to show me when done: the new pieces, and the test results.`} />
+When you're done, show me: the new pieces, and the test results.`} />
 
 "Keep the public API unchanged" says exactly what's off-limits.
 
@@ -89,7 +89,7 @@ What to show me when done: the new pieces, and the test results.`} />
 <Copy id="r-coverage" code={`Add tests for <UserService>. Coverage is <45%> now, and the target is <85%>.
 What I want: use <codecov> to find uncovered paths, then add unit tests for edge cases. Re-run coverage after each batch.
 What done looks like: coverage reaches <85%> and all tests pass. If a test uncovers a bug, fix the code, not the test.
-What to show me when done: coverage before and after, and any bugs you found.`} />
+When you're done, show me: coverage before and after, and any bugs you found.`} />
 
 **Keep going until it's done: /goal**
 
@@ -101,7 +101,7 @@ What to show me when done: coverage before and after, and any bugs you found.`} 
 
 <Copy id="r-plan" code={`Inspect <the failing CI on PR #123>, explain the root cause, and propose a fix.
 What done looks like: the cause comes with evidence, and the fix names specific files.
-What to show me when done: the cause and the fix. Don't edit files, push, or comment on GitHub until I approve.`} />
+When you're done, show me: the cause and the fix. Don't edit files, push, or comment on GitHub until I approve.`} />
 
 When it acts too early, the docs' fix is exactly this: say it must wait for your approval.
 
@@ -114,7 +114,7 @@ Now add <logout>:
 3. <Clear any server-side session data>
 Follow the same patterns as login.
 What done looks like: <after logout, the old token gets 401>.
-What to show me when done: the files you changed, and the result of actually calling it.`} />
+When you're done, show me: the files you changed, and the result of actually calling it.`} />
 
 It doesn't remember the last conversation. Put where you left off, and where the code is, in your first message.
 
@@ -123,7 +123,7 @@ It doesn't remember the last conversation. Put where you left off, and where the
 <Copy id="r-daily" code={`Do my daily workflow using the connected GitHub and Slack MCP servers.
 What I want you to gather: PRs that need my attention or review, assigned issues, GitHub notifications and failing CI, and Slack messages that need a reply.
 What done looks like: grouped by urgency, each item with its title, why it matters, and a direct link.
-What to show me when done: the list, ending with the single highest-priority task for me to start. Don't change anything or send any message without asking me first.`} />
+When you're done, show me: the list, ending with the single highest-priority task for me to start. Don't change anything or send any message without asking me first.`} />
 
 Connect GitHub and Slack in Customize → MCP Servers first.
 
@@ -133,7 +133,7 @@ Connect GitHub and Slack in Customize → MCP Servers first.
 What I want: it may edit files in its own workspace and run tests.
 Off-limits: pushing, merging, or commenting on GitHub.
 What done looks like: a conclusion for each PR.
-What to show me when done: a summary and proposed changes for each PR.`} />
+When you're done, show me: a summary and proposed changes for each PR.`} />
 
 Hand off only work that's independent of what you're doing. Its conversation shows up in the conversation list. More in [Run several conversations at once](/en/howto/parallel/).
 
@@ -147,7 +147,7 @@ What I want:
 4. Update the changelog and write release notes
 5. List the rollback steps
 What done looks like: a conclusion for every item.
-What to show me when done: the release notes draft, and any risks you found.`} />
+When you're done, show me: the release notes draft, and any risks you found.`} />
 
 ## Other situations
 

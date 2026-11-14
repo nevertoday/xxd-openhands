@@ -174,4 +174,7 @@ With npm or npx, settings and conversations live in `~/.openhands`, so a reinsta
 
 For every install method, startup option and environment variable, see the official [Install Agent Canvas](https://docs.openhands.dev/openhands/usage/agent-canvas/setup).
 
-<Checkpoint id="s1" items={["I picked one install and know which files it can reach", "The setup wizard shows You're connected!", "I know how to stop it and start it again"]} />
+<Checkpoint id="s1" ask={[
+  ["You started Agent Canvas with npm. Is it still running after you close the terminal?", "No. Closing the terminal stops it. Run the same command to start again. Settings and conversations live in <code>~/.openhands</code>, so they're kept."],
+  ["With the Docker install, which files can the AI see?", "Only the folder you mounted, under <code>/projects</code> inside the container."]
+]} items={["I picked one install and know which files it can reach", "The setup wizard shows You're connected!", "I stopped it once and started it again"]} done="Agent Canvas is running, and you can stop and restart it. Next, connect a model." />

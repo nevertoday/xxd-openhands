@@ -7,6 +7,7 @@ export default {
     skip: "Zum Inhalt springen",
     menu: "Menü öffnen",
     search: "Anleitung durchsuchen",
+    termMore: "Mehr lesen",
     searchPh: "Lektionen, Schritte, Automationen, Begriffe…",
     searchEmpty: "Nichts gefunden. Probier ein anderes Wort",
     look: "Darstellung",
@@ -55,12 +56,13 @@ export default {
       "Du öffnest die offizielle Doku und siehst npm, Docker und uv, bevor du überhaupt weißt, was du installieren sollst.",
       "Agent Canvas, Agent Server, Backends, ACP, Cloud, SDK: so viele Namen, und keine Ahnung, welcher davon für dich ist.",
       "Du hast gehört, dass er selbst Dateien ändert und Befehle ausführt, und hast Angst, dass er dir den Rest des Computers durcheinanderbringt.",
+      "Du weißt nicht, was es kostet, oder ob du dich vorher bei einem Haufen KI-Firmen anmelden musst.",
     ],
     diffH: "Was diese Anleitung anders macht",
     diffW: "Wo du hängen bleibst", diffA: "Nur mit der offiziellen Doku", diffB: "Mit dieser Anleitung",
     DIFF: [
       ["Installieren", "Mehrere Installationswege nebeneinander; du musst wählen", "Ein Weg: die Desktop-App, ganz ohne Terminal"],
-      ["Modell wählen", "Eine lange Liste von Anbietern und Modellnamen", "Hast du schon einen Schlüssel oder ein Abo, nimm das. Sonst reicht ein Schlüssel von OpenHands Cloud (nachdem du 10 $ aufgeladen hast)"],
+      ["Modell wählen", "Eine lange Liste von Anbietern und Modellnamen", "OpenHands selbst ist kostenlos. Hast du schon einen Schlüssel oder ein Abo, nimm das. Sonst reicht ein Schlüssel von OpenHands Cloud: Zuerst lädst du 10 $ auf, und Modelle mit der Markierung Free verbrauchen das Guthaben nicht"],
       ["Worauf er Zugriff hat", "Die Doku warnt: Der Agent kann auf dein ganzes Dateisystem zugreifen", "Beim ersten Mal arbeitet er nur in einem neuen, leeren Ordner"],
     ],
     lessonsH: "Als Einsteiger brauchst du nur drei Lektionen",
@@ -119,6 +121,8 @@ export default {
   },
 
   comp: {
+    demoAlt: "Demo: ein Satz im Ordner water; OpenHands legt die Dateien an, probiert die Seite aus, prüft sie und gibt dir eine kleine Seite zurück, die Gläser Wasser zählt",
+    demoCap: "Am Ende von Lektion 3 hast du das selbst gebaut.",
     callout: { ok: "Das solltest du sehen", warn: "Achtung", no: "Lieber nicht", tip: "Tipp" },
     copyTitle: "Zum Kopieren",
     copy: "Kopieren",

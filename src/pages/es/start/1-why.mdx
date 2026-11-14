@@ -1,15 +1,16 @@
 ---
 layout: ../../../layouts/Lesson.astro
-tldr: "OpenHands es una IA que hace el trabajo por sí misma. Necesitas una computadora, una clave de modelo y una carpeta vacía para ella."
+tldr: "Tú dices lo que quieres; OpenHands crea los archivos, los prueba y te entrega el resultado. Tú pones una computadora, un modelo y una carpeta vacía para él."
 lesson: 1
 description: Para quien no sabe programar. Qué es OpenHands, qué necesitas, cuánto cuesta y qué riesgo tiene.
 ---
 import Callout from "../../../components/Callout.astro";
+import Demo from "../../../components/Demo.astro";
 import Term from "../../../components/Term.astro";
 
 ## Cómo usas la IA hoy, seguramente
 
-Le pides a una IA una página web pequeña. Te responde con un bloque enorme de código.
+Le pides a una IA una página web pequeña que cuente cuántos vasos de agua bebes cada día. Te responde con un bloque enorme de código.
 
 Lo demás te toca a ti. Creas un archivo, pegas, guardas y lo abres. Si falla, copias el error, se lo pegas y vuelves a preguntar. Y así varias rondas.
 
@@ -21,7 +22,9 @@ Lo demás te toca a ti. Creas un archivo, pegas, guardas y lo abres. Si falla, c
 - **Ejecuta comandos.** Si hay que instalar o arrancar algo, lo escribe él en tu computadora.
 - **Prueba su propio trabajo.** Pone en marcha el resultado y, si algo falla, sigue corrigiendo.
 
-Tú lo ves trabajar paso a paso. Al final, abres el resultado y lo compruebas tú.
+Tú lo ves trabajar paso a paso. Al final, abres el resultado y lo compruebas tú. Esta es la misma página del agua, encargada a OpenHands:
+
+<Demo />
 
 ## Qué necesitas
 
@@ -54,5 +57,5 @@ Esa carpeta no es un candado. Es solo el lugar donde trabaja. En tu mensaje tamb
 La aplicación de escritorio todavía es una versión preliminar, así que puede tener algún fallo.
 
 <Callout type="tip" title="Solo te faltan dos lecciones">
-Instálalo, consigue una clave y luego haz que haga su primera tarea. Después de estas tres lecciones ya sabrás usarlo. Todo lo demás del sitio es para consultarlo cuando te haga falta. Ahora no lo necesitas.
+La próxima lección lleva unos 10 minutos: instalarlo y dejar listo un modelo. En la siguiente, escribes un mensaje y ves cómo construye la página del agua de arriba. Después de estas tres lecciones ya sabrás usarlo. Todo lo demás del sitio es para consultarlo cuando te haga falta. Ahora no lo necesitas.
 </Callout>
