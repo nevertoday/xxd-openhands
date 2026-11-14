@@ -9,12 +9,20 @@
   - 正文：`src/pages/en/start/`、`src/pages/en/guide/`、`src/pages/en/howto/`（MDX，组件路径多一层 `../`；站内链接加 `/en`；`<Term k="中文键" />` 照原样，英文名在 `glossary.js` 的 `en.label`）。
   - 数据：`nav.js` 各条目的 `en: {}`；`wiki.en.js`、`faq.en.js`、`automations.en.js`（按 slug 叠加到中文那份上）；界面文字在各组件和 `views/` 里的 zh / en 两份。
   - 强调：每页最多一处 `<mark>`（这页最要紧的一句），`<u>` 只给照做会失败的坑；英文页放在对应的那句上。
+- 另外 8 种语言（日、韩、西、葡、法、德、俄、阿）只有首页和新手入门三课，其他页面链到英文版（`src/data/nav.js` 的 `LANGS`，`full` 为真的是全站语言）：
+  - 界面文字、首页文字、三课在导航里的标题，和三课里用到的术语，都在 `src/i18n/<语言>.js`，结构照 `src/i18n/base.js`（英文底稿，也是兜底）。改了中文首页或新手三课，先改 `base.js`，再让各语言跟上。
+  - 三课正文在 `src/pages/<语言>/start/`。三课里的站内链接：新手入门指向 `/<语言>/start/…`，其他页面指向 `/en/…`。
+  - 新手三课加了 `<Term k>`，要在 `base.js` 的 `terms` 里补上这个键，各语言跟着补。
+  - 改完跑 `npm run check:i18n`（或 `npm run check:i18n ja` 只查一种）：查键、占位、数组长度、复制块 id、术语、链接，并编译 MDX。
+  - 阿拉伯语从右往左（`dir: "rtl"`），样式在 `public/site.css` 的「多语言」一节；命令和代码保持从左往右。
+  - README 也有 10 种语言（`README.<语言>.md`），每份顶上的语言条一样，自己那种加粗不带链接。
 
 ```bash
 npm install
 npm run dev        # http://localhost:4421
 npm run build      # 输出到 dist/
 npm run check      # 构建后检查：站内链接都通、<Term k> 都在 glossary.js、glossary 的 wiki 都有条目
+npm run check:i18n # 另外 8 种语言的翻译齐不齐、能不能编译
 ```
 
 ## 怎么改

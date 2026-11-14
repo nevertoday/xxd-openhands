@@ -1,10 +1,13 @@
 ---
 // 术语：虚线下划线，悬停或键盘聚焦时出一句话解释；点一下进对应的 Wiki 条目
-import { GLOSSARY, wikiHref, langOf } from "../data/nav.js";
+import { GLOSSARY, wikiHref, langOf, fullLang } from "../data/nav.js";
+import { X as dict } from "../i18n/index.js";
 interface Props { k: string; text?: string }
 const { k, text } = Astro.props;
 const g = GLOSSARY[k];
 if (!g) throw new Error(`GLOSSARY 里没有「${k}」`);
 const lang = langOf(Astro.url.pathname);
+// 其他语言：文字和悬停解释取 src/i18n/<语言>.js 的 terms，没有就用英文；Wiki 只有中英文，链到英文版
+const loc = lang === "zh" ? { label: k, tip: g.tip } : (dict(lang)?.terms?.[k] ?? g.en);
 ---
-<a class="term" href={wikiHref(g.wiki, lang)} data-tooltip={lang === "en" ? g.en.tip : g.tip}>{text ?? (lang === "en" ? g.en.label : k)}</a>
+<a class="term" href={wikiHref(g.wiki, fullLang(lang))} data-tooltip={loc.tip}>{text ?? loc.label}</a>

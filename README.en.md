@@ -2,7 +2,7 @@
 
 # OpenHands for beginners
 
-**English** · [中文](./README.md)
+**English** · [中文](./README.md) · [日本語](./README.ja.md) · [한국어](./README.ko.md) · [Español](./README.es.md) · [Português](./README.pt.md) · [Français](./README.fr.md) · [Deutsch](./README.de.md) · [Русский](./README.ru.md) · [العربية](./README.ar.md)
 
 ### Someone told you to try OpenHands? Start here.
 

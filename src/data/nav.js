@@ -1,26 +1,42 @@
+import { EXTRA } from "../i18n/index.js";
 // 站点结构的唯一来源：左侧导航、首页路线图、上一步 / 下一步、How-to 目录、搜索都从这里读。
 // ready: false 的页面还没写，导航里显示「编写中」，不给链接。
 // 中文在根路径，英文在 /en/ 下（同样的 slug）。英文文字放在各条目的 en: {} 里，用 t(x, key, lang) 取。
 
 const BASE = (import.meta.env?.BASE_URL || "/").replace(/\/$/, "");
-/** 网站的语言：中文在根路径，英文在 /en/ 下 */
+/** 网站的语言。zh、en 是全站；其他语言只有首页和新手入门三课，别的页面链到英文版（full: false）。 */
 export const LANGS = [
-  { code: "zh", name: "中文", html: "zh-CN" },
-  { code: "en", name: "English", html: "en" },
+  { code: "en", name: "English", html: "en", full: true },
+  { code: "zh", name: "中文", html: "zh-CN", full: true },
+  { code: "ja", name: "日本語", html: "ja" },
+  { code: "ko", name: "한국어", html: "ko" },
+  { code: "es", name: "Español", html: "es" },
+  { code: "pt", name: "Português", html: "pt-BR" },
+  { code: "fr", name: "Français", html: "fr" },
+  { code: "de", name: "Deutsch", html: "de" },
+  { code: "ru", name: "Русский", html: "ru" },
+  { code: "ar", name: "العربية", html: "ar", dir: "rtl" },
 ];
-export const langInfo = (lang) => LANGS.find((l) => l.code === lang) ?? LANGS[0];
-const PREFIX_RE = /^\/en(?=\/|$)/;
-/** 当前页面的语言：路径以 /en 开头是英文，否则是中文 */
-export const langOf = (pathname = "") => (PREFIX_RE.test(pathname.slice(BASE.length)) ? "en" : "zh");
-/** 站内链接：部署在子路径时自动加前缀；英文加 /en */
+export const langInfo = (lang) => LANGS.find((l) => l.code === lang) ?? LANGS[1];
+const PREFIXED = LANGS.filter((l) => l.code !== "zh").map((l) => l.code);
+const PREFIX_RE = new RegExp(`^/(${PREFIXED.join("|")})(?=/|$)`);
+/** 当前页面的语言：看路径前缀（/en/、/ja/……），没有前缀是中文 */
+export const langOf = (pathname = "") => pathname.slice(BASE.length).match(PREFIX_RE)?.[1] ?? "zh";
+/** 这种语言有没有全站（zh、en 有；其他语言只有首页和新手入门） */
+export const isFull = (lang) => langInfo(lang).full === true;
+/** 只在全站语言里存在的页面（完整教程、How-to、现成自动化、Wiki、常见问题）：非全站语言链到英文版 */
+export const fullLang = (lang) => (isFull(lang) ? lang : "en");
+/** 站内链接：部署在子路径时自动加前缀；非中文加 /<语言> */
 export const link = (path, lang = "zh") => `${BASE}${lang === "zh" ? "" : "/" + lang}${path}`;
-/** 同一页在另一种语言里的地址（两种语言的页面一一对应；404 页去首页） */
+/** 同一页在另一种语言里的地址：那种语言没有这一页，就去它的首页；404 页去首页 */
 export const langHref = (pathname, target) => {
   const rel = (pathname.slice(BASE.length) || "/").replace(PREFIX_RE, "") || "/";
-  return link(/^\/404(\.html|\/)?$/.test(rel) ? "/" : rel, target);
+  if (/^\/404(\.html|\/)?$/.test(rel)) return link("/", target);
+  if (isFull(target) || rel === "/" || rel.startsWith("/start/")) return link(rel, target);
+  return link("/", target);
 };
-/** 取某个对象在当前语言下的字段：英文找 x.en[key]，没有就用中文 */
-export const t = (x, key, lang) => (lang === "zh" ? x[key] : x.en?.[key] ?? x[key]);
+/** 取某个对象在当前语言下的字段：先找 x[lang][key]，再找 x.en[key]（非中文的兜底），最后是中文 */
+export const t = (x, key, lang) => (lang === "zh" ? x[key] : x[lang]?.[key] ?? x.en?.[key] ?? x[key]);
 
 /** 这个教程站自己的仓库（反馈、源码） */
 export const REPO = "https://github.com/nevertoday/xxd-openhands";
@@ -36,6 +52,8 @@ export const LESSONS = [
   { n: 2, slug: "2-install", title: "装上它", minutes: "10 分钟", sum: "下载桌面版，第一次打开，拿一个 OpenHands Cloud 的 API key", en: { title: "Install it", minutes: "10 minutes", sum: "Download the desktop app, open it, get an OpenHands Cloud API key" } },
   { n: 3, slug: "3-first-use", title: "第一次用", minutes: "15 分钟", sum: "走完首次设置，在空文件夹里让它做一个小网页", en: { title: "Use it for the first time", minutes: "15 minutes", sum: "Finish first-time setup, then have it build a small web page in an empty folder" } },
 ];
+// 其他语言的新手入门标题、时间、简介在 src/i18n/<语言>.js 的 lessons 里，按顺序叠到这里
+for (const [code, d] of Object.entries(EXTRA)) (d.lessons || []).forEach((l, i) => { if (LESSONS[i]) LESSONS[i][code] = l; });
 export const lessonHref = (s, lang = "zh") => link(`/start/${s.slug}/`, lang);
 
 export const STEPS = [

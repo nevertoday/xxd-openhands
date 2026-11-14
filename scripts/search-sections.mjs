@@ -1,9 +1,11 @@
 // 构建后处理：把新手入门、完整教程、How-to、现成自动化、Wiki 每篇正文按小节（h2/h3）切开，生成全文搜索数据
-// dist/search-sections.json（中文）和 dist/en/search-sections.json（英文）。
+// dist/search-sections.json（中文）和 dist/<语言>/search-sections.json（其他语言）。
 // 搜索框打开时才加载；结果是「文章 › 小节」，点了跳到那一节（锚点用页面右侧「本页」目录里的同一个）。
 // 在 base-links.mjs 之前运行：这里的 href 不带子路径前缀，由页面脚本按 BASE_URL 补。
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, sep } from "node:path";
+import { LANGS } from "../src/data/nav.js";
+import { X } from "../src/i18n/index.js";
 
 const walk = (dir) => readdirSync(dir).flatMap((f) => (statSync(join(dir, f)).isDirectory() ? walk(join(dir, f)) : [join(dir, f)]));
 const ENT = { amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", nbsp: " " };
@@ -13,14 +15,16 @@ const text = (html) => html
   .replace(/&(#x?[0-9a-f]+|\w+);/gi, (m, e) => ENT[e] ?? (e[0] === "#" ? String.fromCodePoint(e[1] === "x" ? parseInt(e.slice(2), 16) : +e.slice(1)) : m))
   .replace(/\s+/g, " ").trim();
 const KIND = { zh: { start: "新手入门", guide: "完整教程", howto: "How-to", automations: "现成自动化", wiki: "Wiki", section: "小节" }, en: { start: "Beginner track", guide: "Full guide", howto: "How-to", automations: "Prebuilt automation", wiki: "Wiki", section: "Section" } };
-const out = { zh: [], en: [] };
-const PREFIX = /^\/(en)\//;
+// 其他语言（只有新手入门）：种类名用各自的文字
+for (const { code } of LANGS) if (!KIND[code]) { const u = X(code).ui; KIND[code] = { start: u.hintLesson, section: u.section }; }
+const out = Object.fromEntries(LANGS.map((l) => [l.code, []]));
+const PREFIX = new RegExp(`^/(${LANGS.filter((l) => l.code !== "zh").map((l) => l.code).join("|")})/`);
 for (const file of walk("dist").filter((f) => f.endsWith("index.html"))) {
   const path = "/" + file.slice("dist/".length).split(sep).join("/").replace(/index\.html$/, "");
   const lang = path.match(PREFIX)?.[1] ?? "zh";
   const rel = lang === "zh" ? path : path.slice(lang.length + 1);
   const kind = rel.split("/")[1];
-  if (!(kind in KIND.zh) || kind === "section" || rel === `/${kind}/`) continue;
+  if (!(kind in KIND[lang]) || kind === "section" || rel === `/${kind}/`) continue;
   const html = readFileSync(file, "utf8");
   const art = html.match(/<article class="xxd-prose[^"]*"[^>]*>([\s\S]*?)<\/article>/)?.[1];
   if (!art) continue;

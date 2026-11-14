@@ -5,12 +5,12 @@
 ## 定下来的事
 
 - **骨架**沿用 xxd-pstack：Astro 静态站、xxd-ui-kit（`public/xxd/`）、搜索（⌘K）、组件、写作规矩。
-- **语言**：第一版只做中文（根路径）和英文（`/en/`），slug 相同。另外 8 种语言等内容稳定了再加。
-- **不要的 pstack 专属功能**：技能速查和技能详情页（`skills*`、`skill-docs`、`SkillsPage`、`SkillDoc`）、「我用的工具」命令换写法（`ToolPick`、`tools.js`、`skill-cmds.mjs`）、图示数据（`figs.js` 清空，正文第一版不用 `<Fig>`）、8 种语言的页面和 `src/i18n/<语言>.js`。
+- **语言**：中文（根路径）和英文（`/en/`）是全站，slug 相同。另外 8 种语言（日、韩、西、葡、法、德、俄、阿）照 pstack 站：首页 + 新手入门三课 + README，其他页面链到英文版。
+- **不要的 pstack 专属功能**：技能速查和技能详情页（`skills*`、`skill-docs`、`SkillsPage`、`SkillDoc`）、「我用的工具」命令换写法（`ToolPick`、`tools.js`、`skill-cmds.mjs`）、图示数据（`figs.js` 清空，正文第一版不用 `<Fig>`）。
 - **换成的栏目**：「现成自动化」速查（`/automations/` 卡片页 + `/automations/<slug>/` 详情页），数据来自 OpenHands/extensions 的 `automations/catalog/`。
 - **新手入门只给一条路**：装桌面版（Desktop app，预览版，自带 Node.js 和 uv，不用开终端）→ 在 OpenHands Cloud 拿一个 API key（有免费模型）→ 首次设置向导 → 在一个专门的空文件夹里做一件小事。npm、Docker 等其他装法放进完整教程。
 - **安全说法统一**：本机直接跑时，AI 能用你的账号权限读写文件、执行命令。新手课让它只在一个新建的空文件夹里干活；想隔离就用 Docker（完整教程讲）。
-- **部署**：站点配置写 `https://openhands.xiaoxiaodong.ai`，仓库地址写 `https://github.com/nevertoday/xxd-openhands`。两样都还没建，**不部署、不建 GitHub 仓库**，等用户点头。
+- **部署**：站点配置写 `https://openhands.xiaoxiaodong.ai`，仓库地址写 `https://github.com/nevertoday/xxd-openhands`。用户已同意上线（2026-11-13）。
 
 ## 事实来源（只写这些里写明了的）
 
