@@ -1,0 +1,55 @@
+---
+layout: ../../../layouts/Lesson.astro
+tldr: "O OpenHands é uma IA que faz o trabalho sozinha. Você precisa de um computador, uma chave de modelo e uma pasta vazia para ele."
+lesson: 1
+description: Para quem não programa. O que é o OpenHands, do que você precisa, quanto custa e qual é o risco.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+
+## Como você provavelmente usa IA hoje
+
+Você pede para uma IA uma pequena página web. Ela responde com um bloco enorme de código.
+
+O resto é com você. Você cria um arquivo, cola, salva e abre. Se não funciona, copia o erro, manda de volta e pergunta de novo. E assim vão várias rodadas.
+
+## O OpenHands faz o trabalho ele mesmo
+
+O <Term k="OpenHands" /> é uma IA que age por conta própria, o que também se chama de <Term k="代理" />. Você diz o que quer, e ele faz:
+
+- **Cria e edita arquivos.** Ele mesmo escreve o código nos arquivos.
+- **Roda comandos.** O que precisar instalar ou executar, ele digita no seu computador.
+- **Testa o próprio trabalho.** Ele roda o resultado e, se algo falha, continua corrigindo.
+
+Você acompanha o trabalho passo a passo. No fim, abre o resultado e confere você mesmo.
+
+## Do que você precisa
+
+- **Um computador.** Um Mac (com chip Apple ou Intel), ou Windows ou Linux em x64.
+- **Uma conta no GitHub.** Você usa ela para entrar no <Term k="OpenHands Cloud" /> na próxima lição.
+- **Uma chave de modelo.** O OpenHands não tem um "cérebro" próprio. Ele se conecta a um <Term k="模型" />. Estas lições usam uma <Term k="API key" /> do OpenHands Cloud, e a próxima lição mostra como conseguir uma.
+
+Você não precisa saber programar e, em geral, nem vai precisar da linha de comando.
+
+## Quanto custa
+
+- **O OpenHands em si é gratuito.** Ele é de código aberto, com licença MIT.
+- **O que custa dinheiro é o modelo.** Você paga pelo que usar. Tarefas mais longas e mais idas e vindas custam mais.
+- **Primeiro você vai colocar US$ 10.** A documentação oficial diz que você precisa de pelo menos US$ 10 de crédito no OpenHands Cloud para conseguir a chave.
+- **Existe um modelo gratuito.** Na lista de modelos, um deles vem marcado como `Free` (grátis) e não gasta o seu crédito. Quando este texto foi escrito, era o DeepSeek V4 Flash. Qual modelo é gratuito muda, então guie-se pela marca `Free`.
+
+Então, nestas lições, o dinheiro que você gasta são os US$ 10 que você coloca no começo. Enquanto você escolher o modelo `Free`, esse crédito fica intacto.
+
+## Qual é o risco
+
+No seu próprio computador, ele usa as permissões da sua conta. Qualquer arquivo que você pode ler ou mudar, ele também pode. Qualquer comando que você pode rodar, ele também pode. Por padrão, ele não pergunta nada antes de cada passo.
+
+Por isso estas lições tomam um cuidado: <mark><strong>dê a ele uma pasta nova e vazia, e faça ele trabalhar só ali.</strong></mark>
+
+Essa pasta não é um cadeado. É só o lugar onde ele trabalha. Você também vai dizer na sua mensagem para ele ficar dentro dessa pasta. Para fechar ele de vez num ambiente isolado (<Term k="Docker" />), veja o guia completo.
+
+O aplicativo para computador ainda é uma versão de prévia, então pode ter alguns defeitos.
+
+<Callout type="tip" title="Só mais duas lições">
+Instale e pegue uma chave, depois peça a primeira tarefa. Depois dessas três lições, você já sabe usar. O resto do site é para consultar quando aparecer alguma dúvida. Você não precisa dele agora.
+</Callout>

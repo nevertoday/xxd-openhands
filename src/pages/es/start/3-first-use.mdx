@@ -1,0 +1,204 @@
+---
+layout: ../../../layouts/Lesson.astro
+tldr: "Termina el asistente de configuración, abre una carpeta vacía y envía un mensaje de tres partes para obtener una página pequeña que registra cuánta agua bebes."
+lesson: 3
+description: Termina el asistente de configuración de la aplicación de escritorio, convierte una carpeta nueva y vacía en su espacio de trabajo y envía un mensaje de tres partes para construir una página pequeña que registra el agua que bebes. Cómo verlo trabajar, comprobar el resultado y detenerlo.
+---
+import Callout from "../../../components/Callout.astro";
+import Copy from "../../../components/Copy.astro";
+import Reply from "../../../components/Reply.astro";
+import Q from "../../../components/Q.astro";
+import Term from "../../../components/Term.astro";
+
+En esta lección, OpenHands hace algo real y pequeño: una página web que registra cuántos vasos de agua bebes cada día.
+
+La aplicación está en inglés. Aquí escribimos cada botón tal como aparece en pantalla y, la primera vez, te decimos entre comillas qué significa.
+
+## Primero, crea una carpeta vacía
+
+Crea una carpeta nueva en tu escritorio llamada `water`. Déjala vacía.
+
+Este es su <Term k="工作区" />. Aquí crea y edita archivos.
+
+<Callout type="ok">
+Hay una carpeta `water` vacía en tu escritorio.
+</Callout>
+
+## Termina el asistente de configuración
+
+Vuelve a la ventana de **OpenHands Agent Canvas** que dejaste abierta en la lección anterior. El asistente tiene tres o cuatro pantallas, con una barra de progreso arriba.
+
+### Si ves Check your backend
+
+Esta pantalla («revisa tu backend») confirma que su servicio de fondo está funcionando. La aplicación de escritorio lo arranca por ti, así que muchas veces esta pantalla se salta.
+
+<Callout type="ok">
+Dice `You're connected!` («¡estás conectado!»). Haz clic en `Next` («siguiente»).
+</Callout>
+
+### Choose your agent
+
+En esta pantalla («elige tu agente»), la primera opción, **OpenHands**, ya está seleccionada. Ignora las demás y haz clic en `Next`.
+
+<Callout type="ok">
+El título cambia a `Set up your LLM` («configura tu modelo»).
+</Callout>
+
+### Set up your LLM
+
+1. **LLM Provider** (el proveedor del modelo): déjalo en `OpenHands`.
+2. **LLM Model** (el modelo): abre la lista y elige uno marcado como `Free`. Cuando se escribió esto era DeepSeek V4 Flash. El modelo que viene elegido por defecto gasta tu saldo, así que asegúrate de cambiarlo.
+3. **API Key** (la clave): vuelve a la página de OpenHands Cloud que dejaste abierta. Copia la clave de la sección `OpenHands LLM Key` y pégala aquí.
+4. No toques los demás campos y haz clic en `Next`.
+
+<Callout type="ok">
+El título cambia a `Say hello` («saluda»), con un cuadro de texto debajo.
+</Callout>
+
+### Say hello: no envíes nada aquí
+
+Un mensaje enviado desde aquí inicia una conversación nueva sin espacio de trabajo. No sabría que tiene que usar tu carpeta `water`.
+
+Así que aquí no envíes nada. Haz clic en `Close` («cerrar»), abajo.
+
+<Callout type="ok">
+El asistente se cierra. En el centro de la ventana dice `What do you want to work on?` («¿en qué quieres trabajar?»), con un cuadro de texto grande debajo. Puede que aparezca una lista `Getting started` («primeros pasos») en la barra lateral izquierda. Puedes ignorarla.
+</Callout>
+
+## Abre la carpeta vacía
+
+1. Debajo del cuadro de texto grande, haz clic en `Open Workspace` («abrir espacio de trabajo»), el botón con el icono de una carpeta.
+2. En la ventana que se abre, haz clic en `Select a workspace` («elige un espacio de trabajo») y luego en `+ Add Workspace` («añadir espacio de trabajo»).
+3. Se abre una ventana `Add workspaces` con las carpetas de tu computadora. Haz clic en `Desktop` (el escritorio) y luego en `water`.
+4. Haz clic en `Add this directory` («añadir esta carpeta»). Esa ventana se cierra sola.
+5. De vuelta en la ventana `Open Workspace`, haz clic en `Confirm` («confirmar»).
+
+<Callout type="ok">
+Debajo del cuadro de texto grande, donde decía `Open Workspace`, ahora dice `water`.
+</Callout>
+
+## Envíale este mensaje
+
+<Copy id="first" title="Copia, pega en el cuadro de texto grande y presiona Enter" code={`Lo que quiero: una página web pequeña que registre cuántos vasos de agua bebo cada día. Esta carpeta está vacía. Pon todos los archivos dentro de ella y no toques nada fuera de ella.
+Cómo se ve terminado: abro la página y hago clic en «Bebí un vaso», y el número de hoy sube en uno; la cierro y la vuelvo a abrir, y el número sigue ahí; la página muestra cuántos vasos bebí cada uno de los últimos 7 días.
+Al terminar, muéstrame: qué comprobaste y qué viste en cada comprobación. Luego dime en qué archivo hago doble clic para abrir la página.`} />
+
+El mensaje tiene solo tres partes. Usa la misma forma para cualquier cosa que le pidas:
+
+<mark><strong>Lo que quiero · Cómo se ve terminado · Qué me muestras al terminar</strong></mark>
+
+- **Lo que quiero:** una página que registra el agua, hecha solo dentro de esta carpeta.
+- **Cómo se ve terminado:** cada clic suma uno, el número sigue ahí después de cerrar y volver a abrir, y se ven 7 días. Va a probar cada uno de estos puntos.
+- **Qué me muestras al terminar:** qué comprobó y qué vio. No necesitas leer el código. Con esto basta.
+
+<Callout type="ok">
+Tu mensaje aparece en la conversación, seguido del progreso de arranque. Luego aparece una línea `Thinking` («pensando») y, después, lo que va haciendo.
+</Callout>
+
+## Míralo trabajar
+
+Trabaja solo durante unos minutos. Por defecto no se detiene a preguntarte «¿puedo ejecutar este comando?». Simplemente sigue.
+
+Cada vez que termina un tramo de trabajo, la conversación muestra un resumen de una línea, por ejemplo:
+
+- `Ran a command` («ejecutó un comando»)
+- `Made an edit` («hizo un cambio»)
+- `Read a file` («leyó un archivo»)
+
+El tramo en el que está trabajando ahora aparece abajo del todo. Muestra el paso actual, o `Thinking`. Puedes saltarte todo esto y esperar su respuesta.
+
+Al final escribe una respuesta. Se ve más o menos así:
+
+<Reply code={`① Qué hice: creé index.html en la carpeta water.
+   Al abrirlo aparece la página para registrar el agua.
+
+② Qué comprobé
+   ✓ Hice clic 3 veces en «Bebí un vaso»; hoy muestra 3
+   ✓ Cerré la página y la volví a abrir; sigue en 3
+   ✓ Una casilla para cada uno de los últimos 7 días; la de hoy dice 3
+   ? No pude comprobar: cómo se ve en un celular (solo lo comprobé en una computadora)
+
+③ Cómo abrirla: haz doble clic en index.html dentro de la carpeta water`} />
+
+- **①:** ¿es lo que pediste?
+- **② es lo más importante.** Cada línea dice qué hizo y qué vio. La línea de «no pude comprobar» es él siendo honesto.
+- **③:** haz lo que dice y míralo tú.
+
+## Compruébalo tú
+
+1. Abre la carpeta `water` de tu escritorio y haz doble clic en el archivo que te indicó.
+2. Prueba tus tres puntos a mano: haz clic varias veces, cierra y vuelve a abrir, mira los 7 días.
+
+Luego hazte tres preguntas:
+
+- ¿Lo que hizo es lo que pedí?
+- Cuando dijo que había terminado, ¿enumeró las comprobaciones que hizo de verdad y lo que vio?
+- Cuando lo pruebo yo, ¿coincide con lo que dijo?
+
+Si las tres respuestas son sí, el trabajo está hecho.
+
+Si solo dice «listo», sin ninguna comprobación, respóndele:
+
+<Copy id="no-proof" code="Muéstrame qué comprobaste de verdad: qué hiciste y qué viste. No me digas solo que está listo." />
+
+## Haz que se detenga
+
+Mientras trabaja, junto al cuadro de texto hay un botón con un icono de pausa (dos barras verticales). Ese es `Stop` («detener»). Haz clic y se detiene.
+
+<Callout type="ok">
+Deja de trabajar y el estado dice `Stopped` («detenido»).
+</Callout>
+
+Cuando se detenga, escribe en el cuadro de texto lo que quieres, por ejemplo «Solo el registro de agua, nada más por ahora». Presiona Enter y sigue desde ahí.
+
+## Si algo no sale bien
+
+<Q q="En Set up your LLM hago clic en Next y aparece un error en vez de la siguiente pantalla.">
+<p>Prueba la clave antes de guardarla y no continúa si la prueba falla. Vuelve a la página `API Keys` de OpenHands Cloud. Copia otra vez la clave de la sección `OpenHands LLM Key` y pégala. No uses una clave creada con `Create API Key`.</p>
+</Q>
+<Q q="Ningún modelo de la lista está marcado como Free.">
+<p>El modelo gratis cambia y a veces no hay ninguno. Cualquier otro modelo también funciona, pero gasta el saldo que recargaste.</p>
+</Q>
+<Q q="Cerré el asistente, o no volvió a aparecer al abrir otra vez la aplicación.">
+<p>Haz clic en `Settings` («ajustes») en la barra lateral izquierda, luego en `LLM`, y añade una configuración de modelo nueva. En la pestaña `Basic` («básico»), elige `OpenHands`, elige un modelo marcado como `Free`, pega la clave y guarda.</p>
+</Q>
+<Q q="El cuadro de texto grande de la pantalla principal está gris y no puedo escribir.">
+<p>Seguramente el modelo todavía no está configurado. Sigue la respuesta anterior y luego vuelve.</p>
+</Q>
+<Q q="No encuentro mi escritorio en la ventana Add workspaces.">
+<p>Busca `Desktop`: así se llama ahí el escritorio. En algunas computadoras con Windows, el escritorio está dentro de OneDrive. En ese caso, haz clic primero en `OneDrive` y luego busca `Desktop`.</p>
+</Q>
+<Q q="Dice que no encuentra la carpeta, o los archivos no aparecieron en water.">
+<p>Seguramente enviaste el mensaje antes de abrir el espacio de trabajo. Empieza una conversación nueva desde la barra lateral izquierda y repite «Abre la carpeta vacía». Cuando el cuadro diga `water`, envía el mensaje.</p>
+</Q>
+<Q q="Aparece Failed to send junto a mi mensaje.">
+<p>`Failed to send` significa «no se pudo enviar». Pasa con una conexión lenta. Espera un momento. Si el mensaje aparece en la conversación, todo está bien. Si nunca aparece, haz clic en `Retry` («reintentar»).</p>
+</Q>
+<Q q="El resultado está mal, por ejemplo el número no cambia al hacer clic.">
+<p>Dile solo lo que viste, como «Hice clic tres veces y el número se quedó en 0». No adivines la causa. Una suposición equivocada lo manda por el camino equivocado.</p>
+</Q>
+<Q q="Me hizo una pregunta que no entiendo.">
+<p>Respóndele sin más: «No sé programar. Pregúntame con palabras sencillas, o elige tú la opción más segura y dime por qué».</p>
+</Q>
+
+## Ya lo tienes
+
+A partir de ahora, todo funciona igual: abre una carpeta y luego envía las tres partes. Por ejemplo:
+
+<Copy id="ex-card" title="Haz otra cosa pequeña" code={`Lo que quiero: una página web de tarjeta de cumpleaños que diga «Feliz cumpleaños» y cambie de color cuando haga clic. Esta carpeta está vacía. Pon todos los archivos dentro de ella.
+Cómo se ve terminado: abro la página y veo el mensaje; un clic cambia el color; cinco clics seguidos dan un color distinto cada vez.
+Al terminar, muéstrame: qué comprobaste y qué viste. Luego dime en qué archivo hago doble clic para abrirla.`} />
+
+Para cada tarea nueva, crea una carpeta nueva y vacía y ábrela en una <Term k="对话" /> nueva.
+
+<Callout type="tip" title="Con esto basta por ahora">
+Estas tres lecciones son todo lo que necesita un principiante. Para practicar, elige algo pequeño que de verdad quieras y pídelo con las mismas tres partes.
+
+Consulta el resto del sitio cuando lo necesites (en inglés):
+
+- Se desvía una y otra vez: mira [How to brief it so it stays on track](/en/howto/good-instructions/) (cómo darle instrucciones para que no se desvíe).
+- Quieres saber cuánto has gastado: mira [Control costs](/en/howto/cost/) (controlar el gasto).
+- No abre o no se conecta: mira [Troubleshooting](/en/howto/troubleshoot/) (solución de problemas).
+- Otras dudas: mira las [preguntas frecuentes](/en/faq/).
+- Sabes programar y quieres usarlo en proyectos reales: mira la [guía completa](/en/guide/0-what/).
+</Callout>

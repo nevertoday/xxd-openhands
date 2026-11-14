@@ -1,0 +1,55 @@
+---
+layout: ../../../layouts/Lesson.astro
+tldr: "OpenHands est une IA qui fait le travail elle-même. Il vous faut un ordinateur, une clé de modèle et un dossier vide rien que pour elle."
+lesson: 1
+description: "Pour celles et ceux qui ne codent pas. Ce qu'est OpenHands, ce qu'il vous faut, ce que ça coûte et quel est le risque."
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+
+## Comment vous utilisez sans doute l'IA aujourd'hui
+
+Vous demandez une petite page web à une IA. Elle vous répond avec un gros bloc de code.
+
+La suite, c'est à vous de la faire. Vous créez un fichier, vous collez, vous enregistrez, vous l'ouvrez. Si ça ne marche pas, vous recopiez l'erreur et vous redemandez. Et ça recommence, plusieurs fois.
+
+## OpenHands fait le travail lui-même
+
+<Term k="OpenHands" /> est une IA qui agit d'elle-même, ce qu'on appelle aussi un <Term k="代理" />. Vous dites ce que vous voulez, et il le fait :
+
+- **Il crée et modifie les fichiers.** Il écrit lui-même le code dans les fichiers.
+- **Il lance les commandes.** Ce qu'il faut installer ou lancer, il le tape lui-même sur votre ordinateur.
+- **Il essaie son propre travail.** Il lance le résultat, et si quelque chose ne marche pas, il continue à corriger.
+
+Vous le regardez travailler, étape par étape. À la fin, vous ouvrez le résultat et vous vérifiez vous-même.
+
+## Ce qu'il vous faut
+
+- **Un ordinateur.** Un Mac (puce Apple ou Intel), ou un PC x64 sous Windows ou Linux.
+- **Un compte GitHub.** Il vous servira à vous connecter à <Term k="OpenHands Cloud" /> pour obtenir la clé, à la leçon suivante.
+- **Une clé de modèle.** OpenHands n'a pas de « cerveau » intégré. Il se branche sur un <Term k="模型" />. Ces leçons utilisent une <Term k="API key" /> fournie par OpenHands Cloud, et la leçon suivante vous montre pas à pas comment l'obtenir.
+
+Pas besoin de savoir programmer, et en général, pas besoin non plus de la ligne de commande.
+
+## Ce que ça coûte
+
+- **OpenHands lui-même est gratuit.** C'est un logiciel open source, sous licence MIT.
+- **Ce qui coûte, c'est le modèle.** Vous payez ce que vous utilisez. Plus la tâche est longue et plus il y a d'allers-retours, plus ça coûte.
+- **Vous commencez par ajouter 10 $.** La documentation officielle l'indique : avant d'obtenir la clé, il faut acheter au moins 10 $ de crédit OpenHands Cloud.
+- **Il existe un modèle gratuit.** Dans la liste des modèles, l'un d'eux porte la mention `Free` (gratuit) et n'utilise pas votre crédit. Au moment où j'écris, c'est DeepSeek V4 Flash. Le modèle gratuit change, alors fiez-vous à la mention `Free` dans la liste.
+
+Pour ces leçons, l'argent que vous dépensez, ce sont donc les 10 $ ajoutés au départ. Tant que vous choisissez le modèle `Free`, ce crédit reste intact.
+
+## Quel est le risque
+
+Sur votre propre ordinateur, il a les mêmes droits que votre compte. Tous les fichiers que vous pouvez lire ou modifier, il le peut aussi. Toutes les commandes que vous pouvez lancer, il le peut aussi. Par défaut, il ne vous demande pas la permission avant chaque étape.
+
+Ces leçons prennent donc une seule précaution : <mark><strong>donnez-lui un dossier tout neuf et vide, et faites-le travailler seulement là.</strong></mark>
+
+Ce dossier n'est pas un cadenas. C'est simplement là qu'il travaille. Dans votre message, vous lui direz aussi de ne rien toucher en dehors de ce dossier. Pour l'enfermer vraiment dans un environnement isolé (<Term k="Docker" />), voyez le guide complet.
+
+L'application de bureau est encore en préversion. Attendez-vous à quelques petits défauts.
+
+<Callout type="tip" title="Plus que deux leçons">
+Installez-le et obtenez une clé, puis faites-lui faire sa première tâche. Après ces trois leçons, vous savez vous en servir. Le reste du site, vous le consulterez quand vous tomberez sur un problème. Vous n'en avez pas besoin maintenant.
+</Callout>

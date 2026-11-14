@@ -1,0 +1,55 @@
+---
+layout: ../../../layouts/Lesson.astro
+tldr: "OpenHands ist eine KI, die die Arbeit selbst erledigt. Du brauchst einen Computer, einen Schlüssel für ein Modell und einen leeren Ordner für ihn."
+lesson: 1
+description: "Für alle, die nicht programmieren. Was OpenHands ist, was du brauchst, was es kostet und welches Risiko es gibt."
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+
+## So nutzt du KI wahrscheinlich heute
+
+Du bittest eine KI um eine kleine Webseite. Sie antwortet mit einem großen Block Code.
+
+Der Rest bleibt an dir hängen. Du legst eine Datei an, fügst den Code ein, speicherst und öffnest sie. Klappt es nicht, kopierst du die Fehlermeldung zurück und fragst noch mal. Das geht mehrere Runden so.
+
+## OpenHands erledigt die Arbeit selbst
+
+<Term k="OpenHands" /> ist eine KI, die selbst handelt, auch <Term k="代理" /> genannt. Du sagst, was du willst, und er macht es:
+
+- **Er legt Dateien an und ändert sie.** Den Code schreibt er selbst in die Dateien.
+- **Er führt Befehle aus.** Was installiert oder gestartet werden muss, tippt er selbst auf deinem Computer ein.
+- **Er probiert seine Arbeit selbst aus.** Er startet das Ergebnis, und wenn etwas schiefgeht, bessert er weiter nach.
+
+Du schaust ihm Schritt für Schritt zu. Am Ende öffnest du das Ergebnis und prüfst es selbst.
+
+## Was du brauchst
+
+- **Einen Computer.** Einen Mac (mit Apple-Chip oder Intel) oder einen Rechner mit Windows oder Linux (x64).
+- **Ein GitHub-Konto.** Damit meldest du dich in der nächsten Lektion bei <Term k="OpenHands Cloud" /> an.
+- **Einen Schlüssel für ein Modell.** OpenHands hat kein eingebautes „Gehirn“. Er verbindet sich mit einem <Term k="模型" />. In diesem Kurs nimmst du einen <Term k="API key" /> von OpenHands Cloud. Die nächste Lektion zeigt dir Schritt für Schritt, wie du ihn bekommst.
+
+Programmieren musst du nicht können, und die Kommandozeile brauchst du meistens auch nicht.
+
+## Was es kostet
+
+- **OpenHands selbst ist kostenlos.** Es ist Open Source, unter der MIT-Lizenz.
+- **Das Modell kostet Geld.** Du zahlst, was du verbrauchst. Längere Aufgaben und mehr Hin und Her kosten mehr.
+- **Zuerst lädst du 10 $ auf.** Laut offizieller Doku brauchst du mindestens 10 $ Guthaben bei OpenHands Cloud, bevor du den Schlüssel bekommst.
+- **Es gibt ein kostenloses Modell.** In der Modellliste ist eines mit `Free` markiert, und das verbraucht dein Guthaben nicht. Während dieser Text entsteht, ist es DeepSeek V4 Flash. Welches Modell kostenlos ist, ändert sich. Verlass dich auf die Markierung `Free`.
+
+In diesem Kurs gibst du also nur die 10 $ aus, die du am Anfang auflädst. Solange du das Modell mit `Free` wählst, bleibt das Guthaben unangetastet.
+
+## Welches Risiko es gibt
+
+Auf deinem eigenen Computer arbeitet er mit den Rechten deines Benutzerkontos. Jede Datei, die du lesen oder ändern kannst, kann er auch lesen oder ändern. Jeden Befehl, den du ausführen kannst, kann er auch ausführen. Standardmäßig fragt er dich nicht vor jedem Schritt.
+
+Deshalb gibt es in diesem Kurs eine Vorsichtsmaßnahme: <mark><strong>Gib ihm einen brandneuen, leeren Ordner und lass ihn nur dort arbeiten.</strong></mark>
+
+Dieser Ordner ist kein Schloss. Er ist nur der Ort, an dem er arbeitet. Du sagst ihm außerdem in deiner Nachricht, dass er in diesem Ordner bleiben soll. Wie du ihn ganz in eine abgeschottete Umgebung (<Term k="Docker" />) sperrst, steht in der vollständigen Anleitung.
+
+Die Desktop-App ist noch eine Vorschauversion. Rechne also mit ein paar kleinen Macken.
+
+<Callout type="tip" title="Nur noch zwei Lektionen">
+Installiere ihn und hol dir einen Schlüssel. Dann lässt du ihn seine erste Aufgabe erledigen. Nach diesen drei Lektionen kannst du ihn benutzen. Alles andere auf der Seite schlägst du nach, wenn du darauf stößt. Jetzt brauchst du es noch nicht.
+</Callout>

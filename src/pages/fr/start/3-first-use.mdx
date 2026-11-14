@@ -1,0 +1,204 @@
+---
+layout: ../../../layouts/Lesson.astro
+tldr: "Terminez l'assistant de configuration, ouvrez un dossier vide et envoyez un seul message en trois parties pour obtenir une petite page qui compte l'eau que vous buvez."
+lesson: 3
+description: "Terminez l'assistant de configuration de l'application de bureau, faites d'un nouveau dossier vide son espace de travail, et envoyez un message en trois parties pour créer une petite page qui compte l'eau que vous buvez. Comment le regarder travailler, vérifier le résultat et l'arrêter."
+---
+import Callout from "../../../components/Callout.astro";
+import Copy from "../../../components/Copy.astro";
+import Reply from "../../../components/Reply.astro";
+import Q from "../../../components/Q.astro";
+import Term from "../../../components/Term.astro";
+
+Dans cette leçon, OpenHands crée quelque chose de vrai et de petit : une page web qui compte combien de verres d'eau vous buvez chaque jour.
+
+L'interface de l'application est en anglais. Ci-dessous, chaque bouton est écrit tel qu'il apparaît à l'écran, avec son sens entre parenthèses la première fois.
+
+## D'abord, créez un dossier vide
+
+Créez sur votre bureau un nouveau dossier nommé `water`. Laissez-le vide.
+
+C'est son <Term k="工作区" /> : il y crée et y modifie les fichiers.
+
+<Callout type="ok">
+Il y a un dossier `water` vide sur votre bureau.
+</Callout>
+
+## Terminez l'assistant de configuration
+
+Revenez à la fenêtre **OpenHands Agent Canvas** que vous avez laissée ouverte à la leçon précédente. L'assistant compte trois ou quatre écrans, avec une barre de progression en haut.
+
+### Si vous voyez Check your backend (vérifier le backend)
+
+Cet écran vérifie que son service en arrière-plan tourne. L'application de bureau le démarre pour vous, alors cet écran est souvent sauté.
+
+<Callout type="ok">
+Il affiche `You're connected!` (vous êtes connecté). Cliquez sur `Next` (suivant).
+</Callout>
+
+### Choose your agent (choisir l'agent)
+
+La première option, **OpenHands**, est déjà sélectionnée. Ignorez les autres et cliquez sur `Next`.
+
+<Callout type="ok">
+Le titre devient `Set up your LLM` (configurer le modèle).
+</Callout>
+
+### Set up your LLM (configurer le modèle)
+
+1. **LLM Provider** (fournisseur du modèle) : laissez `OpenHands`.
+2. **LLM Model** (modèle) : ouvrez la liste et choisissez un modèle marqué `Free` (gratuit). Au moment où j'écris, c'est DeepSeek V4 Flash. Le modèle choisi par défaut utilise votre crédit, alors pensez bien à changer.
+3. **API Key** (clé d'API) : revenez à la page OpenHands Cloud que vous avez laissée ouverte. Copiez la clé de la section `OpenHands LLM Key` et collez-la ici.
+4. Ne touchez pas aux autres champs et cliquez sur `Next`.
+
+<Callout type="ok">
+Le titre devient `Say hello` (dites bonjour), avec une zone de texte en dessous.
+</Callout>
+
+### Say hello : n'envoyez rien ici
+
+Un message envoyé depuis cet écran ouvre une nouvelle conversation sans espace de travail. L'agent ne saurait pas qu'il doit utiliser votre dossier `water`.
+
+N'envoyez donc rien ici. Cliquez sur `Close` (fermer), en bas.
+
+<Callout type="ok">
+L'assistant se ferme. Au milieu de la fenêtre s'affiche `What do you want to work on?` (sur quoi voulez-vous travailler ?), avec une grande zone de texte en dessous. Une liste `Getting started` (pour bien démarrer) peut apparaître dans la barre de gauche. Vous pouvez l'ignorer.
+</Callout>
+
+## Ouvrez le dossier vide
+
+1. Sous la grande zone de texte, cliquez sur `Open Workspace` (ouvrir un espace de travail), le bouton avec une icône de dossier.
+2. Dans la fenêtre qui s'ouvre, cliquez sur `Select a workspace` (choisir un espace de travail), puis sur `+ Add Workspace` (ajouter un espace de travail).
+3. Une fenêtre `Add workspaces` s'ouvre, avec la liste des dossiers de votre ordinateur. Cliquez sur `Desktop` (le Bureau), puis sur `water`.
+4. Cliquez sur `Add this directory` (ajouter ce dossier). Cette fenêtre se ferme toute seule.
+5. De retour dans la fenêtre `Open Workspace`, cliquez sur `Confirm` (confirmer).
+
+<Callout type="ok">
+Sous la grande zone de texte, là où il y avait `Open Workspace`, il y a maintenant `water`.
+</Callout>
+
+## Envoyez-lui ce message
+
+<Copy id="first" title="Copiez, collez dans la grande zone de texte, appuyez sur Entrée" code={`Ce que je veux : une petite page web qui compte combien de verres d'eau je bois chaque jour. Ce dossier est vide. Mets-y tous les fichiers, et ne touche à rien en dehors.
+Le résultat attendu : j'ouvre la page, je clique sur « J'ai bu un verre », et le compteur du jour augmente de un ; je ferme la page, je la rouvre, et le nombre est toujours là ; la page montre combien de verres j'ai bus chacun des 7 derniers jours.
+À la fin, montre-moi : ce que tu as vérifié, et ce que tu as vu pour chaque vérification. Puis dis-moi sur quel fichier double-cliquer pour ouvrir la page.`} />
+
+Le message n'a que trois parties. Gardez la même forme pour tout ce que vous lui demandez :
+
+<mark><strong>Ce que je veux · Le résultat attendu · Ce que tu me montres à la fin</strong></mark>
+
+- **Ce que je veux :** une page qui compte l'eau, construite seulement dans ce dossier.
+- **Le résultat attendu :** un clic ajoute un, le nombre reste après fermeture et réouverture, on voit 7 jours. Il va essayer chacun de ces points.
+- **Ce que tu me montres à la fin :** ce qu'il a vérifié et ce qu'il a vu. Pas besoin de lire le code. Ça suffit.
+
+<Callout type="ok">
+Votre message apparaît dans la conversation, suivi de la progression du démarrage. Puis une ligne `Thinking` (en train de réfléchir) apparaît, et ensuite, ce qu'il fait.
+</Callout>
+
+## Regardez-le travailler
+
+Il travaille seul pendant quelques minutes. Par défaut, il ne s'arrête pas pour demander « je peux lancer cette commande ? ». Il continue, tout simplement.
+
+Chaque fois qu'il termine une partie du travail, la conversation affiche un résumé d'une ligne, par exemple :
+
+- `Ran a command` : il a lancé une commande.
+- `Made an edit` : il a modifié un fichier.
+- `Read a file` : il a lu un fichier.
+
+La partie en cours est tout en bas. Elle affiche l'étape actuelle, ou `Thinking`. Vous pouvez ne pas regarder tout ça et attendre sa réponse.
+
+À la fin, il écrit une réponse. Elle ressemble à peu près à ceci :
+
+<Reply code={`① Ce que j'ai fait : j'ai créé index.html dans le dossier water.
+   En l'ouvrant, on voit la page qui compte l'eau.
+
+② Ce que j'ai vérifié
+   ✓ Cliqué 3 fois sur « J'ai bu un verre » ; aujourd'hui affiche 3
+   ✓ Fermé la page puis rouverte ; toujours 3
+   ✓ Une case pour chacun des 7 derniers jours ; celle d'aujourd'hui affiche 3
+   ? Pas pu vérifier : l'affichage sur téléphone (je n'ai vérifié que sur ordinateur)
+
+③ Pour l'ouvrir : double-cliquez sur index.html dans le dossier water`} />
+
+- **① :** est-ce bien ce que vous avez demandé ?
+- **② est le plus important.** Chaque ligne dit ce qu'il a fait et ce qu'il a vu. La ligne « pas pu vérifier », c'est lui qui est honnête.
+- **③ :** faites ce qu'il dit et regardez par vous-même.
+
+## Vérifiez vous-même
+
+1. Ouvrez le dossier `water` sur votre bureau et double-cliquez sur le fichier qu'il a indiqué.
+2. Essayez vos trois points à la main : cliquez plusieurs fois, fermez et rouvrez, regardez les 7 jours.
+
+Puis posez-vous trois questions :
+
+- Ce qu'il a fait, est-ce bien ce que j'ai demandé ?
+- Quand il a dit que c'était fini, a-t-il listé les vérifications qu'il a vraiment faites et ce qu'il a vu ?
+- Quand j'essaie moi-même, est-ce que ça correspond à ce qu'il a dit ?
+
+Si la réponse est oui aux trois, le travail est fait.
+
+S'il dit seulement « c'est fait », sans aucune vérification, répondez-lui :
+
+<Copy id="no-proof" code="Montre-moi ce que tu as vraiment vérifié : ce que tu as fait et ce que tu as vu. Ne te contente pas de me dire que c'est fini." />
+
+## Faites-le s'arrêter
+
+Pendant qu'il travaille, un bouton avec une icône de pause (deux barres verticales) se trouve à côté de la zone de texte. C'est `Stop` (arrêter). Cliquez dessus, et il s'arrête.
+
+<Callout type="ok">
+Il arrête de travailler, et l'état affiche `Stopped` (arrêté).
+</Callout>
+
+Une fois arrêté, tapez ce que vous voulez dans la zone de texte, par exemple « Seulement le compteur d'eau, rien d'autre pour l'instant. » Appuyez sur Entrée, et il reprend à partir de là.
+
+## Si quelque chose ne va pas
+
+<Q q="Sur l'écran Set up your LLM, je clique sur Next et j'obtiens une erreur au lieu de l'écran suivant.">
+<p>Il teste la clé avant de l'enregistrer, et ne continue pas si le test échoue. Retournez sur la page `API Keys` d'OpenHands Cloud. Copiez de nouveau la clé de la section `OpenHands LLM Key` et collez-la. N'utilisez pas une clé créée avec `Create API Key`.</p>
+</Q>
+<Q q="Aucun modèle de la liste n'est marqué Free.">
+<p>Le modèle gratuit change, et parfois il n'y en a aucun. N'importe quel autre modèle marche aussi, mais il utilise le crédit que vous avez ajouté.</p>
+</Q>
+<Q q="J'ai fermé l'assistant, ou il n'est pas revenu quand j'ai rouvert l'application.">
+<p>Cliquez sur `Settings` (réglages) dans la barre de gauche, puis sur `LLM`, et ajoutez une nouvelle configuration de modèle. Dans l'onglet `Basic` (de base), choisissez `OpenHands`, prenez un modèle marqué `Free`, collez la clé et enregistrez.</p>
+</Q>
+<Q q="La grande zone de texte de l'écran d'accueil est grisée et je ne peux pas écrire.">
+<p>Le modèle n'est sans doute pas encore configuré. Suivez la réponse précédente, puis revenez.</p>
+</Q>
+<Q q="Je ne trouve pas mon bureau dans la fenêtre Add workspaces.">
+<p>Cherchez `Desktop` : c'est son nom ici, pas « Bureau ». Sur certains PC Windows, le bureau se trouve dans OneDrive. Dans ce cas, cliquez d'abord sur `OneDrive`, puis cherchez `Desktop`.</p>
+</Q>
+<Q q="Il dit qu'il ne trouve pas le dossier, ou les fichiers n'apparaissent pas dans water.">
+<p>Vous avez sans doute envoyé le message avant d'ouvrir l'espace de travail. Ouvrez une nouvelle conversation depuis la barre de gauche et refaites « Ouvrez le dossier vide ». Une fois que la zone affiche `water`, envoyez le message.</p>
+</Q>
+<Q q="Failed to send apparaît à côté de mon message.">
+<p>Ça arrive avec une connexion lente. Attendez un instant. Si le message apparaît dans la conversation, tout va bien. S'il n'apparaît jamais, cliquez sur `Retry` (réessayer).</p>
+</Q>
+<Q q="Le résultat n'est pas bon, par exemple le nombre ne change pas quand je clique.">
+<p>Dites seulement ce que vous avez vu, comme « J'ai cliqué trois fois et le nombre est resté à 0. » N'essayez pas de deviner la cause. Une mauvaise supposition l'envoie sur une fausse piste.</p>
+</Q>
+<Q q="Il m'a posé une question que je ne comprends pas.">
+<p>Répondez simplement : « Je ne sais pas coder. Pose-moi la question avec des mots simples, ou choisis pour moi l'option la plus sûre et explique-moi pourquoi. »</p>
+</Q>
+
+## Ça y est, vous savez faire
+
+À partir de maintenant, tout marche de la même façon : ouvrez un dossier, puis envoyez trois parties. Par exemple :
+
+<Copy id="ex-card" title="Créer une autre petite chose" code={`Ce que je veux : une page web de carte d'anniversaire qui affiche « Joyeux anniversaire » et change de couleur quand je clique dessus. Ce dossier est vide. Mets-y tous les fichiers.
+Le résultat attendu : j'ouvre la page et je vois le message ; un clic change la couleur ; cinq clics de suite donnent une couleur différente à chaque fois.
+À la fin, montre-moi : ce que tu as vérifié et ce que tu as vu. Puis dis-moi sur quel fichier double-cliquer pour l'ouvrir.`} />
+
+Pour chaque nouvelle tâche, créez un nouveau dossier vide et ouvrez-le dans une nouvelle <Term k="对话" />.
+
+<Callout type="tip" title="Ça suffit pour l'instant">
+Ces trois leçons, c'est tout ce dont un débutant a besoin. Pour vous entraîner, choisissez une petite chose que vous voulez vraiment, et demandez-la avec les mêmes trois parties.
+
+Consultez le reste du site quand vous en avez besoin (en anglais) :
+
+- Il part souvent dans la mauvaise direction : voyez [How to brief it so it stays on track](/en/howto/good-instructions/) (comment lui expliquer pour qu'il ne dévie pas).
+- Vous voulez savoir combien vous avez dépensé : voyez [Control costs](/en/howto/cost/) (maîtriser les coûts).
+- Il ne s'ouvre pas ou n'arrive pas à se connecter : voyez [Troubleshooting](/en/howto/troubleshoot/) (dépannage).
+- D'autres questions : voyez la [FAQ](/en/faq/).
+- Vous codez et voulez l'utiliser sur de vrais projets : voyez le [guide complet](/en/guide/0-what/).
+</Callout>

@@ -1,0 +1,123 @@
+---
+layout: ../../../layouts/Lesson.astro
+tldr: "Installez l'application de bureau, puis copiez une clé depuis OpenHands Cloud pour la leçon suivante."
+lesson: 2
+description: "Téléchargez et installez l'application de bureau OpenHands depuis GitHub, ouvrez-la une première fois, débloquez-la si votre Mac refuse de l'ouvrir, et obtenez une clé de modèle sur OpenHands Cloud. Ce que vous devriez voir à chaque étape, et quoi faire sinon."
+---
+import Callout from "../../../components/Callout.astro";
+import Cmd from "../../../components/Cmd.astro";
+import Q from "../../../components/Q.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Term from "../../../components/Term.astro";
+
+Il y a trois étapes : installer l'application de bureau, l'ouvrir une première fois, et obtenir une clé de modèle. L'application de bureau apporte tout ce dont elle a besoin. Vous n'avez rien d'autre à installer.
+
+## Étape 1 : télécharger et installer
+
+Ouvrez la [dernière version d'OpenHands](https://github.com/OpenHands/OpenHands/releases/latest), descendez jusqu'à **Assets** (les fichiers à télécharger) et téléchargez le fichier qui correspond à votre ordinateur. Le numéro de version dans le nom du fichier change. En ce moment, c'est `1.40.0`.
+
+<Tabs id="os" items={[["mac", "Mac"], ["win", "Windows"], ["linux", "Linux"]]}>
+<div slot="mac">
+
+1. Téléchargez le fichier dont le nom ressemble à `OpenHands-Agent-Canvas-1.40.0-universal.dmg`. C'est le même fichier pour les Mac à puce Apple et les Mac Intel.
+2. Ouvrez-le et faites glisser **OpenHands Agent Canvas** dans le dossier **Applications**.
+
+</div>
+<div slot="win">
+
+1. Téléchargez le fichier dont le nom ressemble à `OpenHands-Agent-Canvas-Setup-1.40.0.exe`.
+2. Lancez-le et suivez l'installateur.
+3. Une fenêtre bleue SmartScreen peut apparaître. Dans ce cas, vérifiez que le fichier vient bien de la page officielle ci-dessus, puis continuez. La documentation d'OpenHands ne précise pas sur quels boutons cliquer. Sous Windows, il faut en général cliquer d'abord sur « Informations complémentaires », et le bouton « Exécuter quand même » apparaît ensuite.
+
+</div>
+<div slot="linux">
+
+- **Ubuntu ou Debian :** téléchargez `agent-canvas_1.40.0_amd64.deb` et installez-le avec votre gestionnaire de paquets, par exemple `sudo apt install ./agent-canvas_1.40.0_amd64.deb`.
+- **Autres distributions :** téléchargez `OpenHands.Agent.Canvas-1.40.0.AppImage` et, dans les permissions de votre gestionnaire de fichiers, autorisez son exécution comme programme (ou lancez `chmod +x` dessus). Puis double-cliquez dessus.
+
+</div>
+</Tabs>
+
+<Callout type="ok">
+**OpenHands Agent Canvas** se trouve maintenant dans le dossier Applications de votre Mac, dans le menu Démarrer de Windows, ou dans le menu des applications de Linux.
+</Callout>
+
+## Étape 2 : l'ouvrir une première fois
+
+Ouvrez **OpenHands Agent Canvas**.
+
+Une petite fenêtre s'affiche d'abord, avec `Starting services` (démarrage en cours). La ligne en dessous explique qu'au premier lancement, l'application télécharge Python et le serveur d'agent d'OpenHands. Sur un ordinateur neuf, ça prend quelques minutes. Attendez simplement, sans la fermer.
+
+<Callout type="ok">
+La petite fenêtre disparaît et une grande s'ouvre, avec un assistant de configuration au milieu. Son titre est `Check your backend` (vérifier le backend) ou `Choose your agent` (choisir l'agent).
+
+**Arrêtez-vous là et ne cliquez sur rien pour l'instant.** Laissez la fenêtre ouverte et passez à l'étape 3. Vous suivrez l'assistant à la leçon suivante.
+</Callout>
+
+### Votre Mac dit que l'application est endommagée ou ne peut pas être ouverte
+
+L'application de bureau n'est pas encore signée par Apple, alors votre Mac peut la bloquer. Vérifiez d'abord que vous l'avez téléchargée depuis la page officielle. Ensuite :
+
+1. Appuyez sur Commande + Espace, tapez « Terminal » et appuyez sur Entrée. Cela ouvre le <Term k="终端" />.
+2. Copiez cette ligne, collez-la dans la fenêtre du Terminal et appuyez sur Entrée :
+
+<Cmd c='xattr -dr com.apple.quarantine "/Applications/OpenHands Agent Canvas.app"' />
+
+3. Revenez dans Applications et ouvrez de nouveau **OpenHands Agent Canvas**.
+
+<Callout type="ok">
+Le Terminal n'affiche rien et passe simplement à une nouvelle ligne. Ça veut dire que ça a marché. Quand vous rouvrez l'application, la petite fenêtre `Starting services` apparaît.
+</Callout>
+
+## Étape 3 : obtenir une clé OpenHands Cloud
+
+Cette clé permet à OpenHands d'utiliser les modèles fournis par OpenHands Cloud. Les noms de boutons ci-dessous viennent de la documentation officielle. Le site peut changer de présentation : cherchez ce qui s'en rapproche le plus.
+
+1. Dans votre navigateur, ouvrez [app.all-hands.dev](https://app.all-hands.dev).
+2. Cliquez sur `Log in with GitHub` (se connecter avec GitHub) et acceptez l'autorisation sur la page de GitHub.
+3. Lisez les conditions d'utilisation (`terms of service`), acceptez-les et cliquez sur `Continue` (continuer).
+4. Dans `Settings` (réglages), ouvrez `Billing` (facturation) et ajoutez au moins 10 $. La documentation officielle l'indique : sans ces 10 $, vous ne pouvez pas obtenir la clé à l'étape suivante.
+5. Dans `Settings`, ouvrez `API Keys` (clés d'API) et trouvez la section `OpenHands LLM Key`. Votre clé est là.
+
+<Callout type="ok">
+La page `API Keys` contient une section `OpenHands LLM Key`.
+
+**Gardez cette page ouverte.** Vous y copierez la clé à la leçon suivante.
+</Callout>
+
+La même page a aussi un bouton `Create API Key` (créer une clé d'API). <u>Ne vous en servez pas. Il crée un autre type de clé, destiné aux programmes. Elle ne marche pas dans l'application de bureau.</u> Celle qu'il vous faut, c'est la clé déjà présente dans la section `OpenHands LLM Key`.
+
+<Callout type="warn">
+Cette clé fonctionne comme un badge d'accès. Ne la donnez à personne et ne la collez jamais dans une discussion. Si elle fuite, cliquez sur `Refresh API Key` pour en obtenir une nouvelle : l'ancienne cesse alors de fonctionner.
+</Callout>
+
+## Si quelque chose ne va pas
+
+<Q q="Il y a plein de fichiers sous Assets et je ne sais pas lequel prendre.">
+<p>Regardez seulement la fin du nom. Prenez `.dmg` pour un Mac, `.exe` pour Windows, `.deb` pour Ubuntu, et `.AppImage` pour les autres Linux. Ignorez le reste.</p>
+</Q>
+<Q q="Ça reste bloqué sur Starting services depuis plusieurs minutes.">
+
+Le premier lancement télécharge des choses. Avec une connexion lente, c'est plus long. Laissez-lui encore un peu de temps.
+
+Si rien ne bouge toujours, cliquez sur `Show details` (afficher les détails) dans la petite fenêtre pour ouvrir le journal de démarrage. Cliquez sur `Copy` au-dessus du journal, puis ouvrez un nouveau ticket sur [la page des tickets d'OpenHands](https://github.com/OpenHands/OpenHands/issues) et collez-le.
+
+</Q>
+<Q q="La petite fenêtre a affiché un long journal, puis s'est arrêtée.">
+<p>Le démarrage a échoué, et l'application vous montre le journal. Cliquez sur `Copy` pour copier le journal, cliquez sur `Quit` (quitter), puis rouvrez l'application. Si ça recommence, collez le journal sur [la page des tickets d'OpenHands](https://github.com/OpenHands/OpenHands/issues).</p>
+</Q>
+<Q q="Je n'ai pas de compte GitHub.">
+<p>La page de connexion propose aussi `Log in with GitLab` et `Log in with Bitbucket`. Utilisez celui que vous avez. Si vous n'en avez aucun, créez d'abord un compte sur [github.com](https://github.com).</p>
+</Q>
+<Q q="Il n'y a pas d'OpenHands LLM Key sur la page API Keys, ou je n'arrive pas à obtenir la clé.">
+<p>Vous n'avez sans doute pas encore ajouté de crédit. Allez dans `Billing`, dans `Settings`, ajoutez au moins 10 $, puis revenez sur `API Keys`.</p>
+</Q>
+<Q q="Je préfère ne pas utiliser l'application de bureau. Je veux installer en ligne de commande.">
+<p>Les installations avec npm et Docker sont expliquées dans [l'étape d'installation du guide complet (en anglais)](/en/guide/1-install/). Pour ces leçons, l'application de bureau suffit.</p>
+</Q>
+
+## Si vous ne voulez plus l'utiliser
+
+- **Quitter :** quittez **OpenHands Agent Canvas** depuis son menu. Pour vous en resservir, ouvrez-le simplement.
+- **Mettre à jour :** téléchargez le dernier installateur et réinstallez. La page `Application`, dans `Settings`, affiche aussi votre version et peut chercher les mises à jour.
+- **Désinstaller :** quittez-le d'abord. Sur Mac, faites-le glisser d'Applications vers la Corbeille. Sous Windows, désinstallez-le depuis **Applications installées**. Sous Linux, supprimez le fichier AppImage ou désinstallez le paquet deb.

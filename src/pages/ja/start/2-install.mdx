@@ -1,0 +1,123 @@
+---
+layout: ../../../layouts/Lesson.astro
+tldr: "デスクトップアプリを入れて、次のレッスンで使うキーを OpenHands Cloud からコピーします。"
+lesson: 2
+description: OpenHands のデスクトップアプリを GitHub からダウンロードして入れ、はじめて開きます。Mac で開けないときの直し方と、OpenHands Cloud でモデルのキーを手に入れる方法も。各ステップで何が見えればいいか、見えなかったらどうするか。
+---
+import Callout from "../../../components/Callout.astro";
+import Cmd from "../../../components/Cmd.astro";
+import Q from "../../../components/Q.astro";
+import Tabs from "../../../components/Tabs.astro";
+import Term from "../../../components/Term.astro";
+
+このレッスンは 3 ステップです。デスクトップアプリを入れる、はじめて開く、モデルのキーを手に入れる。デスクトップアプリには必要なものがすべて入っているので、ほかのソフトを入れる必要はありません。
+
+## ステップ 1：ダウンロードしてインストールする
+
+OpenHands の[最新リリースのページ](https://github.com/OpenHands/OpenHands/releases/latest)を開き、下の **Assets** までスクロールして、自分のパソコンに合ったファイルをダウンロードします。ファイル名のバージョン番号は変わります。いまは `1.40.0` です。
+
+<Tabs id="os" items={[["mac", "Mac"], ["win", "Windows"], ["linux", "Linux"]]}>
+<div slot="mac">
+
+1. `OpenHands-Agent-Canvas-1.40.0-universal.dmg` のような名前のファイルをダウンロードします。Apple シリコンの Mac も Intel の Mac も、このファイル 1 つです。
+2. ダブルクリックで開き、**OpenHands Agent Canvas** を **Applications**（アプリケーション）フォルダにドラッグします。
+
+</div>
+<div slot="win">
+
+1. `OpenHands-Agent-Canvas-Setup-1.40.0.exe` のような名前のファイルをダウンロードします。
+2. ダブルクリックで実行し、案内に従ってインストールします。
+3. 青い SmartScreen の画面が出ることがあります。そのときは、ファイルが上の公式リリースページから落としたものか確かめてから、先へ進んでください。どのボタンを押すかは OpenHands の公式ドキュメントには書かれていません。Windows ではふつう、先に「詳細情報」を押すと「実行」ボタンが出てきます。
+
+</div>
+<div slot="linux">
+
+- **Ubuntu、Debian：** `agent-canvas_1.40.0_amd64.deb` をダウンロードし、パッケージマネージャーでインストールします。たとえば `sudo apt install ./agent-canvas_1.40.0_amd64.deb` です。
+- **ほかのディストリビューション：** `OpenHands.Agent.Canvas-1.40.0.AppImage` をダウンロードし、ファイルマネージャーの「アクセス権」でプログラムとして実行できるようにします（または `chmod +x` を実行します）。それからダブルクリックします。
+
+</div>
+</Tabs>
+
+<Callout type="ok">
+Mac のアプリケーションフォルダ、Windows のスタートメニュー、Linux のアプリケーションメニューに、**OpenHands Agent Canvas** が増えています。
+</Callout>
+
+## ステップ 2：はじめて開く
+
+**OpenHands Agent Canvas** を開きます。
+
+まず小さなウィンドウが出て、`Starting services`（起動中）と表示されます。その下の行には、はじめての起動では Python と OpenHands のエージェントサーバーをダウンロードする、と書かれています。新しいパソコンだと数分かかります。閉じずに待ってください。
+
+<Callout type="ok">
+小さなウィンドウが消え、大きなウィンドウが開きます。真ん中に設定ウィザードがあり、タイトルは `Check your backend`（バックエンドの確認）か `Choose your agent`（エージェントの選択）です。
+
+**ここで止めて、まだ何も押さないでください。** ウィンドウは開いたままにして、ステップ 3 へ進みます。ウィザードは次のレッスンで進めます。
+</Callout>
+
+### Mac で「壊れている」「開けません」と出たとき
+
+デスクトップアプリはまだ Apple の署名を受けていないので、Mac がブロックすることがあります。まず、公式リリースページからダウンロードしたものか確かめてください。それから次のようにします。
+
+1. Command + スペースを押し、「ターミナル」と入力して Return を押します。<Term k="终端" />が開きます。
+2. 下の 1 行をコピーしてターミナルのウィンドウに貼り付け、Return を押します。
+
+<Cmd c='xattr -dr com.apple.quarantine "/Applications/OpenHands Agent Canvas.app"' />
+
+3. アプリケーションフォルダに戻り、もう一度 **OpenHands Agent Canvas** を開きます。
+
+<Callout type="ok">
+ターミナルには何も表示されず、新しい行に移るだけです。これで成功です。もう一度開くと、`Starting services` と書かれた小さなウィンドウが出ます。
+</Callout>
+
+## ステップ 3：OpenHands Cloud のキーを手に入れる
+
+このキーがあると、OpenHands Cloud が用意しているモデルを OpenHands で使えます。下のボタン名は公式ドキュメントのものです。サイトのデザインが変わることもあるので、いちばん近いものを探してください。
+
+1. ブラウザで [app.all-hands.dev](https://app.all-hands.dev) を開きます。
+2. `Log in with GitHub` を押し、GitHub のページでアクセスを許可します。
+3. 利用規約（`terms of service`）を読んで同意し、`Continue` を押します。
+4. `Settings`（設定）の中の `Billing`（支払い）を開き、10 ドル以上をチャージします。公式ドキュメントによると、これをしないと次のステップのキーは手に入りません。
+5. `Settings` の中の `API Keys` を開き、`OpenHands LLM Key` の欄を探します。あなたのキーはそこにあります。
+
+<Callout type="ok">
+`API Keys` のページに `OpenHands LLM Key` の欄があります。
+
+**このページは開いたままにしてください。** 次のレッスンで、ここからキーをコピーします。
+</Callout>
+
+同じページに `Create API Key` というボタンもあります。<u>これは押さないでください。プログラム向けの別の種類のキーができるだけで、デスクトップアプリでは使えません。</u>使うのは、`OpenHands LLM Key` の欄にもともとあるキーです。
+
+<Callout type="warn">
+このキーはカードキーのようなものです。人に渡したり、チャットに貼ったりしないでください。もし漏れたら、`Refresh API Key` を押して新しいキーにします。古いキーは使えなくなります。
+</Callout>
+
+## うまくいかないとき
+
+<Q q="Assets の下にファイルがたくさんあって、どれを落とせばいいかわからない。">
+<p>名前の最後だけを見てください。Mac は `.dmg`、Windows は `.exe`、Ubuntu は `.deb`、ほかの Linux は `.AppImage` です。それ以外は気にしなくて大丈夫です。</p>
+</Q>
+<Q q="Starting services のまま、何分たっても進まない。">
+
+はじめての起動ではダウンロードがあるので、回線が遅いと時間がかかります。もう少し待ってみてください。
+
+それでも動かなければ、小さなウィンドウの `Show details` を押して起動ログを開きます。ログの上の `Copy` を押してコピーし、[OpenHands の issue ページ](https://github.com/OpenHands/OpenHands/issues)で新しい issue を作って貼り付けます。
+
+</Q>
+<Q q="小さなウィンドウに長いログが出て、そのまま止まった。">
+<p>起動に失敗して、ログを見せてくれている状態です。`Copy` を押してログをコピーし、`Quit` で終了して、もう一度開きます。また同じになったら、ログを [OpenHands の issue ページ](https://github.com/OpenHands/OpenHands/issues)に貼ってください。</p>
+</Q>
+<Q q="GitHub のアカウントを持っていない。">
+<p>ログインページには `Log in with GitLab` と `Log in with Bitbucket` もあります。持っているほうを使ってください。どれもなければ、先に [github.com](https://github.com) で登録します。</p>
+</Q>
+<Q q="API Keys のページに OpenHands LLM Key がない、またはキーが手に入らない。">
+<p>たぶん、まだチャージしていません。`Settings` の中の `Billing` で 10 ドル以上チャージしてから、もう一度 `API Keys` を見てください。</p>
+</Q>
+<Q q="デスクトップアプリではなく、コマンドラインで入れたい。">
+<p>npm や Docker での入れ方は、[完全ガイドのインストールのステップ（英語）](/en/guide/1-install/)にあります。このレッスンでは、デスクトップアプリだけで十分です。</p>
+</Q>
+
+## 使うのをやめたくなったら
+
+- **終了する：** アプリのメニューから **OpenHands Agent Canvas** を終了します。また使うときは、開くだけです。
+- **アップデートする：** 最新のインストーラーをダウンロードして、もう一度インストールします。`Settings` の中の `Application` のページでも、バージョンの確認とアップデートのチェックができます。
+- **アンインストールする：** 先に終了します。Mac はアプリケーションフォルダからゴミ箱へドラッグします。Windows は「インストールされているアプリ」からアンインストールします。Linux は AppImage ファイルを消すか、deb パッケージを削除します。
