@@ -14,9 +14,9 @@
 
 ![Para principiantes](https://img.shields.io/badge/Para_principiantes-3_lecciones-8A9A8C?style=flat-square)
 ![Guía completa](https://img.shields.io/badge/Gu%C3%ADa_completa-9_pasos-8A9A8C?style=flat-square)
-![How-to](https://img.shields.io/badge/How--to-19_p%C3%A1ginas-C9A97A?style=flat-square)
+![How-to](https://img.shields.io/badge/How--to-20_p%C3%A1ginas-C9A97A?style=flat-square)
 ![Automatizaciones](https://img.shields.io/badge/Automatizaciones_listas-27-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-29_t%C3%A9rminos-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-32_t%C3%A9rminos-9AA8C4?style=flat-square)
 ![Idiomas](https://img.shields.io/badge/Idiomas-10-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/Revisada_con-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -128,7 +128,7 @@ Los how-to están en inglés.
 | Lejos de tu escritorio | [Síguelo desde el celular](https://openhands.xiaoxiaodong.ai/en/howto/phone/) | Pon el celular y la computadora en la misma red de Tailscale y abre la dirección de la computadora |
 | Te preocupa la factura | [Gasta menos](https://openhands.xiaoxiaodong.ai/en/howto/cost/) | Modelos baratos para las cosas pequeñas; no programes las automatizaciones demasiado seguido |
 
-Y además [prompts para copiar y pegar](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [cómo darle instrucciones para que no se desvíe](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [¿no abre o no conecta?](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) y más: 19 en total.
+Y además [prompts para copiar y pegar](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [cómo darle instrucciones para que no se desvíe](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [¿no abre o no conecta?](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) y más: 20 en total.
 
 ## 🔒 Primero, la seguridad
 
@@ -144,8 +144,8 @@ Y además [prompts para copiar y pegar](https://openhands.xiaoxiaodong.ai/en/how
 - **[Para principiantes](https://openhands.xiaoxiaodong.ai/es/start/1-why/)**: 3 lecciones, 30 minutos, sin programar · Qué hace por ti → Instálalo → Úsalo por primera vez
 - **[Guía completa](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)** (en inglés): 9 pasos para quien programa · qué es → instalar → modelos → primera conversación → otros agentes → backends → automatizaciones → skills, plugins y MCP → alojamiento propio y el SDK
 - **[Automatizaciones listas para usar](https://openhands.xiaoxiaodong.ai/en/automations/)** (en inglés): las 27, con filtro por nombre, grupo o disparador
-- **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)** (en inglés): 19 páginas, una tarea cada una
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)** (en inglés): 29 términos · una frase → una analogía → en OpenHands → errores comunes
+- **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)** (en inglés): 20 páginas, una tarea cada una
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)** (en inglés): 32 términos · una frase → una analogía → en OpenHands → errores comunes
 - **[Preguntas frecuentes](https://openhands.xiaoxiaodong.ai/en/faq/)** (en inglés): ¿Cuesta dinero? ¿Necesito una API key? Ejecuta comandos sin preguntar, ¿es seguro?
 - **Idiomas**: la página de inicio y las lecciones para principiantes en 10 idiomas; todo lo demás en inglés y en chino
 

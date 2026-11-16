@@ -1,0 +1,170 @@
+---
+layout: ../../../layouts/HowTo.astro
+slug: team
+time: 8-minute read
+for: You want teammates to hand it work too, or several people to share one setup
+step: 8
+tldr: Call it from Slack and GitHub, share one server, or open a Cloud organization.
+description: Four ways for a team to use OpenHands. Mention @openhands in a Slack thread, label or comment on GitHub and GitLab issues, share one Agent Server for code review and dependency upgrades, or use an OpenHands Cloud organization for shared credit and a default model. For each, who sets it up, what teammates see, and what it costs.
+---
+import Callout from "../../../components/Callout.astro";
+import Term from "../../../components/Term.astro";
+import Q from "../../../components/Q.astro";
+import Copy from "../../../components/Copy.astro";
+import Cmd from "../../../components/Cmd.astro";
+import Reply from "../../../components/Reply.astro";
+
+## What it looks like once it's shared
+
+A teammate mentions it in a Slack channel. It replies in the same thread, gets to work and hands back a PR. Everyone in the channel can follow along.
+
+<Reply title="Illustration: roughly what a Slack thread looks like" code={`Lin:   @openhands in acme/web
+       What I want: on phones, the two buttons on the login page overlap. Fix it.
+       What done looks like: at 375 px wide each button gets its own row, and the tests pass.
+       What to show me when it's done: the PR link, plus before and after screenshots.
+
+openhands: On it. Working in acme/web.
+
+Jay:   While it's at it, the sign-up page looks the same.
+
+Lin:   @openhands fix the sign-up page too.
+
+openhands: Both pages are fixed. The PR is here, screenshots below.`} />
+
+GitHub works the same way. Label an issue `openhands` and it comments that it has started. When it's done, it opens a <Term k="PR" />.
+
+Calling it from another tool like this is an <Term k="集成" text="integration" />. Here are four ways, from least to most setup:
+
+| Way | Who sets it up | What you need |
+| :--- | :--- | :--- |
+| Call it in Slack | Slack admin, then each person | OpenHands Cloud |
+| Call it on GitHub | Whoever authorizes repos | OpenHands Cloud |
+| Share an Agent Server | Whoever runs the server | An always-on machine |
+| Cloud organization | The Owner who creates it | A paid subscription |
+
+## Call it in Slack
+
+**Who sets it up.** Two steps, done by different people:
+
+1. **A Slack admin installs the app, once.** You need permission to install apps in the workspace. On the [Slack integration page](https://docs.openhands.dev/openhands/usage/cloud/slack-installation), click `Add to Slack`. Pick the workspace in the top right, review the permissions, and allow.
+2. **Each person links their own account, admins included.** In <Term k="OpenHands Cloud" />, open `Settings > Integrations` and click `Install OpenHands Slack App`. Pick the workspace and allow. Some workspaces need an admin to approve this step.
+
+**How to call it.** Mention `@openhands` in a new message or a thread in any channel. That starts a <Term k="对话" text="conversation" />. Name a repository in the message and it starts from that repository:
+
+<Copy id="tm-slack" title="Hand it a task in Slack" code={`@openhands in <owner/repo>
+What I want: <one specific thing, such as: on phones the two login buttons overlap, fix it>.
+What done looks like: <how you'll know, such as: at 375 px wide each button gets its own row, and the tests pass>.
+What to show me when it's done: the PR link, plus before and after screenshots.`} />
+
+- **You can name several repositories.** Write them as `owner/repo` or as URLs, up to ten. The first one it can access is the main repository. The others are cloned beside it.
+- **You can skip the repository.** It asks you to pick one or more and click `Start`, or to click `No Repository`.
+
+**Keep going.** Reply in the thread under the original message and mention `@openhands` again. <u>Only the person who started the conversation can continue it this way.</u> Teammates can add details in the thread, and the starter passes them on with another mention.
+
+**Whose account it uses.** Each person links their own Cloud account. The conversation runs under the account of whoever mentioned it, and uses that account's credit.
+
+## Call it on GitHub
+
+**Authorize first.** Sign in to OpenHands Cloud with GitHub. In the repository picker, click `+ Add GitHub Repos`. Choose the organization and repositories, then click `Install & Authorize`. To change the list later, open `Settings > Integrations` and click `Configure GitHub Repositories`.
+
+It can only touch repositories you authorized and that you can access on GitHub yourself.
+
+**On an issue.** Label the issue `openhands`, or post a comment that starts with `@openhands`. Then it:
+
+1. **Comments that it's working.** The comment links to the conversation in Cloud, so you can watch progress.
+2. **Opens a PR if it decides the issue is solved.** Otherwise it doesn't.
+3. **Comments again.** It sums up what it did and links the PR.
+
+**On a PR.** Mention `@openhands` in a PR comment to ask a question, request changes, or get code explained. The PR has to come from and go to repositories you authorized.
+
+For the whole trip, see [Turn a GitHub issue into a PR](/en/howto/issue-to-pr/).
+
+**GitLab works too.** Sign in to Cloud with GitLab and it can reach your repositories. Issues and merge requests work the same way as on GitHub, and it opens a merge request when done. Personal projects work right away. Group projects need a GitLab Premium or Ultimate plan.
+
+It also needs a webhook, the address GitLab calls when something happens. It installs one within a few minutes after the project or group's Owner or Maintainer signs in to Cloud.
+
+Jira Cloud can call it the same way, once an admin sets up a service account and a webhook in Atlassian. See the official [Jira integration guide](https://docs.openhands.dev/openhands/usage/cloud/project-management/jira-integration).
+
+## Share one Agent Server for team jobs
+
+To host it yourselves, put one <Term k="Agent Server" /> on an always-on server and share it with the team. Team jobs such as code review and dependency upgrades run there. Each person's own <Term k="代理" text="agents" /> keep running on their laptop.
+
+1. **One person sets up the server.** Follow [Keep it running on a server](/en/howto/server/). Lock the firewall and choose a key first, then start it with `--public`. To put only the working part on the server, use <Cmd c="agent-canvas --backend-only --public" />.
+2. **Each teammate adds a backend.** In Agent Canvas, open the backend switcher and choose `Manage Backends` → `Add Backend`. Enter the server's address and the key.
+3. **Switch between the two <Term k="后端" text="backends" />.** Start team jobs on the server and your own work on your machine.
+
+For how to hand it team jobs, see [Have it review a PR](/en/howto/code-review/) and [Upgrade dependencies](/en/howto/dependency-upgrades/).
+
+<Callout type="warn" title="Whoever can reach it can command it">
+The agent can read and write files on the machine, run commands, and use the network. Anyone who can talk to the Agent Server can do the same. Treat the machine like one that holds production credentials.
+</Callout>
+
+- **Everyone uses the same key.** Each person enters the server's one `LOCAL_BACKEND_API_KEY`. When someone leaves the team, or the key has gone to too many people, change it.
+- **Settings belong to the backend.** Models, secrets and automations live on the server, so everyone connected shares one set.
+- **You pay for your own resources.** The software is free and open source. You pay for the server and the model <Term k="token" text="tokens" />.
+
+For the security checklist and how to connect from outside, see [step 8 of the full guide](/en/guide/8-beyond/). The step-by-step setup is in [Keep it running on a server](/en/howto/server/).
+
+**Run several jobs at once.** One Agent Server can already run several agents at the same time. These are <Term k="并行代理" text="parallel agents" />. Give each conversation its own folder, worktree or container so they don't overwrite each other. See [Run several conversations at once](/en/howto/parallel/).
+
+## Open an OpenHands Cloud organization
+
+An <Term k="组织" text="organization" /> is a shared space for a team in OpenHands Cloud. Everyone draws on one credit pool and one default model, and admins manage who's in.
+
+<Callout type="tip" title="This is a commercial feature">
+Organizations need a paid OpenHands Cloud subscription or OpenHands Enterprise. To subscribe, contact [OpenHands Sales](https://www.openhands.dev/contact).
+</Callout>
+
+**Get started.** Once you subscribe, create an organization from the Cloud dashboard. Then invite members and set the organization's model.
+
+**Invite members.** Hover over the profile icon in the lower left and click `Invite Organization Members`. Enter their email and click `Add`. They get an email, and once they accept they join as a Member. Invitations expire after 7 days.
+
+**What teammates see.** Everyone has a personal workspace of their own. After joining, they also get an organization selector. New conversations go into whichever one is selected. <mark>Conversations in an organization are private to the member who started them by default.</mark>
+
+**What's shared.**
+
+- **Credit.** Members' conversations spend the organization's shared credit. Admins and Owners add credit.
+- **Default model.** An Admin or Owner picks the provider and model, and every member can use it.
+- **Git organizations.** An Owner can claim the company's Git organization, such as one on GitHub. Requests to call it from those repositories then go to this OpenHands organization.
+
+**Three roles.**
+
+- **Member.** Starts conversations and manages their own private settings: MCP servers, secrets, API keys, Git settings and the Slack link. Nobody else sees these, not even Admins or Owners.
+- **Admin.** Everything a Member can do, plus inviting people, promoting Members to Admin or demoting them, adding credit, and changing the organization's model settings.
+- **Owner.** Everything an Admin can do, plus promoting people to Owner, claiming Git organizations, and deleting the organization. Every organization needs at least one Owner.
+
+Change roles under `Org Members` in the profile menu. Changes take effect right away. Click `Remove` there to remove a member. Their own conversations stay intact.
+
+**Budgets.** The official budget guide describes OpenHands Enterprise, with the managed model gateway turned on. An Admin or Owner sets three things in `Settings > Budgets`, all monthly:
+
+- **`Organization budget`.** The most the whole organization can spend each month. It resets on the 1st or the 15th.
+- **`Default budget for users`.** What each member can spend by default each month.
+- **`User overrides`.** A different amount for one person, or `Unlimited budget for this user`. The organization cap still applies to them.
+
+Members see what they have left in `Settings > Your Budget`. Organization-wide usage is in `Settings > Dashboard`. Without an organization, you can still cap each conversation on Cloud. See [Use OpenHands Cloud](/en/howto/cloud/).
+
+For self-hosting with commercial support, there's OpenHands Enterprise.
+
+## Stuck?
+
+<Q q="I mentioned @openhands in a Slack thread and it didn't continue the conversation.">
+Only the person who started the conversation can continue it in the thread. Anyone else has to link their own Cloud account to the Slack app first. Open `Settings > Integrations` and click `Install OpenHands Slack App`.
+</Q>
+<Q q="In Slack it says it can't open some repositories.">
+Its reply lists the repositories it started with, the ones it couldn't access, and any it skipped past the limit of ten. Authorize the missing ones in Cloud first.
+</Q>
+<Q q="I mentioned @openhands on a PR and nothing happened.">
+The PR has to come from and go to repositories you authorized. For a PR from someone's fork, the fork isn't authorized, so it does nothing.
+</Q>
+<Q q="I labeled an issue in a GitLab group project and it doesn't start.">
+Group projects need a GitLab Premium or Ultimate plan. Then check the webhook status in the GitLab section of `Settings > Integrations` in Cloud. If it shows `Failed` or `Not Installed`, click `Reinstall`. If an old webhook is still in GitLab, delete it there first. Installing a webhook needs Admin or Owner rights on that project or group.
+</Q>
+<Q q="On the shared server, an automation run shows SKIPPED.">
+The backend hit its limit on tasks running at once, so it skipped this run. Spread your automation times out, or run fewer manual conversations.
+</Q>
+<Q q="I still have personal budget left, but my requests are blocked.">
+The organization's budget is used up. An unlimited personal budget doesn't get around the organization cap. Wait for the next cycle, or ask an Admin to raise the organization budget.
+</Q>
+<Q q="I'm the only Owner and want to hand the organization over.">
+Promote the other person to Owner first, then change your own role. Every organization needs at least one Owner.
+</Q>

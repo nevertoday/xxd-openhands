@@ -1,0 +1,170 @@
+---
+layout: ../../layouts/HowTo.astro
+slug: team
+time: 读 8 分钟
+for: 想让同事也能叫它干活，或者几个人共用一套
+step: 8
+tldr: 在 Slack 和 GitHub 里叫它，共用一台服务器，或者开一个 Cloud 组织。
+description: 团队一起用 OpenHands 的四种办法：在 Slack 线程里 @openhands、在 GitHub 和 GitLab 的 issue 上打标签或留言、共用一个 Agent Server 跑代码审查和依赖升级、用 OpenHands Cloud 组织共享额度和默认模型。每种写清谁来装、同事看到什么、要花什么。
+---
+import Callout from "../../components/Callout.astro";
+import Term from "../../components/Term.astro";
+import Q from "../../components/Q.astro";
+import Copy from "../../components/Copy.astro";
+import Cmd from "../../components/Cmd.astro";
+import Reply from "../../components/Reply.astro";
+
+## 共享以后是这个样子
+
+同事在 Slack 频道里 @ 它一句。它在同一个线程里回话、开工，最后交一个 PR。频道里的人都看得到。
+
+<Reply title="示意：Slack 线程里大概是这样" code={`小林：@openhands in acme/web
+      我想要什么：手机上登录页的两个按钮挤在一起，修好它。
+      做好是什么样子：375 像素宽时两个按钮各占一行，测试都通过。
+      做完给我看什么：PR 链接，和改之前、改之后的截图。
+
+openhands：开工了，用的仓库是 acme/web。
+
+阿哲：顺便看一下注册页，好像也有这个问题。
+
+小林：@openhands 注册页也一起修。
+
+openhands：两页都改好了，PR 在这里，截图附在下面。`} />
+
+GitHub 上也一样。给 issue 打一个 `openhands` 标签，它会留言说开工了。做完，它开一个 <Term k="PR" />。
+
+这类从别的工具里叫它的用法，叫<Term k="集成" />。下面四种办法，按要准备的东西从少到多排：
+
+| 办法 | 谁先装好 | 要什么 |
+| :--- | :--- | :--- |
+| 在 Slack 里叫它 | 管理员装应用，每人连账号 | OpenHands Cloud |
+| 在 GitHub 里叫它 | 给仓库授权的人 | OpenHands Cloud |
+| 共用 Agent Server | 管服务器的那个人 | 一台常开的机器 |
+| Cloud 组织 | 建组织的 Owner | 付费订阅 |
+
+## 在 Slack 里叫它
+
+**谁来装。** 分两步，人不一样：
+
+1. **Slack 管理员装应用，只装一次。** 要有给工作区装应用的权限。在 [Slack 集成说明](https://docs.openhands.dev/openhands/usage/cloud/slack-installation)里点 `Add to Slack`，右上角选工作区，看一下权限，点允许。
+2. **每个人连自己的账号，管理员也要连。** 到 <Term k="OpenHands Cloud" /> 的 `Settings > Integrations`，点 `Install OpenHands Slack App`，选工作区，点允许。有的工作区要管理员批准这一步。
+
+**怎么叫。** 在任何频道的新消息或线程里 `@openhands`，就开了一个<Term k="对话" />。消息里写上仓库，它就从这个仓库开工：
+
+<Copy id="tm-slack" title="在 Slack 里交代一件事" code={`@openhands in <owner/repo>
+我想要什么：<一件具体的事，比如登录页在手机上两个按钮挤在一起，修好它>。
+做好是什么样子：<怎么算做好，比如 375 像素宽时按钮各占一行，测试都通过>。
+做完给我看什么：PR 链接，和改之前、改之后的截图。`} />
+
+- **仓库可以写好几个。** 写成 `owner/repo` 或者仓库网址，最多十个。第一个能访问的是主仓库，其余的放在旁边。
+- **没写仓库也行。** 它会让你选几个仓库再点 `Start`，或者点 `No Repository` 不带仓库。
+
+**接着说。** 在原来那条消息的线程里回复，再 `@openhands` 一次。<u>只有开这个对话的人能这样接着说。</u>同事可以在线程里补充信息，由发起人 @ 它转达。
+
+**算谁的。** 每个人连的是自己的 Cloud 账号。谁 @ 的它，对话就开在谁的账号下，花的也是这个账号的额度。
+
+## 在 GitHub 里叫它
+
+**先授权。** 用 GitHub 账号登录 OpenHands Cloud。在仓库选择框里点 `+ Add GitHub Repos`，选组织和仓库，点 `Install & Authorize`。以后要增减仓库，到 `Settings > Integrations` 点 `Configure GitHub Repositories`。
+
+它只能碰你授权过、你自己在 GitHub 上也有权限的仓库。
+
+**在 issue 上叫它。** 给 issue 打上 `openhands` 标签，或者发一条以 `@openhands` 开头的留言。之后它会：
+
+1. **先留言说开工了。** 留言里有链接，点进去能在 Cloud 上看它干到哪了。
+2. **认为解决了，就开一个 PR。** 没解决就不开。
+3. **再留言一次。** 写它做了什么，附上 PR 链接。
+
+**在 PR 上叫它。** 在 PR 的评论里 `@openhands`，可以问问题、让它改代码、让它解释一段代码。这个 PR 的来源仓库和目标仓库，都要是你授权过的。
+
+完整的一趟，看[把一个 GitHub issue 交给它做成 PR](/howto/issue-to-pr/)。
+
+**GitLab 也能这样用。** 用 GitLab 账号登录 Cloud，它就能访问你的仓库。在 issue 和 merge request 上叫它，和 GitHub 一样。做完它开的是 merge request。个人项目直接能用。群组项目要 GitLab 的 Premium 或 Ultimate 订阅。
+
+还要一个 webhook，就是 GitLab 有动静时通知它的地址。项目或群组的 Owner 或 Maintainer 登录 Cloud 后，几分钟内会自动装好。
+
+Jira Cloud 也能这样叫。要管理员先在 Atlassian 后台建好服务账号和 webhook，步骤见官方的 [Jira 集成说明](https://docs.openhands.dev/openhands/usage/cloud/project-management/jira-integration)。
+
+## 共用一个 Agent Server 跑团队的活
+
+想自己托管，就把一个 <Term k="Agent Server" /> 放到常开的服务器上，给团队共用。代码审查、依赖升级这类团队的活放在上面跑。每个人自己的<Term k="代理" />照样在笔记本上跑。
+
+1. **一个人搭服务器。** 照[放到服务器上，一直开着](/howto/server/)做：先锁防火墙、定密钥，再用 `--public` 启动。只想把干活的部分放上去，用 <Cmd c="agent-canvas --backend-only --public" />。
+2. **每个同事加一个后端。** 在 Agent Canvas 的后端切换器里点 `Manage Backends` → `Add Backend`，填服务器的地址和那串密钥。
+3. **在两个<Term k="后端" />之间切换。** 团队的活切到服务器上开，自己的活切回本机。
+
+团队的活怎么交代，看[让它帮你审 PR](/howto/code-review/)和[升级依赖](/howto/dependency-upgrades/)。
+
+<Callout type="warn" title="谁连得上，谁就能指挥它">
+AI 能读写这台机器上的文件、运行命令、上网。能连上 Agent Server 的人也能做同样的事。把这台机器当成放着生产环境密码的机器来管。
+</Callout>
+
+- **大家用同一串密钥。** 每个人填的都是服务器上那一个 `LOCAL_BACKEND_API_KEY`。有人离开团队，或者密钥给出去太多，就换一串。
+- **设置跟着后端走。** 模型、密钥、自动化都存在这台服务器上，连上的人用的是同一套。
+- **花的是你们自己的钱。** 软件免费开源。要付的是服务器和模型的 <Term k="token" />。
+
+上线前的安全清单，和怎么从外面连进来，看[完整教程第 8 步](/guide/8-beyond/)。一步步的做法在[放到服务器上，一直开着](/howto/server/)。
+
+**同时跑好几件活。** 一个 Agent Server 本来就能同时跑好几个代理，这叫<Term k="并行代理" />。让每个对话用自己的文件夹、Worktree 或容器，它们才不会互相改乱。办法看[同时开好几个对话](/howto/parallel/)。
+
+## 开一个 OpenHands Cloud 组织
+
+<Term k="组织" />是 OpenHands Cloud 里给团队用的共享空间。大家用一个额度池、一套默认模型，由管理员统一管人。
+
+<Callout type="tip" title="这是商业功能">
+组织要订阅 OpenHands Cloud 的付费方案，或者用 OpenHands Enterprise。想订阅，联系 [OpenHands 销售](https://www.openhands.dev/contact)。
+</Callout>
+
+**开起来。** 订阅以后，在 Cloud 的控制台里新建一个组织。再邀请成员，配好组织的模型。
+
+**邀请成员。** 把鼠标移到左下角的头像上，点 `Invite Organization Members`，填对方的邮箱，点 `Add`。对方收到邮件，接受后以 Member 的身份加入。邀请 7 天后过期。
+
+**同事看到什么。** 每个人都有一个只属于自己的个人空间。加入组织后，界面上多一个组织选择器。新对话开在当前选中的那个空间里。<mark>组织里的对话默认只有发起人自己看得见。</mark>
+
+**共享的是什么。**
+
+- **额度。** 成员开对话，花的是组织的共享额度。充值由 Admin 或 Owner 来做。
+- **默认模型。** Admin 或 Owner 定好服务商和模型，成员都能用。
+- **Git 组织。** Owner 可以认领公司的 Git 组织，比如 GitHub 上的组织。那边仓库里叫它的请求，就算到这个 OpenHands 组织。
+
+**三种角色。**
+
+- **Member（成员）。** 开对话，管自己的私人设置：MCP、密钥、API key、Git 设置、Slack 连接。这些设置别人看不到，Admin 和 Owner 也看不到。
+- **Admin（管理员）。** 再加上：邀请人、把成员升成 Admin 或降回 Member、充额度、改组织的模型设置。
+- **Owner（所有者）。** 再加上：把人升成 Owner、认领 Git 组织、删除组织。每个组织至少要有一个 Owner。
+
+改角色在头像菜单的 `Org Members` 里，改了马上生效。在那里点 `Remove` 能移除成员，被移除的人自己的对话还在。
+
+**预算。** 官方的预算说明，写的是 OpenHands Enterprise 的情况，而且要开着官方托管的模型网关。Admin 或 Owner 在 `Settings > Budgets` 里设三样，都按月算：
+
+- **`Organization budget`。** 整个组织每月最多花多少。每月 1 号或 15 号重置。
+- **`Default budget for users`。** 每个成员默认每月能花多少。
+- **`User overrides`。** 给某个人单独定一个数，或者选 `Unlimited budget for this user` 不限个人。组织的总上限照样管着他。
+
+成员在 `Settings > Your Budget` 里看自己还剩多少。全组织的用量在 `Settings > Dashboard`。没开组织的话，Cloud 上也能给每个对话设上限，见[用 OpenHands Cloud](/howto/cloud/)。
+
+想自己托管又要商业支持，用 OpenHands Enterprise。
+
+## 卡住了？
+
+<Q q="在 Slack 线程里 @openhands，它没接着原来的对话。">
+只有开这个对话的人，能在线程里 @ 它接着说。别人 @ 它，要先把自己的 Cloud 账号连上 Slack 应用，到 `Settings > Integrations` 点 `Install OpenHands Slack App`。
+</Q>
+<Q q="Slack 里它说有的仓库打不开。">
+它的回复会列出用上了哪些仓库、哪些访问不了、哪些超过十个被略过了。访问不了的仓库，先在 Cloud 里授权给它。
+</Q>
+<Q q="在 PR 里 @openhands 没反应。">
+这个 PR 的来源仓库和目标仓库都要授权过。从别人的 fork 提来的 PR，fork 那边没授权，它就不动。
+</Q>
+<Q q="GitLab 群组项目里打了标签，它不动。">
+群组项目要 GitLab 的 Premium 或 Ultimate 订阅。再到 Cloud 的 `Settings > Integrations` 看 GitLab 那一栏的 webhook 状态。显示 `Failed` 或 `Not Installed`，点 `Reinstall`。GitLab 里还留着旧的 webhook 的话，先在 GitLab 里删掉它。装 webhook 要你在这个项目或群组上是 Admin 或 Owner。
+</Q>
+<Q q="共用服务器上，一次自动化显示 SKIPPED。">
+后端同时在跑的任务到上限了，这一次就跳过了。把几个自动化的时间错开，或者少开几个手动对话。
+</Q>
+<Q q="个人预算还有剩，请求还是被拦了。">
+组织的总预算用完了。个人不限额也挡不住组织的上限。等下个周期重置，或者请 Admin 调高组织预算。
+</Q>
+<Q q="我是唯一的 Owner，想把组织交给别人。">
+先把对方升成 Owner，再改自己的角色。每个组织至少要有一个 Owner。
+</Q>

@@ -14,9 +14,9 @@
 
 ![新手入门](https://img.shields.io/badge/新手入门-3_课-8A9A8C?style=flat-square)
 ![完整教程](https://img.shields.io/badge/完整教程-9_步-8A9A8C?style=flat-square)
-![How-to](https://img.shields.io/badge/How--to-19_篇-C9A97A?style=flat-square)
+![How-to](https://img.shields.io/badge/How--to-20_篇-C9A97A?style=flat-square)
 ![现成自动化](https://img.shields.io/badge/现成自动化-27_个-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-29_条-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-32_条-9AA8C4?style=flat-square)
 ![语言](https://img.shields.io/badge/语言-10_种-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/核对到-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -126,7 +126,7 @@ OpenHands 能按时间或事件自己开一个对话干活，叫**自动化**。
 | 出门在外 | [在手机上看它干活](https://openhands.xiaoxiaodong.ai/howto/phone/) | 用 Tailscale 连起手机和电脑，手机浏览器打开电脑的地址 |
 | 怕花超 | [控制花费](https://openhands.xiaoxiaodong.ai/howto/cost/) | 小事用便宜模型，定时任务别开太密 |
 
-还有 [照抄就能用的提示词](https://openhands.xiaoxiaodong.ai/howto/recipes/)、[怎么交代它才不跑偏](https://openhands.xiaoxiaodong.ai/howto/good-instructions/)、[打不开、连不上怎么办](https://openhands.xiaoxiaodong.ai/howto/troubleshoot/) 等，一共 19 篇。
+还有 [照抄就能用的提示词](https://openhands.xiaoxiaodong.ai/howto/recipes/)、[怎么交代它才不跑偏](https://openhands.xiaoxiaodong.ai/howto/good-instructions/)、[打不开、连不上怎么办](https://openhands.xiaoxiaodong.ai/howto/troubleshoot/) 等，一共 20 篇。
 
 ## 🔒 先说安全
 
@@ -142,8 +142,8 @@ OpenHands 能按时间或事件自己开一个对话干活，叫**自动化**。
 - **[新手入门](https://openhands.xiaoxiaodong.ai/start/1-why/)**：3 课 30 分钟，不会写代码也能看懂 · 它能帮你什么 → 装上它 → 第一次用
 - **[完整教程](https://openhands.xiaoxiaodong.ai/guide/0-what/)**：9 步，给会写代码的人 · 是什么 → 安装 → 接模型 → 第一个对话 → 换代理 → 换后端 → 自动化 → 技能、插件、MCP → 自托管和 SDK
 - **[现成自动化](https://openhands.xiaoxiaodong.ai/automations/)**：27 个，按名字、分组、触发方式筛选
-- **[How-to](https://openhands.xiaoxiaodong.ai/howto/)**：19 篇，一篇只讲一件事
-- **[Wiki](https://openhands.xiaoxiaodong.ai/wiki/)**：29 个词 · 一句话 → 打个比方 → 在 OpenHands 里 → 常见误区
+- **[How-to](https://openhands.xiaoxiaodong.ai/howto/)**：20 篇，一篇只讲一件事
+- **[Wiki](https://openhands.xiaoxiaodong.ai/wiki/)**：32 个词 · 一句话 → 打个比方 → 在 OpenHands 里 → 常见误区
 - **[常见问题](https://openhands.xiaoxiaodong.ai/faq/)**：要钱吗？一定要有 API key 吗？它不问我就执行命令，安全吗？
 - **语言**：首页和新手入门有 10 种语言；其他栏目有中文和 English
 

@@ -54,7 +54,7 @@ export default {
   home: {
     h1: "Want an AI that does the work itself? Start here with OpenHands",
     // lead：前半句、荧光笔那一句、后半句
-    lead: ["OpenHands is an open-source AI coding agent. You hand it a task, and it runs the commands, edits the files and opens the PR itself. It can even start work on a schedule. The official docs are written for engineers. This guide walks you through setting it up in plain words, ", "even if you don't code", "."],
+    lead: ["OpenHands is an open-source platform for AI coding agents that turns them into an always-on engineering team: several agents work at once, start on a schedule or an event, and get going when a teammate calls them in Slack or GitHub. The official docs are written for engineers. This guide gets it to finish its first job for you, ", "even if you don't code", "."],
     cta: ["Start here if you're new", "I code: the full guide (English)"],
     ctaNote: "The beginner track is three lessons, about 30 minutes.",
     painH: "Stuck here?",

@@ -294,6 +294,30 @@ export const WIKI = [
     howto: "docker-sandbox",
   },
   {
+    slug: "parallel-agents", title: "并行代理", group: "在哪里跑",
+    one: "并行代理就是同时让好几个代理干活。每个开一个对话，各干各的。",
+    like: "像同时请几位师傅开工。一人一间屋，各干各的。两位挤进同一间改同一面墙，就会这个刚砌好、那个又拆了。",
+    here: [
+      "一个 [Agent Server](/wiki/agent-server/) 本来就能同时跑好几个[对话](/wiki/conversation/)。第一个还在干活，回首页再开一个就行。==真正的麻烦是两个对话用同一个文件夹，改的就是同一批文件。==",
+      "Agent Canvas 主打的办法是 Worktree。它是同一个 Git 项目的另一份工作副本，放在单独的分支上。开对话时把运行方式从 `Local` 换成 `Worktree`，它就在新副本里改，不碰你手上那份。",
+    ],
+    list: [
+      ["各用各的文件夹", "几件不相干的事，比如两个不同的项目"],
+      ["Worktree", "同一个 Git 项目里同时做两件事"],
+      ["每个对话一个容器", "想让每个 AI 关在自己的[沙盒](/wiki/sandbox/)里"],
+    ],
+    listTitle: "三种分开的办法", listHead: ["办法", "适合"],
+    myths: [
+      "「各开一个容器，就不会改乱」：两个容器挂同一个文件夹，看到的还是同一批文件。容器隔开的是电脑上别的东西，文件夹还是要分开。",
+      "「同时跑几个，钱还是一份」：每个对话各花各的 [token](/wiki/token/)。同时跑三个，就是三份钱。",
+      "「想开多少就开多少」：后端同时跑的任务有上限。到了上限，自动化的那一次会跳过，显示 `SKIPPED`。",
+    ],
+    see: ["workspace", "sandbox", "conversation"],
+    step: 5,
+    howto: "parallel",
+    seen: ["/guide/5-backends/", "/howto/parallel/", "/howto/docker-sandbox/", "/howto/cost/"],
+  },
+  {
     slug: "cloud", title: "OpenHands Cloud", group: "在哪里跑",
     one: "OpenHands Cloud 是官方托管的在线版。不用自己装，登录就能用，按用量付费。",
     like: "像把活放到装修公司自己的车间做。场地、设备都归公司管，用多少付多少。",
@@ -308,6 +332,30 @@ export const WIKI = [
     see: ["api-key", "backend", "llm"],
     step: 2,
     howto: "cloud",
+  },
+  {
+    slug: "organization", title: "组织（Organization）", group: "在哪里跑",
+    one: "组织是 OpenHands Cloud 里给团队用的共享空间。成员共用一个额度池和一套默认模型，各人有各的角色。",
+    like: "像几个人在装修公司合开一个团体账户。钱存在一处，默认请同一位设计师。谁能充钱、谁能拉人进来，看各自的权限。各人的施工单，别人看不到。",
+    here: [
+      "它是商业功能，要订阅 OpenHands Cloud 的方案，或者用 OpenHands Enterprise。==对话默认只有自己看得到，同一个组织的人也看不到。==",
+      "每人还有一个只属于自己的个人空间。新对话开在当前选中的组织里，用应用里的组织切换器来换。在 OpenHands Enterprise 上，Admin 和 Owner 还能设每月预算：整个组织一个上限，每人一个默认上限，个别人可以另设。",
+    ],
+    list: [
+      ["Member", "开对话（花组织的额度），管自己的私人设置"],
+      ["Admin", "再加上：邀请成员、把成员升成 Admin、充额度、改默认模型"],
+      ["Owner", "再加上：把人升成 Owner、认领 GitHub 或 GitLab 上的组织、删掉组织"],
+    ],
+    listTitle: "三种角色", listHead: ["角色", "能做什么"],
+    myths: [
+      "「同一个组织里，队友能看到我的对话」：默认看不到。MCP、密钥、API key、Slack 连接这些私人设置，Admin 和 Owner 也看不到。",
+      "「开源免费的 Agent Canvas 里就有组织」：没有。组织只在 OpenHands Cloud 的付费方案和 OpenHands Enterprise 里有。",
+      "「组织就是共用一个 Agent Server」：不是一回事。共享 Agent Server，是把一个[后端](/wiki/backend/)放到服务器上，大家都连它，机器要自己管。组织是 Cloud 里的成员、角色和共用额度。",
+    ],
+    see: ["cloud", "agent-server", "integrations"],
+    step: 8,
+    howto: "team",
+    seen: ["/guide/8-beyond/", "/howto/team/"],
   },
 
   // ---------- 模型和代理 ----------
@@ -437,6 +485,31 @@ export const WIKI = [
     see: ["mcp", "backend", "conversation"],
     step: 6,
     howto: "custom-automation",
+  },
+  {
+    slug: "integrations", title: "集成（在 Slack、GitHub 里叫它）", group: "扩展和自动化",
+    one: "集成就是在团队平时干活的地方叫它：Slack 的对话串，GitHub、GitLab 的 issue 和 PR，Jira 的工单。",
+    like: "像在你们平时说事的工作群里、报修单上，直接 @ 一声师傅。不用另打电话，他就在那儿接活、回话。前提是装修公司那边给你开了户。",
+    here: [
+      "这些都是 [OpenHands Cloud](/wiki/cloud/) 的功能。先用 GitHub、GitLab 或 Bitbucket 账号登录 Cloud，再接上要用的服务。GitHub 要在 Cloud 里授权仓库。Slack 要工作区管理员先装 OpenHands 应用，每个人再到 `Settings > Integrations` 连上自己的账号。Jira 要管理员先在 Jira 和 Cloud 两边配好。",
+      "在 Slack 里叫它，用的是你自己连上的 Cloud 账号。在 GitHub 上，它能碰哪些仓库，看 Cloud 里授权了哪些，也看你在 GitHub 上的权限。团队订了[组织](/wiki/organization/)，Owner 又认领了 GitHub 或 GitLab 上的组织，那里仓库的请求就归这个组织，用量记在组织的额度上。",
+    ],
+    list: [
+      ["Slack", "在频道里或对话串里 `@openhands`"],
+      ["GitHub", "给 issue 打 `openhands` 标签，或留言 `@openhands`。PR 里留言 `@openhands`，可以提问、让它改"],
+      ["GitLab", "和 GitHub 一样，PR 在这里叫 MR。群组项目要 GitLab Premium 或 Ultimate"],
+      ["Jira Cloud", "给工单打 `openhands` 标签，或评论 `@openhands`。工单里写明是哪个仓库"],
+    ],
+    listTitle: "在哪里叫它", listHead: ["在哪", "怎么叫"],
+    myths: [
+      "「本地的 Agent Canvas 也能在 Slack 里 `@openhands`」：这几样集成都要 OpenHands Cloud。本地后端想用 Slack、GitHub，路子是[自动化](/wiki/automation/)和 [MCP](/wiki/mcp/)，比如每天汇总 Slack。",
+      "「Slack 串里谁都能接着叫它」：只有开这个对话的人，在串里再 `@openhands`，才算接着说。",
+      "「随便哪个 PR 里 `@openhands` 都管用」：PR 的来源仓库和目标仓库，都得是你在 Cloud 里授权过的。",
+    ],
+    see: ["cloud", "organization", "automation"],
+    step: 8,
+    howto: "team",
+    seen: ["/guide/8-beyond/", "/howto/cloud/", "/howto/team/"],
   },
   {
     slug: "skill", title: "技能（Skill）", group: "扩展和自动化",

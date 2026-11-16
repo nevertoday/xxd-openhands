@@ -89,6 +89,7 @@ export const HOWTO = [
     { slug: "phone", title: "在手机上看它干活", en: { title: "Watch it work from your phone" } },
     { slug: "local-llm", title: "用本地模型", en: { title: "Use a local model" } },
     { slug: "cloud", title: "用 OpenHands Cloud", en: { title: "Use OpenHands Cloud" } },
+    { slug: "team", title: "和团队一起用", en: { title: "Use it with your team" } },
   ]},
   { group: "自动化", en: { group: "Automations" }, items: [
     { slug: "slack-digest", title: "每天自动汇总 Slack", en: { title: "Get a daily Slack digest" } },
@@ -107,7 +108,7 @@ export const HOWTO_FLAT = HOWTO.flatMap((g) => g.items.map((i) => ({ ...i, group
 export const HOWTO_PATH = [
   "new-codebase", "good-instructions", "recipes", "issue-to-pr", "code-review", "qa-changes",
   "docker-sandbox", "parallel", "cost", "dependency-upgrades", "vulnerability-remediation",
-  "slack-digest", "custom-automation", "local-llm", "cloud", "server", "phone", "update-remove", "troubleshoot",
+  "slack-digest", "custom-automation", "local-llm", "cloud", "team", "server", "phone", "update-remove", "troubleshoot",
 ];
 {
   const a = [...HOWTO_PATH].sort().join(), b = HOWTO_FLAT.map((h) => h.slug).sort().join();

@@ -31,5 +31,8 @@ export const GLOSSARY = {
   先只看不改: { tip: "先让它读代码、讲给你听，不改任何文件。看懂了再让它动手。", wiki: "read-first", en: { label: "read only", tip: "Have it read the code and explain it first, changing nothing. Let it make changes once you understand." } },
   空文件夹: { tip: "头几次用，新建一个空文件夹给它，让它只在里面干活。", wiki: "empty-folder", en: { label: "empty folder", tip: "For your first runs, make a new empty folder and have it work only inside." } },
   先跑一次: { tip: "新建的自动化，先用 Run now 手动跑一次，看过结果再让它按时自己跑。", wiki: "run-once", en: { label: "run it once first", tip: "Run a new automation once by hand with Run now, and check the result before leaving it on its schedule." } },
+  组织: { tip: "OpenHands Cloud 里给团队用的共享空间：共用额度和默认模型，分 Owner、Admin、Member 三种角色。商业功能，对话默认只有自己看得到。", wiki: "organization", en: { label: "organization", tip: "A shared team space in OpenHands Cloud: one credit pool, one default model, and Owner, Admin and Member roles. A paid feature; conversations stay private by default." } },
+  并行代理: { tip: "同时让几个代理干活。每个用自己的文件夹、Worktree 或容器，才不会互相改乱。", wiki: "parallel-agents", en: { label: "parallel agents", tip: "Several agents working at once. Give each its own folder, worktree or container so they don't overwrite each other." } },
+  集成: { tip: "在 Slack、GitHub、GitLab、Jira 里直接 @openhands 叫它干活。要用 OpenHands Cloud。", wiki: "integrations", en: { label: "integrations", tip: "Calling it with @openhands from Slack, GitHub, GitLab or Jira. Needs OpenHands Cloud." } },
   "草稿 PR": { tip: "让它开的 PR 先开成草稿，有人审过再合并。", wiki: "draft-pr", en: { label: "draft PR", tip: "Have it open PRs as drafts first, and merge only after someone reviews them." } },
 };

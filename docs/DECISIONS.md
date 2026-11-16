@@ -25,3 +25,4 @@
 | 2026-11-14 | 首页标题从「有人推荐你用 OpenHands？」改成「想让 AI 直接动手做事？从这里开始用 OpenHands」 | 原标题默认读者是被推荐来的，从搜索、分享来的人没有钩子 | |
 | 2026-11-14 | 第 1 课「花什么钱」压成一段话 + 三行表（你手上有 / 要不要另外花钱），免费模型的细节收进折叠问答 | 原来嵌套列表三条路加免费模型说明，是「为什么」这一课里最重的一段，读者只关心自己那一行 | |
 | 2026-11-14 | 完整教程第 1、2 步的向导顺序改成和第 3 课一样：检查后端 → 选代理 → 设置模型 → 打个招呼 | 第 3 课按源码 `onboarding-modal.tsx` 写（见上面 11-13 那条），教程沿用了文档的顺序和第四步，两处对不上 | |
+| 2026-11-16 | 定位改成官方的说法「把编码代理变成一支一直在线的工程团队」：首页导语、教程第 0 步、第 1 课演示后加一段；新增 How-to「和团队一起用」（Slack、GitHub、共享后端、Cloud 组织）和 Wiki 组织 / 并行代理 / 集成三条 | 用户指出团队协作才是亮点、Wiki 漏了；OpenHands README 开头就是 control center + always-on engineering team，Agent Canvas 产品页第一条是并行代理。人和人协作那部分写清条件：Slack/GitHub 要接 Cloud，组织是收费功能，对话默认私有，Slack 线程只有发起人能接着叫它 | OpenHands README；docs.openhands.dev organizations/*、slack-installation（第 52 行）、github-installation |

@@ -14,9 +14,9 @@
 
 ![Beginner track](https://img.shields.io/badge/Beginner_track-3_lessons-8A9A8C?style=flat-square)
 ![Full guide](https://img.shields.io/badge/Full_guide-9_steps-8A9A8C?style=flat-square)
-![How-to](https://img.shields.io/badge/How--to-19_pages-C9A97A?style=flat-square)
+![How-to](https://img.shields.io/badge/How--to-20_pages-C9A97A?style=flat-square)
 ![Automations](https://img.shields.io/badge/Prebuilt_automations-27-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-29_terms-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-32_terms-9AA8C4?style=flat-square)
 ![Languages](https://img.shields.io/badge/Languages-10-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/Checked_against-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -126,7 +126,7 @@ All 27 are in [Prebuilt automations](https://openhands.xiaoxiaodong.ai/en/automa
 | Away from your desk | [Watch from your phone](https://openhands.xiaoxiaodong.ai/en/howto/phone/) | Put phone and computer on one Tailscale network and open the computer's address |
 | Worried about the bill | [Keep costs down](https://openhands.xiaoxiaodong.ai/en/howto/cost/) | Cheap models for small things; don't schedule automations too often |
 
-Plus [copy-paste prompts](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [how to brief it so it stays on track](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [won't open or connect?](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) and more: 19 in all.
+Plus [copy-paste prompts](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [how to brief it so it stays on track](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [won't open or connect?](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) and more: 20 in all.
 
 ## 🔒 Safety first
 
@@ -142,8 +142,8 @@ Plus [copy-paste prompts](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), 
 - **[Beginner track](https://openhands.xiaoxiaodong.ai/en/start/1-why/)**: 3 lessons, 30 minutes, no coding needed · What it does for you → Install it → Use it for the first time
 - **[Full guide](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)**: 9 steps for people who code · what it is → install → models → first conversation → other agents → backends → automations → skills, plugins, MCP → self-hosting and the SDK
 - **[Prebuilt automations](https://openhands.xiaoxiaodong.ai/en/automations/)**: all 27, filter by name, group or trigger
-- **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)**: 19 pages, one job each
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**: 29 terms · one sentence → an analogy → in OpenHands → common misconceptions
+- **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)**: 20 pages, one job each
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**: 32 terms · one sentence → an analogy → in OpenHands → common misconceptions
 - **[FAQ](https://openhands.xiaoxiaodong.ai/en/faq/)**: Does it cost money? Do I need an API key? It runs commands without asking; is that safe?
 - **Languages**: the home page and beginner track in 10 languages; everything else in English and Chinese
 

@@ -48,7 +48,7 @@ export default {
 
   home: {
     h1: "Du willst eine KI, die die Arbeit selbst erledigt? Fang hier mit OpenHands an",
-    lead: ["OpenHands ist ein Open-Source-KI-Agent fürs Programmieren. Du gibst ihm eine Aufgabe, und er führt die Befehle selbst aus, ändert die Dateien und öffnet den PR. Er kann sogar nach Zeitplan von allein loslegen. Die offizielle Doku ist für Entwickler geschrieben. Diese Anleitung zeigt dir in einfachen Worten, wie du ihn einrichtest, ", "auch wenn du nicht programmierst", "."],
+    lead: ["OpenHands ist eine Open-Source-Plattform, die KI-Agenten fürs Programmieren zu einem Entwicklerteam macht, das immer im Dienst ist: Mehrere Agenten arbeiten gleichzeitig, legen nach Zeitplan oder bei einem Ereignis los und packen an, wenn jemand aus deinem Team sie in Slack oder GitHub ruft. Die offizielle Doku ist für Entwickler geschrieben. Mit dieser Anleitung erledigt OpenHands seinen ersten Auftrag für dich, ", "auch wenn du nicht programmierst", "."],
     cta: ["Neu hier? Fang hier an", "Ich programmiere: die vollständige Anleitung (Englisch)"],
     ctaNote: "Der Einsteigerkurs: drei Lektionen, etwa 30 Minuten.",
     painH: "Hängst du hier fest?",

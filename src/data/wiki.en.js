@@ -246,6 +246,26 @@ export const WIKI_EN = {
       "\"Removing the container wipes my settings\": reuse the same volume next time and everything is still there. To really start over, delete the volume.",
     ],
   },
+  "parallel-agents": {
+    title: "Parallel agents", group: "Where it runs",
+    one: "Parallel agents means several agents working at the same time. Each gets its own conversation and its own job.",
+    like: "Like having several tradespeople on site at once. One room each, and they stay out of each other's way. Put two in the same room on the same wall, and one tears down what the other just built.",
+    here: [
+      "One [Agent Server](/en/wiki/agent-server/) can already run several [conversations](/en/wiki/conversation/) at once. While the first is still working, go back to the home screen and start another. ==The real problem is two conversations in the same folder: they edit the same files.==",
+      "Agent Canvas leads with worktrees. A worktree is a second working copy of the same Git project, on its own branch. When you start a conversation, switch the run mode from `Local` to `Worktree`, and it works in the new copy without touching yours.",
+    ],
+    list: [
+      ["A folder each", "Unrelated jobs, such as two different projects"],
+      ["Worktree", "Two jobs in the same Git project at once"],
+      ["A container per conversation", "Keeping each agent in its own [sandbox](/en/wiki/sandbox/)"],
+    ],
+    listTitle: "Three ways to keep them apart", listHead: ["Way", "Good for"],
+    myths: [
+      "\"A container each means they can't clash\": two containers that mount the same folder still see the same files. Containers wall off the rest of your computer. The folders still have to be separate.",
+      "\"Running several costs the same as one\": each conversation spends its own [tokens](/en/wiki/token/). Three at once is three bills.",
+      "\"I can run as many as I like\": a backend has a limit on tasks running at once. When it's reached, that run of an automation is skipped and shows `SKIPPED`.",
+    ],
+  },
   "cloud": {
     title: "OpenHands Cloud", group: "Where it runs",
     one: "OpenHands Cloud is the hosted version run by the OpenHands team. Nothing to install: sign in and pay for what you use.",
@@ -257,6 +277,26 @@ export const WIKI_EN = {
     myths: [
       "\"Using the Cloud key means running in the cloud\": with only the LLM key, the work still happens on your computer. Only the model goes through OpenHands. Add Cloud as a backend to move the work there.",
       "\"The free models are free everywhere\": they're free only through app.all-hands.dev. Self-hosted copies, or similarly named models from other providers, are billed separately.",
+    ],
+  },
+  "organization": {
+    title: "Organization", group: "Where it runs",
+    one: "An organization is a shared space for a team in OpenHands Cloud. Members share one credit pool and one default model, and each has a role.",
+    like: "Like a few people opening one group account with the contractor. The money sits in one place, and everyone gets the same designer by default. Who can add money or bring people in depends on their role. Each person's job tickets stay their own.",
+    here: [
+      "It's a commercial feature. You need an OpenHands Cloud subscription, or OpenHands Enterprise. ==By default your conversations are visible only to you, not to the rest of the organization.==",
+      "Everyone also has a personal workspace of their own. New conversations go into whichever organization is currently selected, and you switch with the organization selector in the app. On OpenHands Enterprise, Admins and Owners can also set monthly budgets: one cap for the whole organization, a default limit per member, and a different limit for anyone who needs it.",
+    ],
+    list: [
+      ["Member", "Starts conversations (on the organization's credits) and manages their own private settings"],
+      ["Admin", "Plus: invites members, promotes members to Admin, adds credits, changes the default model"],
+      ["Owner", "Plus: promotes people to Owner, claims GitHub or GitLab organizations, deletes the organization"],
+    ],
+    listTitle: "The three roles", listHead: ["Role", "What it can do"],
+    myths: [
+      "\"Teammates in my organization can see my conversations\": not by default. Private settings like MCP servers, secrets, API keys and your Slack connection are hidden even from Admins and Owners.",
+      "\"Organizations come with the free, open-source Agent Canvas\": they don't. They're only in paid OpenHands Cloud plans and OpenHands Enterprise.",
+      "\"An organization is the same as sharing an Agent Server\": they're different things. Sharing an Agent Server means putting one [backend](/en/wiki/backend/) on a server that everyone connects to, and you run the machine yourself. An organization is members, roles and shared credits inside Cloud.",
     ],
   },
 
@@ -367,6 +407,27 @@ export const WIKI_EN = {
       "\"Once it's set up, it runs whether my computer is on or not\": automations run on the backend. If your local backend stops, so do they. ==To keep them running, put them on a server or on Cloud.==",
       "\"It connects to Slack and GitHub by itself\": you connect those services first, for example with the right [MCP](/en/wiki/mcp/) server. It can't use a service you haven't connected.",
       "\"My laptop can receive GitHub events directly\": the outside service has to reach your backend over the internet. A local address can't, so expose it first or check on a schedule instead.",
+    ],
+  },
+  "integrations": {
+    title: "Integrations (call it from Slack, GitHub)", group: "Extensions and automation",
+    one: "Integrations let you call it where your team already works: Slack threads, GitHub and GitLab issues and PRs, Jira tickets.",
+    like: "Like calling the contractor right from your team's group chat or the repair request sheet. No separate phone call: they take the job and reply right there. It only works once the contractor's office has opened an account for you.",
+    here: [
+      "These are all [OpenHands Cloud](/en/wiki/cloud/) features. Sign in to Cloud with GitHub, GitLab or Bitbucket, then connect the services you want. For GitHub, give Cloud access to the repositories. For Slack, a workspace admin installs the OpenHands app first, then each person links their own account under `Settings > Integrations`. For Jira, an admin sets things up on both the Jira and the Cloud side.",
+      "When you call it from Slack, it runs on the Cloud account you linked. On GitHub, the repositories it can touch depend on which ones you gave Cloud access to, and on your own GitHub permissions. If your team has an [organization](/en/wiki/organization/) and its Owner claims a GitHub or GitLab organization, requests for those repositories go to the team organization and count against its credits.",
+    ],
+    list: [
+      ["Slack", "Mention `@openhands` in a channel or a thread"],
+      ["GitHub", "Add the `openhands` label to an issue, or comment `@openhands`. In a PR, comment `@openhands` to ask questions or request changes"],
+      ["GitLab", "Same as GitHub, with merge requests (MRs) instead of PRs. Group projects need GitLab Premium or Ultimate"],
+      ["Jira Cloud", "Add the `openhands` label to a ticket, or comment `@openhands`. Name the repository in the ticket"],
+    ],
+    listTitle: "Where to call it", listHead: ["Where", "How"],
+    myths: [
+      "\"My local Agent Canvas answers `@openhands` in Slack too\": these integrations all need OpenHands Cloud. To use Slack or GitHub from a local backend, go through [automations](/en/wiki/automation/) and [MCP](/en/wiki/mcp/), as in the daily Slack digest.",
+      "\"Anyone in the Slack thread can keep it going\": only the person who started the conversation can send follow-ups, by mentioning `@openhands` in the thread.",
+      "\"`@openhands` works in any PR\": the PR has to come from and go to repositories you gave Cloud access to.",
     ],
   },
   "skill": {

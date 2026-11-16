@@ -14,9 +14,9 @@
 
 ![Курс для начинающих](https://img.shields.io/badge/%D0%9A%D1%83%D1%80%D1%81_%D0%B4%D0%BB%D1%8F_%D0%BD%D0%B0%D1%87%D0%B8%D0%BD%D0%B0%D1%8E%D1%89%D0%B8%D1%85-3_%D1%83%D1%80%D0%BE%D0%BA%D0%B0-8A9A8C?style=flat-square)
 ![Полное руководство](https://img.shields.io/badge/%D0%9F%D0%BE%D0%BB%D0%BD%D0%BE%D0%B5_%D1%80%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE-9_%D1%88%D0%B0%D0%B3%D0%BE%D0%B2-8A9A8C?style=flat-square)
-![How-to](https://img.shields.io/badge/How--to-19_%D1%81%D1%82%D0%B0%D1%82%D0%B5%D0%B9-C9A97A?style=flat-square)
+![How-to](https://img.shields.io/badge/How--to-20_%D1%81%D1%82%D0%B0%D1%82%D0%B5%D0%B9-C9A97A?style=flat-square)
 ![Автоматизации](https://img.shields.io/badge/%D0%93%D0%BE%D1%82%D0%BE%D0%B2%D1%8B%D0%B5_%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8-27-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-29_%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%BE%D0%B2-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-32_%D1%82%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B0-9AA8C4?style=flat-square)
 ![Языки](https://img.shields.io/badge/%D0%AF%D0%B7%D1%8B%D0%BA%D0%B8-10-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/%D0%A1%D0%B2%D0%B5%D1%80%D0%B5%D0%BD%D0%BE_%D1%81-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -128,7 +128,7 @@ OpenHands умеет сам начинать диалог по расписан�
 | Вы не за компьютером | [Следить с телефона](https://openhands.xiaoxiaodong.ai/en/howto/phone/) | Подключите телефон и компьютер к одной сети Tailscale и откройте адрес компьютера |
 | Беспокоит счёт | [Снизить расходы](https://openhands.xiaoxiaodong.ai/en/howto/cost/) | Дешёвые модели для мелочей; не запускайте автоматизации по расписанию слишком часто |
 
-А ещё [готовые промпты для копирования](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [как поставить задачу, чтобы он не сбивался с пути](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [не открывается или не подключается?](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) и другие, всего 19.
+А ещё [готовые промпты для копирования](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [как поставить задачу, чтобы он не сбивался с пути](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [не открывается или не подключается?](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) и другие, всего 20.
 
 ## 🔒 Сначала безопасность
 
@@ -146,8 +146,8 @@ OpenHands умеет сам начинать диалог по расписан�
 - **[Курс для начинающих](https://openhands.xiaoxiaodong.ai/ru/start/1-why/)**: 3 урока, 30 минут, код писать не нужно · Чем он вам поможет → Установите его → Первый запуск
 - **[Полное руководство](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)**: 9 шагов для тех, кто пишет код · что это такое → установка → модели → первый диалог → другие агенты → бэкенды → автоматизации → навыки, плагины, MCP → свой сервер и SDK
 - **[Готовые автоматизации](https://openhands.xiaoxiaodong.ai/en/automations/)**: все 27, с фильтром по названию, группе или триггеру
-- **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)**: 19 страниц, на каждой одна задача
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**: 29 терминов · одна фраза → аналогия → как это устроено в OpenHands → частые заблуждения
+- **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)**: 20 страниц, на каждой одна задача
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**: 32 термина · одна фраза → аналогия → как это устроено в OpenHands → частые заблуждения
 - **[Частые вопросы](https://openhands.xiaoxiaodong.ai/en/faq/)**: Это стоит денег? Нужен ли API-ключ? Он выполняет команды без спроса — это безопасно?
 - **Языки**: главная страница и курс для начинающих на 10 языках, всё остальное на английском и китайском
 

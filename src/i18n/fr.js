@@ -48,7 +48,7 @@ export default {
 
   home: {
     h1: "Vous voulez une IA qui fait le travail elle-même ? Commencez ici avec OpenHands",
-    lead: ["OpenHands est un agent de code IA open source. Vous lui confiez une tâche, et il lance lui-même les commandes, modifie les fichiers et ouvre la pull request. Il peut même se mettre au travail à heure fixe. La documentation officielle est écrite pour des ingénieurs. Ce guide vous accompagne pas à pas, avec des mots simples, ", "même si vous ne savez pas coder", "."],
+    lead: ["OpenHands est une plateforme open source qui transforme des agents de code IA en une équipe d'ingénieurs toujours en service : plusieurs agents travaillent en même temps, se mettent au travail à heure fixe ou sur un événement, et démarrent dès qu'un collègue les appelle dans Slack ou GitHub. La documentation officielle est écrite pour des ingénieurs. Avec ce guide, il termine sa première tâche pour vous, ", "même si vous ne savez pas coder", "."],
     cta: ["Vous débutez ? Commencez ici", "Je code : le guide complet (en anglais)"],
     ctaNote: "Le parcours débutant : trois leçons, environ 30 minutes.",
     painH: "Bloqué ici ?",

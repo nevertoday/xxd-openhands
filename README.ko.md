@@ -14,9 +14,9 @@
 
 ![입문 코스](https://img.shields.io/badge/%EC%9E%85%EB%AC%B8_%EC%BD%94%EC%8A%A4-%EB%A0%88%EC%8A%A8_3%EA%B0%9C-8A9A8C?style=flat-square)
 ![전체 가이드](https://img.shields.io/badge/%EC%A0%84%EC%B2%B4_%EA%B0%80%EC%9D%B4%EB%93%9C-9%EB%8B%A8%EA%B3%84-8A9A8C?style=flat-square)
-![How-to](https://img.shields.io/badge/How--to-19%ED%8E%B8-C9A97A?style=flat-square)
+![How-to](https://img.shields.io/badge/How--to-20%ED%8E%B8-C9A97A?style=flat-square)
 ![준비된 자동화](https://img.shields.io/badge/%EC%A4%80%EB%B9%84%EB%90%9C_%EC%9E%90%EB%8F%99%ED%99%94-27%EA%B0%9C-D7B9C8?style=flat-square)
-![Wiki](https://img.shields.io/badge/Wiki-%EC%9A%A9%EC%96%B4_29%EA%B0%9C-9AA8C4?style=flat-square)
+![Wiki](https://img.shields.io/badge/Wiki-%EC%9A%A9%EC%96%B4_32%EA%B0%9C-9AA8C4?style=flat-square)
 ![언어](https://img.shields.io/badge/%EC%96%B8%EC%96%B4-10%EA%B0%9C-9AA8C4?style=flat-square)
 ![OpenHands](https://img.shields.io/badge/%ED%99%95%EC%9D%B8%ED%95%9C_%EB%B2%84%EC%A0%84-OpenHands_v1.40.0-8A9A8C?style=flat-square)
 
@@ -128,7 +128,7 @@ OpenHands는 정해진 시간이나 어떤 일이 생겼을 때 스스로 대화
 | 자리를 비웠을 때 | [휴대폰으로 지켜보기](https://openhands.xiaoxiaodong.ai/en/howto/phone/) | 휴대폰과 컴퓨터를 같은 Tailscale 네트워크에 넣고, 컴퓨터 주소를 열어요 |
 | 요금이 걱정될 때 | [비용 줄이기](https://openhands.xiaoxiaodong.ai/en/howto/cost/) | 작은 일에는 싼 모델을 쓰고, 자동화를 너무 자주 예약하지 마세요 |
 
-그 밖에도 [복사해 쓰는 프롬프트](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [길을 잃지 않게 맡기는 법](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [열리지 않거나 연결이 안 될 때](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) 등 모두 19편이 있어요.
+그 밖에도 [복사해 쓰는 프롬프트](https://openhands.xiaoxiaodong.ai/en/howto/recipes/), [길을 잃지 않게 맡기는 법](https://openhands.xiaoxiaodong.ai/en/howto/good-instructions/), [열리지 않거나 연결이 안 될 때](https://openhands.xiaoxiaodong.ai/en/howto/troubleshoot/) 등 모두 20편이 있어요.
 
 ## 🔒 안전이 먼저
 
@@ -144,8 +144,8 @@ OpenHands는 정해진 시간이나 어떤 일이 생겼을 때 스스로 대화
 - **[입문 코스](https://openhands.xiaoxiaodong.ai/ko/start/1-why/)**: 레슨 3개, 30분, 코딩을 몰라도 돼요 · 무엇을 해 주나요 → 설치하기 → 처음 써 보기
 - **[전체 가이드](https://openhands.xiaoxiaodong.ai/en/guide/0-what/)**(영어): 코딩하는 분을 위한 9단계 · OpenHands란 → 설치 → 모델 → 첫 대화 → 다른 에이전트 → 백엔드 → 자동화 → 스킬, 플러그인, MCP → 셀프 호스팅과 SDK
 - **[준비된 자동화](https://openhands.xiaoxiaodong.ai/en/automations/)**(영어): 27개 전부, 이름·그룹·트리거로 골라 보기
-- **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)**(영어): 19편, 한 편에 일 하나
-- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**(영어): 용어 29개 · 한 문장으로 → 비유하자면 → OpenHands에서는 → 흔한 오해
+- **[How-to](https://openhands.xiaoxiaodong.ai/en/howto/)**(영어): 20편, 한 편에 일 하나
+- **[Wiki](https://openhands.xiaoxiaodong.ai/en/wiki/)**(영어): 용어 32개 · 한 문장으로 → 비유하자면 → OpenHands에서는 → 흔한 오해
 - **[자주 묻는 질문](https://openhands.xiaoxiaodong.ai/en/faq/)**(영어): 돈이 드나요? API 키가 필요한가요? 묻지도 않고 명령어를 실행하는데, 안전한가요?
 - **언어**: 홈과 입문 코스는 10개 언어, 나머지는 영어와 중국어
 
